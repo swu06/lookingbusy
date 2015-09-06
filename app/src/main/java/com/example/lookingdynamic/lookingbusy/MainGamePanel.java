@@ -3,6 +3,7 @@ package com.example.lookingdynamic.lookingbusy;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -11,7 +12,8 @@ import android.view.SurfaceView;
 import com.example.lookingdynamic.lookingbusy.model.Ball;
 import com.example.lookingdynamic.lookingbusy.model.Balloon;
 import com.example.lookingdynamic.lookingbusy.model.Droplet;
-import com.example.lookingdynamic.lookingbusy.model.GameObject;
+import com.example.lookingdynamic.lookingbusy.model.PoppableObject;
+import com.example.lookingdynamic.lookingbusy.model.GameStatistics;
 
 import java.util.Random;
 import java.util.Vector;
@@ -25,8 +27,10 @@ public class MainGamePanel extends SurfaceView implements
     private static final String LOGGER = MainGamePanel.class.getSimpleName();
 
     private MainThread thread;
-    private Vector<GameObject> activeGameObjects;
-    private Vector<GameObject> poppedGameObjects;
+    private Vector<PoppableObject> activePoppableObjects;
+    private Vector<PoppableObject> poppedPoppableObjects;
+    private GameStatistics stats;
+    private Paint whiteFont;
     private Random rand;
     private int counter;
 
@@ -37,8 +41,11 @@ public class MainGamePanel extends SurfaceView implements
         getHolder().addCallback(this);
 
         // create holder for balloons
-        activeGameObjects = new Vector<GameObject>();
-        poppedGameObjects = new Vector<GameObject>();
+        activePoppableObjects = new Vector<PoppableObject>();
+        poppedPoppableObjects = new Vector<PoppableObject>();
+        stats = new GameStatistics();
+        whiteFont = new Paint();
+        whiteFont.setColor(Color.WHITE);
         rand = new Random();
         counter = 0;
 
@@ -82,9 +89,9 @@ public class MainGamePanel extends SurfaceView implements
     @Override
     public synchronized boolean onTouchEvent(MotionEvent event) {
 
-        for(GameObject gameObject : activeGameObjects) {
-            if (gameObject.handleTouch((int) event.getX(), (int) event.getY())) {
-                gameObject.setPoppedImage(getResources());
+        for(PoppableObject poppableObject : activePoppableObjects) {
+            if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
+                poppableObject.setPoppedImage(getResources());
                 break;
             }
         }
@@ -96,11 +103,13 @@ public class MainGamePanel extends SurfaceView implements
     protected synchronized void onDraw(Canvas canvas) {
         // fills the canvas with black
         canvas.drawColor(Color.BLACK);
-        for(GameObject gameObject : activeGameObjects) {
-            gameObject.draw(canvas);
+
+        canvas.drawText(stats.toString(), 0, 0, whiteFont);
+        for(PoppableObject poppableObject : activePoppableObjects) {
+            poppableObject.draw(canvas);
         }
-        for(GameObject gameObject : poppedGameObjects) {
-            gameObject.draw(canvas);
+        for(PoppableObject poppableObject : poppedPoppableObjects) {
+            poppableObject.draw(canvas);
         }
     }
 
@@ -108,34 +117,47 @@ public class MainGamePanel extends SurfaceView implements
         counter++;
 
         //Handle Dead Balloons
-        poppedGameObjects.removeAllElements();
+        poppedPoppableObjects.removeAllElements();
 
         //Move Active Balloons, remove popped balloons
-        for(int i=0; i < activeGameObjects.size(); i++) {
-            GameObject gameObject = activeGameObjects.get(i);
+        for(int i=0; i < activePoppableObjects.size(); i++) {
+            PoppableObject poppableObject = activePoppableObjects.get(i);
 
-            if(gameObject.isPopped() || gameObject.isOffScreen()) {
-                poppedGameObjects.add(gameObject);
-                activeGameObjects.remove(i);
+            if(poppableObject.isPopped()) {
+                stats.addToScore(poppableObject.getValue());
+                poppedPoppableObjects.add(poppableObject);
+                activePoppableObjects.remove(i);
+            } else if(poppableObject.isOffScreen()) {
+                stats.addToScore(-1);
+                activePoppableObjects.remove(i);
             } else {
-                gameObject.move(getWidth(), getHeight());
+                poppableObject.move(getWidth(), getHeight());
             }
         }
 
-        // Only add new elements every 10th update
-        if(counter % 10 == 1 || activeGameObjects.size() == 0) {
+        // Only add new elements every 10th update, or when there is nothing in play
+        if(counter % 10 == 1 || activePoppableObjects.size() == 0) {
             //Odds of getting another balloon are 10 in 100
-            int randomSeed = rand.nextInt(100) + 1;
+            int randomType = rand.nextInt(10);
+            int randomLocation = rand.nextInt(9) +1;
+            int randomSpeed = rand.nextInt(10) + 20;
 
-            if (randomSeed < 10) {
-                activeGameObjects.add(new Balloon(getResources(), getWidth() * randomSeed / 10, getHeight(), -2 * randomSeed));
-            } else if (randomSeed < 19) {
-                activeGameObjects.add(new Droplet(getResources(), getWidth() * (randomSeed - 9) / 10, 0, randomSeed));
-            } else if (randomSeed < 29) {
-                activeGameObjects.add(new Ball(getResources(), getWidth(), 0, randomSeed, 2 * randomSeed));
-            }
-
-            Log.d(LOGGER, "Total number of objects is now:" + activeGameObjects.size());
+            if (randomType < 5) {
+                activePoppableObjects.add(new Balloon(getResources(), getWidth() * randomLocation / 10, getHeight(), -2 * randomSpeed));
+            } else if (randomType < 7) {
+                activePoppableObjects.add(new Droplet(getResources(), getWidth() * randomLocation / 10, randomSpeed));
+            } else if (randomType == 8) {
+                randomType = rand.nextInt(4);
+                if (randomType == 0) {
+                    activePoppableObjects.add(new Ball(getResources(), 0, 0, 2 * randomSpeed, randomSpeed));
+                } else if (randomType == 1) {
+                    activePoppableObjects.add(new Ball(getResources(), getWidth(), 0, -2 * randomSpeed, randomSpeed));
+                } else if (randomType == 2) {
+                    activePoppableObjects.add(new Ball(getResources(), 0, getHeight(), 2 * randomSpeed, -1 * randomSpeed));
+                } else if (randomType == 3) {
+                    activePoppableObjects.add(new Ball(getResources(), getWidth(), getHeight(), -2 * randomSpeed, -1 * randomSpeed));
+                }
+            } // Do nothing 1/10 times
         }
 
     }

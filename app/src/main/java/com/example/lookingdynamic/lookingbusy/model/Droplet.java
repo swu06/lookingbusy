@@ -12,14 +12,15 @@ import com.example.lookingdynamic.lookingbusy.R;
  * does not know any of this information, but uses it to make the world turn.
  * Created by swu on 9/5/2015.
  */
-public class Droplet extends GameObject{
+public class Droplet extends PoppableObject {
 
     private static final String LOGGER = Droplet.class.getSimpleName();
+    public static final int VALUE = 15;
 
-    public Droplet(Resources resources, int xCoordinate, int yCoordinate, int yVelocity) {
+    public Droplet(Resources resources, int xCoordinate, int yVelocity) {
         bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.droplet);
         this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
-        this.yCoordinate = yCoordinate;
+        this.yCoordinate = 0;
         this.yVelocity = yVelocity;
         popped = false;
         offScreen = false;
@@ -42,5 +43,10 @@ public class Droplet extends GameObject{
         if (yCoordinate - bitmapImage.getHeight() >= viewHeight) {
             offScreen = true;
         }
+    }
+
+    @Override
+    public int getValue() {
+        return VALUE;
     }
 }
