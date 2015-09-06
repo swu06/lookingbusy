@@ -1,9 +1,7 @@
 package com.example.lookingdynamic.lookingbusy.model;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 
 import com.example.lookingdynamic.lookingbusy.R;
 
@@ -14,14 +12,14 @@ import com.example.lookingdynamic.lookingbusy.R;
  * does not know any of this information, but uses it to make the world turn.
  * Created by swu on 9/5/2015.
  */
-public class Balloon extends GameObject{
+public class Droplet extends GameObject{
 
-    private static final String LOGGER = Balloon.class.getSimpleName();
+    private static final String LOGGER = Droplet.class.getSimpleName();
 
-    public Balloon(Resources resources, int xCoordinate, int yCoordinate, int yVelocity) {
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.balloon);
+    public Droplet(Resources resources, int xCoordinate, int yCoordinate, int yVelocity) {
+        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.droplet);
         this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
-        this.yCoordinate = yCoordinate - bitmapImage.getHeight();
+        this.yCoordinate = yCoordinate;
         this.yVelocity = yVelocity;
         popped = false;
         offScreen = false;
@@ -31,17 +29,17 @@ public class Balloon extends GameObject{
         xCoordinate = xCoordinate + bitmapImage.getWidth() / 2;
         yCoordinate = yCoordinate + bitmapImage.getHeight();
 
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.popped_balloon);
+        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.popped_droplet);
 
         xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
         yCoordinate = yCoordinate - bitmapImage.getHeight();
 
     }
 
-    // Balloons only move vertically
+    // Droplets only move vertically
     public void move(int viewWidth, int viewHeight) {
         yCoordinate = yCoordinate + yVelocity;
-        if (yCoordinate + bitmapImage.getHeight() <= 0) {
+        if (yCoordinate - bitmapImage.getHeight() >= viewHeight) {
             offScreen = true;
         }
     }

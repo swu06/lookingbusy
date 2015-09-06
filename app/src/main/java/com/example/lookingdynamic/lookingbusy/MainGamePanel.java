@@ -1,8 +1,6 @@
 package com.example.lookingdynamic.lookingbusy;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.Log;
@@ -10,7 +8,10 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.lookingdynamic.lookingbusy.model.Ball;
 import com.example.lookingdynamic.lookingbusy.model.Balloon;
+import com.example.lookingdynamic.lookingbusy.model.Droplet;
+import com.example.lookingdynamic.lookingbusy.model.GameObject;
 
 import java.util.Random;
 import java.util.Vector;
@@ -24,9 +25,11 @@ public class MainGamePanel extends SurfaceView implements
     private static final String LOGGER = MainGamePanel.class.getSimpleName();
 
     private MainThread thread;
-    private Vector<Balloon> activeBalloons;
-    private Vector<Balloon> poppedBalloons;
+    private Vector<GameObject> activeGameObjects;
+    private Vector<GameObject> poppedGameObjects;
     private Random rand;
+    private int counter;
+
 
     public MainGamePanel(Context context) {
         super(context);
@@ -34,9 +37,10 @@ public class MainGamePanel extends SurfaceView implements
         getHolder().addCallback(this);
 
         // create holder for balloons
-        activeBalloons = new Vector<Balloon>();
-        poppedBalloons = new Vector<Balloon>();
+        activeGameObjects = new Vector<GameObject>();
+        poppedGameObjects = new Vector<GameObject>();
         rand = new Random();
+        counter = 0;
 
         // create the game loop thread
         thread = new MainThread(getHolder(), this);
@@ -76,11 +80,11 @@ public class MainGamePanel extends SurfaceView implements
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public synchronized boolean onTouchEvent(MotionEvent event) {
 
-        for(Balloon myBalloon : activeBalloons) {
-            if (myBalloon.handleTouch((int) event.getX(), (int) event.getY())) {
-                myBalloon.setPoppedImage(getResources());
+        for(GameObject gameObject : activeGameObjects) {
+            if (gameObject.handleTouch((int) event.getX(), (int) event.getY())) {
+                gameObject.setPoppedImage(getResources());
                 break;
             }
         }
@@ -89,37 +93,49 @@ public class MainGamePanel extends SurfaceView implements
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {
+    protected synchronized void onDraw(Canvas canvas) {
         // fills the canvas with black
         canvas.drawColor(Color.BLACK);
-        for(Balloon myBalloon : activeBalloons) {
-            myBalloon.draw(canvas);
+        for(GameObject gameObject : activeGameObjects) {
+            gameObject.draw(canvas);
         }
-        for(Balloon myBalloon : poppedBalloons) {
-            myBalloon.draw(canvas);
+        for(GameObject gameObject : poppedGameObjects) {
+            gameObject.draw(canvas);
         }
     }
 
-    public void update() {
+    public synchronized void update() {
+        counter++;
 
         //Handle Dead Balloons
-        poppedBalloons.removeAllElements();
+        poppedGameObjects.removeAllElements();
 
-        //Move Active Balloons
-        for(Balloon myBalloon : activeBalloons) {
-            if(myBalloon.isPopped()) {
-                poppedBalloons.add(myBalloon);
-                activeBalloons.remove(myBalloon);
+        //Move Active Balloons, remove popped balloons
+        for(int i=0; i < activeGameObjects.size(); i++) {
+            GameObject gameObject = activeGameObjects.get(i);
+
+            if(gameObject.isPopped() || gameObject.isOffScreen()) {
+                poppedGameObjects.add(gameObject);
+                activeGameObjects.remove(i);
             } else {
-                myBalloon.move();
+                gameObject.move(getWidth(), getHeight());
             }
         }
 
-        //Decide how many balloons to create (0 - 1)
-        int balloonChance = rand.nextInt(100);
+        // Only add new elements every 10th update
+        if(counter % 10 == 1 || activeGameObjects.size() == 0) {
+            //Odds of getting another balloon are 10 in 100
+            int randomSeed = rand.nextInt(100) + 1;
 
-        if(balloonChance < 10) {
-            activeBalloons.add(new Balloon(getResources(), getWidth() * balloonChance / 10 , getHeight(), -3 * balloonChance));
+            if (randomSeed < 10) {
+                activeGameObjects.add(new Balloon(getResources(), getWidth() * randomSeed / 10, getHeight(), -2 * randomSeed));
+            } else if (randomSeed < 19) {
+                activeGameObjects.add(new Droplet(getResources(), getWidth() * (randomSeed - 9) / 10, 0, randomSeed));
+            } else if (randomSeed < 29) {
+                activeGameObjects.add(new Ball(getResources(), getWidth(), 0, randomSeed, 2 * randomSeed));
+            }
+
+            Log.d(LOGGER, "Total number of objects is now:" + activeGameObjects.size());
         }
 
     }

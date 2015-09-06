@@ -45,10 +45,10 @@ public class MainThread extends Thread{
                     // draws the canvas on the panel
                     this.gamePanel.update();
                     this.gamePanel.onDraw(canvas);
-                    //sleep(17);
+                    sleep(17);
                 }
-            //} catch (InterruptedException e) {
-            //    Log.e(LOGGER, e.toString());
+            } catch (InterruptedException e) {
+                Log.e(LOGGER, e.toString());
             } finally {
                 // in case of an exception the surface is not left in
                 // an inconsistent state
