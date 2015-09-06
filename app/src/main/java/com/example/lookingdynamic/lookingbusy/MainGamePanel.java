@@ -12,6 +12,9 @@ import android.view.SurfaceView;
 
 import com.example.lookingdynamic.lookingbusy.model.Balloon;
 
+import java.util.Random;
+import java.util.Vector;
+
 /**
  * Created by swu on 9/5/2015.
  */
@@ -21,18 +24,22 @@ public class MainGamePanel extends SurfaceView implements
     private static final String LOGGER = MainGamePanel.class.getSimpleName();
 
     private MainThread thread;
-    private Balloon balloon;
+    private Vector<Balloon> activeBalloons;
+    private Vector<Balloon> poppedBalloons;
+    private Random rand;
 
     public MainGamePanel(Context context) {
         super(context);
         // adding the callback (this) to the surface holder to intercept events
         getHolder().addCallback(this);
 
-        // create droid and load bitmap
-        balloon = null;
+        // create holder for balloons
+        activeBalloons = new Vector<Balloon>();
+        poppedBalloons = new Vector<Balloon>();
+        rand = new Random();
 
-                // create the game loop thread
-                thread = new MainThread(getHolder(), this);
+        // create the game loop thread
+        thread = new MainThread(getHolder(), this);
 
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
@@ -71,30 +78,13 @@ public class MainGamePanel extends SurfaceView implements
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            // delegating event handling to the droid
-            balloon.handleActionDown((int)event.getX(), (int)event.getY());
-
-            // check if in the lower part of the screen we exit
-            if (event.getY() > getHeight() - 50) {
-                thread.setRunning(false);
-                ((Activity)getContext()).finish();
-            } else {
-                Log.d(LOGGER, "Coords: x=" + event.getX() + ",y=" + event.getY());
-            }
-        } if (event.getAction() == MotionEvent.ACTION_MOVE) {
-            // the gestures
-            if (balloon.isTouched()) {
-                // the droid was picked up and is being dragged
-                balloon.setX((int)event.getX());
-                balloon.setY((int)event.getY());
-            }
-        } if (event.getAction() == MotionEvent.ACTION_UP) {
-            // touch was released
-            if (balloon.isTouched()) {
-                balloon.setTouched(false);
+        for(Balloon myBalloon : activeBalloons) {
+            if (myBalloon.handleTouch((int) event.getX(), (int) event.getY())) {
+                myBalloon.setPoppedImage(getResources());
+                break;
             }
         }
+
         return true;
     }
 
@@ -102,15 +92,35 @@ public class MainGamePanel extends SurfaceView implements
     protected void onDraw(Canvas canvas) {
         // fills the canvas with black
         canvas.drawColor(Color.BLACK);
-        balloon.draw(canvas);
+        for(Balloon myBalloon : activeBalloons) {
+            myBalloon.draw(canvas);
+        }
+        for(Balloon myBalloon : poppedBalloons) {
+            myBalloon.draw(canvas);
+        }
     }
 
     public void update() {
 
-        if(balloon == null) {
-            balloon = new Balloon(getResources(), getWidth(), getHeight() / 2, -10);
+        //Handle Dead Balloons
+        poppedBalloons.removeAllElements();
+
+        //Move Active Balloons
+        for(Balloon myBalloon : activeBalloons) {
+            if(myBalloon.isPopped()) {
+                poppedBalloons.add(myBalloon);
+                activeBalloons.remove(myBalloon);
+            } else {
+                myBalloon.move();
+            }
         }
-        else balloon.move();
+
+        //Decide how many balloons to create (0 - 1)
+        int balloonChance = rand.nextInt(100);
+
+        if(balloonChance < 10) {
+            activeBalloons.add(new Balloon(getResources(), getWidth() * balloonChance / 10 , getHeight(), -3 * balloonChance));
+        }
 
     }
 

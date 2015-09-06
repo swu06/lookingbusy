@@ -48,7 +48,7 @@ public class MainThread extends Thread{
                     //sleep(17);
                 }
             //} catch (InterruptedException e) {
-              //  Log.e(LOGGER, e.toString());
+            //    Log.e(LOGGER, e.toString());
             } finally {
                 // in case of an exception the surface is not left in
                 // an inconsistent state

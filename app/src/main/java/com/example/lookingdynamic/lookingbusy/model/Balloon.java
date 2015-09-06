@@ -24,13 +24,25 @@ public class Balloon {
     private int xCoordinate;
     private int yCoordinate;
     private int velocity;       // Velocity is the number of pixels that will be moved each loop
-    private boolean touched;
+    private boolean isPopped;
 
     public Balloon(Resources resources, int xCoordinate, int yCoordinate, int velocity) {
-        this.bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.balloon);
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
+        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.balloon);
+        this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
+        this.yCoordinate = yCoordinate - bitmapImage.getHeight();
         this.velocity = velocity;
+        isPopped = false;
+    }
+
+    public void setPoppedImage(Resources resources) {
+        xCoordinate = xCoordinate + bitmapImage.getWidth() / 2;
+        yCoordinate = yCoordinate + bitmapImage.getHeight();
+
+        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.popped_balloon);
+
+        xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
+        yCoordinate = yCoordinate - bitmapImage.getHeight();
+
     }
 
     public Bitmap getBitmap() {
@@ -42,53 +54,26 @@ public class Balloon {
     public int getY() {
         return yCoordinate;
     }
-    public int getVelocity() {
-        return velocity;
+    public boolean isPopped() {
+        return isPopped;
     }
 
-    // Balloons only move horizontally
-    public void setX(int xCoordinate) {
-        this.xCoordinate = xCoordinate;
-    }
-
-    public void setY(int yCoordinate) {
-        this.yCoordinate = yCoordinate;
-    }
-
-    public boolean isTouched() { return touched; }
-    public void setTouched(boolean touched) {
-        this.touched = touched;
-    }
-
-
-
-    // This is too intelligent for a model
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmapImage, xCoordinate, yCoordinate, null);
-        Log.d(LOGGER, "Drawing balloon here: " + xCoordinate + ", " + yCoordinate);
     }
 
+    // Balloons only move vertically
     public void move() {
         yCoordinate = yCoordinate + velocity;
     }
 
-    /**
-     * Handles the {@link MotionEvent.ACTION_DOWN} event. If the event happens on the
-     * bitmap surface then the touched state is set to <code>true</code> otherwise to <code>false</code>
-     * @param eventX - the event's X coordinate
-     * @param eventY - the event's Y coordinate
-     */
-    public void handleActionDown(int eventX, int eventY) {
-        if (eventX >= (xCoordinate - bitmapImage.getWidth() / 2) && (eventX <= (xCoordinate + bitmapImage.getWidth()/2))) {
-            if (eventY >= (yCoordinate - bitmapImage.getHeight() / 2) && (yCoordinate <= (yCoordinate + bitmapImage.getHeight() / 2))) {
-                // droid touched
-                setTouched(true);
-            } else {
-                setTouched(false);
-            }
-        } else {
-            setTouched(false);
+    public boolean handleTouch(int eventX, int eventY) {
+
+        if (eventX >= (xCoordinate - bitmapImage.getWidth() / 2) && eventX <= (xCoordinate + bitmapImage.getWidth()/2)
+            && eventY >= (yCoordinate - bitmapImage.getHeight() / 2) && (yCoordinate <= (yCoordinate + bitmapImage.getHeight() / 2))) {
+            isPopped = true;
         }
 
+        return isPopped;
     }
 }
