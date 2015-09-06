@@ -4,6 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -30,22 +34,28 @@ public class MainGamePanel extends SurfaceView implements
     private Vector<PoppableObject> activePoppableObjects;
     private Vector<PoppableObject> poppedPoppableObjects;
     private GameStatistics stats;
-    private Paint whiteFont;
+    private TextPaint whiteFont;
     private Random rand;
     private int counter;
 
 
     public MainGamePanel(Context context) {
         super(context);
-        // adding the callback (this) to the surface holder to intercept events
+
+        setZOrderOnTop(true);
         getHolder().addCallback(this);
+        getHolder().setFormat(PixelFormat.TRANSPARENT);
 
         // create holder for balloons
         activePoppableObjects = new Vector<PoppableObject>();
         poppedPoppableObjects = new Vector<PoppableObject>();
         stats = new GameStatistics();
-        whiteFont = new Paint();
+
+        whiteFont = new TextPaint();
+        whiteFont.setTextSize(200);
+        whiteFont.setTextAlign(Paint.Align.CENTER);
         whiteFont.setColor(Color.WHITE);
+        whiteFont.setTypeface(Typeface.create("Arial", Typeface.BOLD));
         rand = new Random();
         counter = 0;
 
@@ -102,9 +112,9 @@ public class MainGamePanel extends SurfaceView implements
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         // fills the canvas with black
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-        canvas.drawText(stats.toString(), 0, 0, whiteFont);
+        canvas.drawText(stats.toString(), getWidth() / 2, 500, whiteFont);
         for(PoppableObject poppableObject : activePoppableObjects) {
             poppableObject.draw(canvas);
         }

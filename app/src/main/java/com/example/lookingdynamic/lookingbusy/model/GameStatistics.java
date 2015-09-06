@@ -22,7 +22,7 @@ public class GameStatistics {
     }
 
     public String toString(){
-        return "Lvl:" + level + ": " + score;
+        return "" + score;
     }
 
     public void levelUp(){
