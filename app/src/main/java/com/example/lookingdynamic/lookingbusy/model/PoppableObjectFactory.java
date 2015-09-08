@@ -1,33 +1,15 @@
 package com.example.lookingdynamic.lookingbusy.model;
 
+import android.content.res.Resources;
+
+import java.util.Random;
+
 /**
  * Created by swu on 9/6/2015.
  */
-public class GameStatistics {
+public class PoppableObjectFactory {
 
-    public int score;
-    public int level;
-
-    public GameStatistics() {
-        score = 0;
-        level = 0;
-    }
-
-    public void addToScore(int increase){
-        score = score + increase;
-    }
-
-    public int getScore(){
-        return score;
-    }
-
-    public String toString(){
-        return "" + score;
-    }
-
-    public void levelUp(){
-        level++;
-    }
+    private static Random rand = new Random();
 
     /*
     Level 1: All Balloons, all slow speed
@@ -59,4 +41,35 @@ public class GameStatistics {
                             40% Bouncy Balls - 50% fast speed, 50% super-fast speed
                             Double the number of items created
     */
+    public static PoppableObject generatePoppableObject(Resources resources, int width, int height) {
+
+        PoppableObject toReturn = null;
+
+        int chancOfReturningSomething = rand.nextInt(10);
+        if(chancOfReturningSomething != 1 ) return toReturn;
+
+        int randomType = rand.nextInt(10);
+        int randomLocation = rand.nextInt(9) + 1;
+        int randomSpeed = rand.nextInt(10) + 20;
+
+
+        if (randomType < 5) {
+            toReturn = new Balloon(resources, width * randomLocation / 10, height, -2 * randomSpeed);
+        } else if (randomType < 7) {
+            toReturn = new Droplet(resources, width * randomLocation / 10, randomSpeed);
+        } else if (randomType == 8) {
+            randomType = rand.nextInt(4);
+            if (randomType == 0) {
+                toReturn = new Ball(resources, 0, 0, 2 * randomSpeed, randomSpeed);
+            } else if (randomType == 1) {
+                toReturn = new Ball(resources, width, 0, -2 * randomSpeed, randomSpeed);
+            } else if (randomType == 2) {
+                toReturn = new Ball(resources, 0, width, 2 * randomSpeed, -1 * randomSpeed);
+            } else if (randomType == 3) {
+                toReturn = new Ball(resources, width, height, -2 * randomSpeed, -1 * randomSpeed);
+            }
+        } // Do nothing 1/10 times
+
+        return toReturn;
+    }
 }

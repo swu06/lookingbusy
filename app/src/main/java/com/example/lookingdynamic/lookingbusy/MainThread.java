@@ -29,6 +29,14 @@ public class MainThread extends Thread{
         this.gamePanel = gamePanel;
     }
 
+    public synchronized void updateSurfaceHolder(SurfaceHolder surfaceHolder) {
+        this.surfaceHolder = surfaceHolder;
+    }
+
+    public boolean isPaused() {
+        return !running;
+    }
+
     @Override
     public void run() {
         Canvas canvas;
@@ -40,11 +48,10 @@ public class MainThread extends Thread{
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
-                    // update game state
-                    // render state to the screen
-                    // draws the canvas on the panel
-                    this.gamePanel.update();
-                    this.gamePanel.onDraw(canvas);
+                    if(canvas != null) {
+                        this.gamePanel.update();
+                        this.gamePanel.onDraw(canvas);
+                    }
                     sleep(17);
                 }
             } catch (InterruptedException e) {

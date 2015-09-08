@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="gameplay_type_options">
+        <item>Relaxed</item>
+        <item>Challanging</item>
+    </string-array>
+
+    <string-array name="gameplay_type_values">
+        <item>Relaxed is selected</item>
+        <item>Challanging is selected</item>
+    </string-array>
+
+    <string-array name="game_theme_options">
+        <item>Crayon Theme</item>
+        <item>Sweets Theme</item>
+    </string-array>
+
+    <string-array name="game_theme_values">
+        <item>Crayon is selected</item>
+        <item>Sweets is selected</item>
+    </string-array>
+</resources>

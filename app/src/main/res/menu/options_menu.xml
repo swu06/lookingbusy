@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/gameplay_type"
+        android:title="@string/gameplay_type" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/relaxing_mode"
+                    android:title="@string/relaxing_mode" />
+                <item android:id="@+id/challanging_mode"
+                    android:title="@string/challanging_mode" />
+            </group>
+        </menu>
+    </item>
+
+    <item android:id="@+id/theme"
+        android:title="@string/theme" >
+        <menu>
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/sweets_theme"
+                    android:title="@string/sweets_theme" />
+                <item android:id="@+id/crayon_theme"
+                    android:title="@string/crayon_theme" />
+            </group>
+        </menu>
+    </item>
+</menu>

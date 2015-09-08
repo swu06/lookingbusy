@@ -1,43 +1,49 @@
 package com.example.lookingdynamic.lookingbusy;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextPaint;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.example.lookingdynamic.lookingbusy.model.Ball;
-import com.example.lookingdynamic.lookingbusy.model.Balloon;
-import com.example.lookingdynamic.lookingbusy.model.Droplet;
 import com.example.lookingdynamic.lookingbusy.model.PoppableObject;
 import com.example.lookingdynamic.lookingbusy.model.GameStatistics;
+import com.example.lookingdynamic.lookingbusy.model.PoppableObjectFactory;
 
-import java.util.Random;
 import java.util.Vector;
 
 /**
  * Created by swu on 9/5/2015.
  */
 public class MainGamePanel extends SurfaceView implements
-        SurfaceHolder.Callback {
+        SurfaceHolder.Callback,
+        GestureDetector.OnGestureListener,
+        GestureDetector.OnDoubleTapListener {
 
     private static final String LOGGER = MainGamePanel.class.getSimpleName();
 
     private MainThread thread;
+    private GestureDetectorCompat mDetector;
     private Vector<PoppableObject> activePoppableObjects;
     private Vector<PoppableObject> poppedPoppableObjects;
     private GameStatistics stats;
     private TextPaint whiteFont;
-    private Random rand;
-    private int counter;
-
+    private TextPaint blackOutline;
+    private Paint translucentPainter;
 
     public MainGamePanel(Context context) {
         super(context);
@@ -55,20 +61,34 @@ public class MainGamePanel extends SurfaceView implements
         whiteFont.setTextSize(200);
         whiteFont.setTextAlign(Paint.Align.CENTER);
         whiteFont.setColor(Color.WHITE);
-        whiteFont.setTypeface(Typeface.create("Arial", Typeface.BOLD));
-        rand = new Random();
-        counter = 0;
+        whiteFont.setTypeface(Typeface.DEFAULT_BOLD);
+        whiteFont.setAlpha(90);
+
+        blackOutline = new TextPaint();
+        blackOutline.setTextSize(200);
+        blackOutline.setTextAlign(Paint.Align.CENTER);
+        blackOutline.setColor(Color.BLACK);
+        blackOutline.setTypeface(Typeface.DEFAULT_BOLD);
+        blackOutline.setStyle(Paint.Style.STROKE);
+        blackOutline.setStrokeWidth(2);
+        blackOutline.setAlpha(90);
+
+        translucentPainter =  new Paint();
+        translucentPainter.setAlpha(90);
 
         // create the game loop thread
         thread = new MainThread(getHolder(), this);
 
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
+        mDetector = new GestureDetectorCompat(getContext(), this);
+        mDetector.setOnDoubleTapListener(this);
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
+        thread.updateSurfaceHolder(holder);
     }
 
     @Override
@@ -84,6 +104,7 @@ public class MainGamePanel extends SurfaceView implements
         Log.d(LOGGER, "Surface is being destroyed");
         // tell the thread to shut down and wait for it to finish
         // this is a clean shutdown
+        thread.setRunning(false);
         boolean retry = true;
         while (retry) {
             try {
@@ -98,15 +119,7 @@ public class MainGamePanel extends SurfaceView implements
 
     @Override
     public synchronized boolean onTouchEvent(MotionEvent event) {
-
-        for(PoppableObject poppableObject : activePoppableObjects) {
-            if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
-                poppableObject.setPoppedImage(getResources());
-                break;
-            }
-        }
-
-        return true;
+        return mDetector.onTouchEvent(event);
     }
 
     @Override
@@ -115,6 +128,10 @@ public class MainGamePanel extends SurfaceView implements
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         canvas.drawText(stats.toString(), getWidth() / 2, 500, whiteFont);
+        canvas.drawText(stats.toString(), getWidth() / 2, 500, blackOutline);
+
+        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pause), 100, 100, translucentPainter);
+
         for(PoppableObject poppableObject : activePoppableObjects) {
             poppableObject.draw(canvas);
         }
@@ -124,8 +141,6 @@ public class MainGamePanel extends SurfaceView implements
     }
 
     public synchronized void update() {
-        counter++;
-
         //Handle Dead Balloons
         poppedPoppableObjects.removeAllElements();
 
@@ -145,31 +160,99 @@ public class MainGamePanel extends SurfaceView implements
             }
         }
 
-        // Only add new elements every 10th update, or when there is nothing in play
-        if(counter % 10 == 1 || activePoppableObjects.size() == 0) {
-            //Odds of getting another balloon are 10 in 100
-            int randomType = rand.nextInt(10);
-            int randomLocation = rand.nextInt(9) +1;
-            int randomSpeed = rand.nextInt(10) + 20;
-
-            if (randomType < 5) {
-                activePoppableObjects.add(new Balloon(getResources(), getWidth() * randomLocation / 10, getHeight(), -2 * randomSpeed));
-            } else if (randomType < 7) {
-                activePoppableObjects.add(new Droplet(getResources(), getWidth() * randomLocation / 10, randomSpeed));
-            } else if (randomType == 8) {
-                randomType = rand.nextInt(4);
-                if (randomType == 0) {
-                    activePoppableObjects.add(new Ball(getResources(), 0, 0, 2 * randomSpeed, randomSpeed));
-                } else if (randomType == 1) {
-                    activePoppableObjects.add(new Ball(getResources(), getWidth(), 0, -2 * randomSpeed, randomSpeed));
-                } else if (randomType == 2) {
-                    activePoppableObjects.add(new Ball(getResources(), 0, getHeight(), 2 * randomSpeed, -1 * randomSpeed));
-                } else if (randomType == 3) {
-                    activePoppableObjects.add(new Ball(getResources(), getWidth(), getHeight(), -2 * randomSpeed, -1 * randomSpeed));
-                }
-            } // Do nothing 1/10 times
+        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(getResources(), getWidth(), getHeight());
+        if(toAdd != null) {
+            activePoppableObjects.add(toAdd);
         }
 
     }
 
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        Log.d(LOGGER, "onSingleTapConfirmed detected!");
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent event) {
+        if(event.getX() >= 100 && event.getY() >= 100 &&
+                event.getX() <= 150 && event.getY() <= 150) {
+            pause();
+        }
+
+        Log.d(LOGGER, "Double-tap detected!");
+        return false;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        Log.d(LOGGER, "Double-tap event detected!");
+        return true;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent event) {
+        Log.d(LOGGER, "onDown detected!");
+        if(thread.isPaused()) {
+            unpause();
+        }
+        for(PoppableObject poppableObject : activePoppableObjects) {
+            if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
+                poppableObject.setPoppedImage(getResources());
+                break;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        Log.d(LOGGER, "onSingleTapUp detected!");
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        Log.d(LOGGER, "onFling detected!");
+        return false;
+    }
+
+    public void pause() {
+
+        thread.setRunning(false);
+        CharSequence colors[] = new CharSequence[] {"red", "green", "blue", "black"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Pause Menu");
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(LOGGER, "MenuClick Detected!, which: " + which);
+                // the user clicked on colors[which]
+            }
+
+        });
+        builder.show();
+    }
+
+    public void unpause() {
+        thread.setRunning(true);
+        thread.resume();
+
+    }
 }

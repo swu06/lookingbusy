@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="@string/look_and_feel"
+        android:summary="@string/look_and_feel_long" >
+        <ListPreference
+            android:title="@string/gameplay_type"
+            android:summary="@string/gameplay_type_long"
+            android:key="gameplay_type_pref"
+            android:entries="@array/gameplay_type_options"
+            android:entryValues="@array/gameplay_type_values"
+            android:defaultValue="Relaxed is selected"/>
+        <ListPreference
+            android:title="@string/game_theme"
+            android:summary="@string/game_theme_long"
+            android:key="game_theme_pref"
+            android:entries="@array/game_theme_options"
+            android:entryValues="@array/game_theme_values"
+            android:defaultValue="Crayon is selected"/>
+    </PreferenceCategory>
+
+
+
+</PreferenceScreen>
