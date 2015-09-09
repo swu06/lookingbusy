@@ -1,10 +1,8 @@
 package com.example.lookingdynamic.lookingbusy;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,14 +25,16 @@ import com.example.lookingdynamic.lookingbusy.model.PoppableObjectFactory;
 import java.util.Vector;
 
 /**
+ * Welcome to The Game!  This SurfaceView is the view for this game.  It also doubles
+ * as a controller for now, but that may change as I figure it out!
  * Created by swu on 9/5/2015.
  */
-public class MainGamePanel extends SurfaceView implements
+public class PopAllTheThingsGame extends SurfaceView implements
         SurfaceHolder.Callback,
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener {
 
-    private static final String LOGGER = MainGamePanel.class.getSimpleName();
+    private static final String LOGGER = PopAllTheThingsGame.class.getSimpleName();
 
     private MainThread thread;
     private GestureDetectorCompat mDetector;
@@ -45,7 +45,11 @@ public class MainGamePanel extends SurfaceView implements
     private TextPaint blackOutline;
     private Paint translucentPainter;
 
-    public MainGamePanel(Context context) {
+    /*
+     * Creating the game is all about creating variables
+     * and giving them things to hold.  It's the boss!
+     */
+    public PopAllTheThingsGame(Context context) {
         super(context);
 
         setZOrderOnTop(true);
@@ -83,6 +87,31 @@ public class MainGamePanel extends SurfaceView implements
         setFocusable(true);
         mDetector = new GestureDetectorCompat(getContext(), this);
         mDetector.setOnDoubleTapListener(this);
+    }
+
+    public void pause() {
+
+        thread.onPause();
+        CharSequence colors[] = new CharSequence[] {"red", "green", "blue", "black"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Pause Menu");
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(LOGGER, "MenuClick Detected!, which: " + which);
+                // the user clicked on colors[which]
+            }
+
+        });
+        builder.show();
+    }
+
+    public void resume() {
+        if(thread.isPaused()) {
+            thread.onResume();
+        }
+
     }
 
     @Override
@@ -194,7 +223,7 @@ public class MainGamePanel extends SurfaceView implements
     public boolean onDown(MotionEvent event) {
         Log.d(LOGGER, "onDown detected!");
         if(thread.isPaused()) {
-            unpause();
+            resume();
         }
         for(PoppableObject poppableObject : activePoppableObjects) {
             if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
@@ -232,27 +261,5 @@ public class MainGamePanel extends SurfaceView implements
         return false;
     }
 
-    public void pause() {
 
-        thread.setRunning(false);
-        CharSequence colors[] = new CharSequence[] {"red", "green", "blue", "black"};
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Pause Menu");
-        builder.setItems(colors, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(LOGGER, "MenuClick Detected!, which: " + which);
-                // the user clicked on colors[which]
-            }
-
-        });
-        builder.show();
-    }
-
-    public void unpause() {
-        thread.setRunning(true);
-        thread.resume();
-
-    }
 }

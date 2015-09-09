@@ -11,22 +11,25 @@ public class MainThread extends Thread{
 
     private static final String LOGGER = MainThread.class.getSimpleName();
 
-    // Surface holder that can access the physical surface
     private SurfaceHolder surfaceHolder;
-    // The actual view that handles inputs
-    // and draws to the surface
-    private MainGamePanel gamePanel;
+    private PopAllTheThingsGame gamePanel;
 
     // flag to hold game state
     private boolean running;
+    private Object pauseLock;
+    private boolean paused;
+
     public void setRunning(boolean running) {
         this.running = running;
     }
 
-    public MainThread(SurfaceHolder surfaceHolder, MainGamePanel gamePanel) {
+    public MainThread(SurfaceHolder surfaceHolder, PopAllTheThingsGame gamePanel) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
+        pauseLock = new Object();
+        paused = true;
+        running = false;
     }
 
     public synchronized void updateSurfaceHolder(SurfaceHolder surfaceHolder) {
@@ -34,7 +37,7 @@ public class MainThread extends Thread{
     }
 
     public boolean isPaused() {
-        return !running;
+        return paused;
     }
 
     @Override
@@ -42,9 +45,17 @@ public class MainThread extends Thread{
         Canvas canvas;
         Log.d(LOGGER, "Starting game loop");
         while (running) {
+
+            synchronized (pauseLock) {
+                while (paused) {
+                    try {
+                        pauseLock.wait();
+                    } catch (InterruptedException e) {
+                    }
+                }
+            }
+
             canvas = null;
-            // try locking the canvas for exclusive pixel editing
-            // in the surface
             try {
                 canvas = this.surfaceHolder.lockCanvas();
                 synchronized (surfaceHolder) {
@@ -52,17 +63,29 @@ public class MainThread extends Thread{
                         this.gamePanel.update();
                         this.gamePanel.onDraw(canvas);
                     }
-                    sleep(17);
                 }
+                sleep(17);
             } catch (InterruptedException e) {
-                Log.e(LOGGER, e.toString());
+                Log.e(LOGGER, "Sleep interrupted" + e.toString());
             } finally {
-                // in case of an exception the surface is not left in
-                // an inconsistent state
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }
-            }	// end finally
+            }
+        }
+        Log.d(LOGGER, "Completed Running Thread");
+    }
+
+    public void onPause() {
+        synchronized (pauseLock) {
+            paused = true;
+        }
+    }
+
+    public void onResume() {
+        synchronized (pauseLock) {
+            paused = false;
+            pauseLock.notifyAll();
         }
     }
 }
