@@ -36,7 +36,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     private static final String LOGGER = PopAllTheThingsGame.class.getSimpleName();
 
-    private MainThread thread;
+    private GameThread thread;
     private GestureDetectorCompat mDetector;
     private Vector<PoppableObject> activePoppableObjects;
     private Vector<PoppableObject> poppedPoppableObjects;
@@ -81,7 +81,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         translucentPainter.setAlpha(90);
 
         // create the game loop thread
-        thread = new MainThread(getHolder(), this);
+        thread = new GameThread(getHolder(), this);
 
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
@@ -101,6 +101,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
             public void onClick(DialogInterface dialog, int which) {
                 Log.d(LOGGER, "MenuClick Detected!, which: " + which);
                 // the user clicked on colors[which]
+                resume();
             }
 
         });
@@ -108,7 +109,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void resume() {
-        if(thread.isPaused()) {
+        if(thread.isPausedFlagIsSet()) {
             thread.onResume();
         }
 
@@ -124,8 +125,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public void surfaceCreated(SurfaceHolder holder) {
         // at this point the surface is created and
         // we can safely start the game loop
-        thread.setRunning(true);
-        thread.start();
+        thread.onStart();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         Log.d(LOGGER, "Surface is being destroyed");
         // tell the thread to shut down and wait for it to finish
         // this is a clean shutdown
-        thread.setRunning(false);
+        thread.onStop();
         boolean retry = true;
         while (retry) {
             try {
@@ -222,9 +222,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
     @Override
     public boolean onDown(MotionEvent event) {
         Log.d(LOGGER, "onDown detected!");
-        if(thread.isPaused()) {
-            resume();
-        }
         for(PoppableObject poppableObject : activePoppableObjects) {
             if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
                 poppableObject.setPoppedImage(getResources());

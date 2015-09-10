@@ -7,9 +7,9 @@ import android.view.SurfaceHolder;
 /**
  * Created by swu on 9/5/2015.
  */
-public class MainThread extends Thread{
+public class GameThread extends Thread implements Runnable{
 
-    private static final String LOGGER = MainThread.class.getSimpleName();
+    private static final String LOGGER = GameThread.class.getSimpleName();
 
     private SurfaceHolder surfaceHolder;
     private PopAllTheThingsGame gamePanel;
@@ -17,18 +17,16 @@ public class MainThread extends Thread{
     // flag to hold game state
     private boolean running;
     private Object pauseLock;
-    private boolean paused;
+    private boolean pausedFlagIsSet;
+    private boolean inPausedState;
 
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
-    public MainThread(SurfaceHolder surfaceHolder, PopAllTheThingsGame gamePanel) {
+    public GameThread(SurfaceHolder surfaceHolder, PopAllTheThingsGame gamePanel) {
         super();
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
         pauseLock = new Object();
-        paused = true;
+        pausedFlagIsSet = true;
+        inPausedState = false;
         running = false;
     }
 
@@ -36,25 +34,35 @@ public class MainThread extends Thread{
         this.surfaceHolder = surfaceHolder;
     }
 
-    public boolean isPaused() {
-        return paused;
-    }
+    public boolean isPausedFlagIsSet() { return pausedFlagIsSet; }
+    public boolean isInPausedState() { return inPausedState; }
 
+    /*
+     * This is the main loop for the game. It handles the two main calls:
+     * update and draw, while occasionally watching for pauses.  It also
+     * has a 17 ms sleep to make the movement more fluid
+     */
     @Override
     public void run() {
         Canvas canvas;
-        Log.d(LOGGER, "Starting game loop");
+        Log.d(LOGGER, "Starting the game");
         while (running) {
 
+            // This synchronized block handles pausing
             synchronized (pauseLock) {
-                while (paused) {
+                while (pausedFlagIsSet) {
+                    inPausedState = true;
+                    Log.d(LOGGER, "Game is pausedFlagIsSet");
                     try {
                         pauseLock.wait();
                     } catch (InterruptedException e) {
                     }
+                    inPausedState = false;
+                    Log.d(LOGGER, "Game is unpaused");
                 }
             }
 
+            // This are the two commands run to keep the game moving: update and draw
             canvas = null;
             try {
                 canvas = this.surfaceHolder.lockCanvas();
@@ -73,19 +81,32 @@ public class MainThread extends Thread{
                 }
             }
         }
-        Log.d(LOGGER, "Completed Running Thread");
+        Log.d(LOGGER, "Completed the game");
     }
 
     public void onPause() {
         synchronized (pauseLock) {
-            paused = true;
+            pausedFlagIsSet = true;
         }
+        Log.d(LOGGER, "Game is pausing");
     }
 
     public void onResume() {
         synchronized (pauseLock) {
-            paused = false;
+            pausedFlagIsSet = false;
             pauseLock.notifyAll();
         }
+        Log.d(LOGGER, "Game is unpausing");
+    }
+
+    public void onStart() {
+        running = true;
+        this.start();
+        Log.d(LOGGER, "Game is starting");
+    }
+
+    public void onStop() {
+        running = false;
+        Log.d(LOGGER, "Game is stopping");
     }
 }
