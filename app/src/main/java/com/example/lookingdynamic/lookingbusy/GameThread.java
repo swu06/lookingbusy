@@ -17,6 +17,7 @@ public class GameThread extends Thread implements Runnable{
     // flag to hold game state
     private boolean running;
     private Object pauseLock;
+    private Object sleepLock;
     private boolean pausedFlagIsSet;
     private boolean inPausedState;
 
@@ -25,13 +26,16 @@ public class GameThread extends Thread implements Runnable{
         this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
         pauseLock = new Object();
+        sleepLock = new Object();
         pausedFlagIsSet = true;
         inPausedState = false;
         running = false;
     }
 
-    public synchronized void updateSurfaceHolder(SurfaceHolder surfaceHolder) {
-        this.surfaceHolder = surfaceHolder;
+    public void updateSurfaceHolder(SurfaceHolder surfaceHolder) {
+        synchronized (surfaceHolder) {
+            this.surfaceHolder = surfaceHolder;
+        }
     }
 
     public boolean isPausedFlagIsSet() { return pausedFlagIsSet; }
@@ -49,18 +53,7 @@ public class GameThread extends Thread implements Runnable{
         while (running) {
 
             // This synchronized block handles pausing
-            synchronized (pauseLock) {
-                while (pausedFlagIsSet) {
-                    inPausedState = true;
-                    Log.d(LOGGER, "Game is pausedFlagIsSet");
-                    try {
-                        pauseLock.wait();
-                    } catch (InterruptedException e) {
-                    }
-                    inPausedState = false;
-                    Log.d(LOGGER, "Game is unpaused");
-                }
-            }
+            checkAndHandlePause();
 
             // This are the two commands run to keep the game moving: update and draw
             canvas = null;
@@ -69,12 +62,17 @@ public class GameThread extends Thread implements Runnable{
                 synchronized (surfaceHolder) {
                     if(canvas != null) {
                         this.gamePanel.update();
+                    }
+                }
+
+                checkAndHandlePause();
+
+                synchronized (surfaceHolder) {
+                    if(canvas != null) {
                         this.gamePanel.onDraw(canvas);
                     }
                 }
-                sleep(17);
-            } catch (InterruptedException e) {
-                Log.e(LOGGER, "Sleep interrupted" + e.toString());
+                waitUnlessNeeded(17);
             } finally {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);
@@ -82,6 +80,36 @@ public class GameThread extends Thread implements Runnable{
             }
         }
         Log.d(LOGGER, "Completed the game");
+    }
+
+    private void checkAndHandlePause() {
+        synchronized (pauseLock) {
+            while (pausedFlagIsSet) {
+                inPausedState = true;
+                Log.d(LOGGER, "Game is pausedFlagIsSet");
+                try {
+                    pauseLock.wait();
+                } catch (InterruptedException e) {
+                }
+                inPausedState = false;
+                Log.d(LOGGER, "Game is unpaused");
+            }
+        }
+    }
+
+    private void waitUnlessNeeded(int time) {
+        synchronized (sleepLock) {
+            try {
+                sleepLock.wait(time);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    public void wakeIfSleeping() {
+        synchronized (pauseLock) {
+            pauseLock.notifyAll();
+        }
     }
 
     public void onPause() {

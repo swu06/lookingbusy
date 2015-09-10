@@ -17,6 +17,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.ListAdapter;
 
 import com.example.lookingdynamic.lookingbusy.model.PoppableObject;
 import com.example.lookingdynamic.lookingbusy.model.GameStatistics;
@@ -44,6 +45,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private TextPaint whiteFont;
     private TextPaint blackOutline;
     private Paint translucentPainter;
+    private MenuManager menuManager;
 
     /*
      * Creating the game is all about creating variables
@@ -83,6 +85,8 @@ public class PopAllTheThingsGame extends SurfaceView implements
         // create the game loop thread
         thread = new GameThread(getHolder(), this);
 
+        menuManager = new MenuManager(getContext());
+
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
         mDetector = new GestureDetectorCompat(getContext(), this);
@@ -92,18 +96,23 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public void pause() {
 
         thread.onPause();
-        CharSequence colors[] = new CharSequence[] {"red", "green", "blue", "black"};
+
+        menuManager.showPausedMenu(this);
+    }
+
+    private void showPausedMenu() {
+        final String [] items = new String[] {"Themes", "GamePlay", "Restart Game", "Continue Current Game"};
+        final Integer[] icons = new Integer[] {R.drawable.popped_balloon, R.drawable.popped_droplet, R.drawable.popped_balloon, R.drawable.popped_droplet};
+        ListAdapter adapter = new ArrayAdapterWithIcons(getContext(), items, icons);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Pause Menu");
-        builder.setItems(colors, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Log.d(LOGGER, "MenuClick Detected!, which: " + which);
-                // the user clicked on colors[which]
+        builder.setIcon(R.drawable.popped_ball);
+        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                Log.d(LOGGER, "MenuClick Detected!, item# " + item);
                 resume();
             }
-
         });
         builder.show();
     }
@@ -205,7 +214,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     @Override
     public boolean onDoubleTap(MotionEvent event) {
         if(event.getX() >= 100 && event.getY() >= 100 &&
-                event.getX() <= 150 && event.getY() <= 150) {
+                event.getX() <= 150 && event.getY() <= 200) {
             pause();
         }
 
@@ -225,6 +234,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         for(PoppableObject poppableObject : activePoppableObjects) {
             if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
                 poppableObject.setPoppedImage(getResources());
+                thread.wakeIfSleeping();
                 break;
             }
         }
