@@ -38,7 +38,7 @@ public class MenuManager {
             public void onClick(DialogInterface dialog, int item) {
                 if(item == 0) {
                     showGamePlayMenu(game);
-                } else if(item == 3) {
+                } else if(item == 4) {
                     game.resume();
                 }
                 Log.d(LOGGER, "MenuClick Detected!, item# " + item);
@@ -68,7 +68,7 @@ public class MenuManager {
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, gamePlayMenuLabels, gamePlayMenuIcons);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(myContext);
-        builder.setTitle("Game Play Options");
+        builder.setTitle("Themes Options");
         builder.setIcon(R.drawable.popped_ball);
         builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {

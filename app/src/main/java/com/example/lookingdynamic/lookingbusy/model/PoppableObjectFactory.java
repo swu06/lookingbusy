@@ -2,6 +2,8 @@ package com.example.lookingdynamic.lookingbusy.model;
 
 import android.content.res.Resources;
 
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+
 import java.util.Random;
 
 /**
@@ -41,7 +43,7 @@ public class PoppableObjectFactory {
                             40% Bouncy Balls - 50% fast speed, 50% super-fast speed
                             Double the number of items created
     */
-    public static PoppableObject generatePoppableObject(Resources resources, int width, int height) {
+    public static PoppableObject generatePoppableObject(GameTheme theme, int width, int height) {
 
         PoppableObject toReturn = null;
 
@@ -54,19 +56,19 @@ public class PoppableObjectFactory {
 
 
         if (randomType < 5) {
-            toReturn = new Balloon(resources, width * randomLocation / 10, height, -2 * randomSpeed);
+            toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * randomSpeed);
         } else if (randomType < 7) {
-            toReturn = new Droplet(resources, width * randomLocation / 10, randomSpeed);
+            toReturn = new Droplet(theme, width * randomLocation / 10, randomSpeed);
         } else if (randomType == 8) {
             randomType = rand.nextInt(4);
             if (randomType == 0) {
-                toReturn = new Ball(resources, 0, 0, 2 * randomSpeed, randomSpeed);
+                toReturn = new Ball(theme, 0, 0, 2 * randomSpeed, randomSpeed);
             } else if (randomType == 1) {
-                toReturn = new Ball(resources, width, 0, -2 * randomSpeed, randomSpeed);
+                toReturn = new Ball(theme, width, 0, -2 * randomSpeed, randomSpeed);
             } else if (randomType == 2) {
-                toReturn = new Ball(resources, 0, width, 2 * randomSpeed, -1 * randomSpeed);
+                toReturn = new Ball(theme, 0, width, 2 * randomSpeed, -1 * randomSpeed);
             } else if (randomType == 3) {
-                toReturn = new Ball(resources, width, height, -2 * randomSpeed, -1 * randomSpeed);
+                toReturn = new Ball(theme, width, height, -2 * randomSpeed, -1 * randomSpeed);
             }
         } // Do nothing 1/10 times
 

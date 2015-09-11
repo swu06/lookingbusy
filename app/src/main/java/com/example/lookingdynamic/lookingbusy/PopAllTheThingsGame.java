@@ -22,6 +22,8 @@ import android.widget.ListAdapter;
 import com.example.lookingdynamic.lookingbusy.model.PoppableObject;
 import com.example.lookingdynamic.lookingbusy.model.GameStatistics;
 import com.example.lookingdynamic.lookingbusy.model.PoppableObjectFactory;
+import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 import java.util.Vector;
 
@@ -46,6 +48,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private TextPaint blackOutline;
     private Paint translucentPainter;
     private MenuManager menuManager;
+    private GameTheme theme;
 
     /*
      * Creating the game is all about creating variables
@@ -86,6 +89,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         thread = new GameThread(getHolder(), this);
 
         menuManager = new MenuManager(getContext());
+        theme = new CrayonGameTheme(getResources());
 
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
@@ -168,7 +172,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         canvas.drawText(stats.toString(), getWidth() / 2, 500, whiteFont);
         canvas.drawText(stats.toString(), getWidth() / 2, 500, blackOutline);
 
-        canvas.drawBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.pause), 100, 100, translucentPainter);
+        canvas.drawBitmap(theme.getPausedSign(), 100, 100, translucentPainter);
 
         for(PoppableObject poppableObject : activePoppableObjects) {
             poppableObject.draw(canvas);
@@ -187,7 +191,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
             PoppableObject poppableObject = activePoppableObjects.get(i);
 
             if(poppableObject.isPopped()) {
-                stats.addToScore(poppableObject.getValue());
+                stats.addToScore(poppableObject.getScoreValue());
                 poppedPoppableObjects.add(poppableObject);
                 activePoppableObjects.remove(i);
             } else if(poppableObject.isOffScreen()) {
@@ -198,7 +202,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
             }
         }
 
-        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(getResources(), getWidth(), getHeight());
+        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(theme, getWidth(), getHeight());
         if(toAdd != null) {
             activePoppableObjects.add(toAdd);
         }
@@ -233,7 +237,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         Log.d(LOGGER, "onDown detected!");
         for(PoppableObject poppableObject : activePoppableObjects) {
             if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
-                poppableObject.setPoppedImage(getResources());
+                poppableObject.setPoppedImage(theme);
                 thread.wakeIfSleeping();
                 break;
             }

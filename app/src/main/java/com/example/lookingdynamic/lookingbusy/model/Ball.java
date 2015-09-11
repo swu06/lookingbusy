@@ -1,9 +1,11 @@
 package com.example.lookingdynamic.lookingbusy.model;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.example.lookingdynamic.lookingbusy.R;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 /**
  *
@@ -17,8 +19,8 @@ public class Ball extends PoppableObject {
     private static final String LOGGER = Ball.class.getSimpleName();
     public static final int VALUE = 50;
 
-    public Ball(Resources resources, int xCoordinate, int yCoordinate, int xVelocity, int yVelocity) {
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.ball);
+    public Ball(GameTheme theme, int xCoordinate, int yCoordinate, int xVelocity, int yVelocity) {
+        bitmapImage = theme.getBall();
         this.xCoordinate = xCoordinate;
         if(this.xCoordinate > 0 ) {
             this.xCoordinate = this.xCoordinate - bitmapImage.getWidth();
@@ -33,8 +35,18 @@ public class Ball extends PoppableObject {
         offScreen = false;
     }
 
-    public void setPoppedImage(Resources resources) {
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.popped_ball);
+    @Override
+    public void setTheme(GameTheme theme) {
+        if(popped == false) {
+            bitmapImage = theme.getBall();
+        } else {
+            bitmapImage = theme.getPoppedBall();
+        }
+    }
+
+    @Override
+    public Bitmap getPoppedImage(GameTheme theme) {
+        return theme.getPoppedBall();
     }
 
     // Balls bounce off walls
@@ -57,7 +69,7 @@ public class Ball extends PoppableObject {
     }
 
     @Override
-    public int getValue() {
-        return VALUE;
+    public int getScoreValue() {
+        return 30;
     }
 }

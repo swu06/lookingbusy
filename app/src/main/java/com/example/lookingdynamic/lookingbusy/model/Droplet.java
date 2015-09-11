@@ -1,9 +1,11 @@
 package com.example.lookingdynamic.lookingbusy.model;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.example.lookingdynamic.lookingbusy.R;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 /**
  *
@@ -17,8 +19,8 @@ public class Droplet extends PoppableObject {
     private static final String LOGGER = Droplet.class.getSimpleName();
     public static final int VALUE = 15;
 
-    public Droplet(Resources resources, int xCoordinate, int yVelocity) {
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.droplet);
+    public Droplet(GameTheme theme, int xCoordinate, int yVelocity) {
+        bitmapImage = theme.getDroplet();
         this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
         this.yCoordinate = 0;
         this.yVelocity = yVelocity;
@@ -26,16 +28,20 @@ public class Droplet extends PoppableObject {
         offScreen = false;
     }
 
-    public void setPoppedImage(Resources resources) {
-        xCoordinate = xCoordinate + bitmapImage.getWidth() / 2;
-        yCoordinate = yCoordinate + bitmapImage.getHeight();
-
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.popped_droplet);
-
-        xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
-        yCoordinate = yCoordinate - bitmapImage.getHeight();
-
+    @Override
+    public void setTheme(GameTheme theme) {
+        if(popped == false) {
+            bitmapImage = theme.getDroplet();
+        } else {
+            bitmapImage = theme.getPoppedDroplet();
+        }
     }
+
+    @Override
+    public Bitmap getPoppedImage(GameTheme theme) {
+        return theme.getPoppedDroplet();
+    }
+
 
     // Droplets only move vertically
     public void move(int viewWidth, int viewHeight) {
@@ -46,7 +52,8 @@ public class Droplet extends PoppableObject {
     }
 
     @Override
-    public int getValue() {
-        return VALUE;
+    public int getScoreValue() {
+        return 15;
     }
+
 }

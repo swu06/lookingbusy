@@ -1,9 +1,11 @@
 package com.example.lookingdynamic.lookingbusy.model;
 
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.example.lookingdynamic.lookingbusy.R;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 /**
  *
@@ -17,8 +19,8 @@ public class Balloon extends PoppableObject {
     private static final String LOGGER = Balloon.class.getSimpleName();
     public static final int VALUE = 10;
 
-    public Balloon(Resources resources, int xCoordinate, int yCoordinate, int yVelocity) {
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.balloon);
+    public Balloon(GameTheme theme, int xCoordinate, int yCoordinate, int yVelocity) {
+        bitmapImage = theme.getBalloon();
         this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
         this.yCoordinate = yCoordinate - bitmapImage.getHeight();
         this.yVelocity = yVelocity;
@@ -26,15 +28,18 @@ public class Balloon extends PoppableObject {
         offScreen = false;
     }
 
-    public void setPoppedImage(Resources resources) {
-        xCoordinate = xCoordinate + bitmapImage.getWidth() / 2;
-        yCoordinate = yCoordinate + bitmapImage.getHeight();
+    @Override
+    public void setTheme(GameTheme theme) {
+        if(popped == false) {
+            bitmapImage = theme.getBalloon();
+        } else {
+            bitmapImage = theme.getPoppedBalloon();
+        }
+    }
 
-        bitmapImage = BitmapFactory.decodeResource(resources, R.drawable.popped_balloon);
-
-        xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
-        yCoordinate = yCoordinate - bitmapImage.getHeight();
-
+    @Override
+    public Bitmap getPoppedImage(GameTheme theme) {
+        return theme.getPoppedBalloon();
     }
 
     // Balloons only move vertically
@@ -45,7 +50,8 @@ public class Balloon extends PoppableObject {
         }
     }
 
-    public int getValue() {
-        return VALUE;
+    @Override
+    public int getScoreValue() {
+        return 10;
     }
 }

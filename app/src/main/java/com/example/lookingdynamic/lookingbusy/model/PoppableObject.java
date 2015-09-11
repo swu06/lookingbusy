@@ -2,7 +2,11 @@ package com.example.lookingdynamic.lookingbusy.model;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+
+import com.example.lookingdynamic.lookingbusy.R;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 /**
  * Created by swu on 9/6/2015.
@@ -36,8 +40,20 @@ public abstract class PoppableObject {
         return popped;
     }
 
-    abstract public void setPoppedImage(Resources resources);
+    public void setPoppedImage(GameTheme theme) {
+        xCoordinate = xCoordinate + bitmapImage.getWidth() / 2;
+        yCoordinate = yCoordinate + bitmapImage.getHeight();
+
+        bitmapImage = getPoppedImage(theme);
+
+        xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
+        yCoordinate = yCoordinate - bitmapImage.getHeight();
+
+    }
+
+    abstract public void setTheme(GameTheme theme);
+    abstract public Bitmap getPoppedImage(GameTheme theme);
     abstract public void move(int viewWidth, int viewHeight);
-    abstract public int getValue();
+    abstract public int getScoreValue();
 
 }
