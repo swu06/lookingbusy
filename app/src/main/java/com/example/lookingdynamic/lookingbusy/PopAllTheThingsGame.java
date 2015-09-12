@@ -15,9 +15,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.example.lookingdynamic.lookingbusy.model.PoppableObject;
-import com.example.lookingdynamic.lookingbusy.model.GameStatistics;
-import com.example.lookingdynamic.lookingbusy.model.PoppableObjectFactory;
+import com.example.lookingdynamic.lookingbusy.gameobjects.PoppableObject;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
+import com.example.lookingdynamic.lookingbusy.gameobjects.PoppableObjectFactory;
 import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
 import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
@@ -45,6 +45,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private Paint translucentPainter;
     private MenuManager menuManager;
     private GameTheme theme;
+    private boolean justStarted;
 
     /*
      * Creating the game is all about creating variables
@@ -60,7 +61,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         // create holder for balloons
         activePoppableObjects = new Vector<PoppableObject>();
         poppedPoppableObjects = new Vector<PoppableObject>();
-        stats = new GameStatistics();
+        stats = new GameStatistics(GameStatistics.CHALLANGING_MODE);
 
         whiteFont = new TextPaint();
         whiteFont.setTextSize(200);
@@ -86,6 +87,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
         menuManager = new MenuManager(getContext());
         theme = new CrayonGameTheme(getResources());
+        justStarted = true;
 
         // make the GamePanel focusable so it can handle events
         setFocusable(true);
@@ -181,11 +183,12 @@ public class PopAllTheThingsGame extends SurfaceView implements
             }
         }
 
-        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(theme, getWidth(), getHeight());
+        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(theme, stats.getLevel(), getWidth(), getHeight(), justStarted);
         if(toAdd != null) {
             activePoppableObjects.add(toAdd);
         }
 
+        justStarted = false;
     }
 
     @Override
