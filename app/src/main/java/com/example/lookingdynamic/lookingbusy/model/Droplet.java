@@ -20,8 +20,7 @@ public class Droplet extends PoppableObject {
     public static final int VALUE = 15;
 
     public Droplet(GameTheme theme, int xCoordinate, int yVelocity) {
-        bitmapImage = theme.getDroplet();
-        this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
+        this.xCoordinate = xCoordinate - getImage(theme).getWidth() / 2;
         this.yCoordinate = 0;
         this.yVelocity = yVelocity;
         popped = false;
@@ -29,24 +28,19 @@ public class Droplet extends PoppableObject {
     }
 
     @Override
-    public void setTheme(GameTheme theme) {
-        if(popped == false) {
-            bitmapImage = theme.getDroplet();
-        } else {
+    public Bitmap getImage(GameTheme theme) {
+        Bitmap bitmapImage = theme.getDroplet();
+        if(popped == true) {
             bitmapImage = theme.getPoppedDroplet();
         }
-    }
 
-    @Override
-    public Bitmap getPoppedImage(GameTheme theme) {
-        return theme.getPoppedDroplet();
+        return bitmapImage;
     }
-
 
     // Droplets only move vertically
-    public void move(int viewWidth, int viewHeight) {
+    public void move(GameTheme theme, int viewWidth, int viewHeight) {
         yCoordinate = yCoordinate + yVelocity;
-        if (yCoordinate - bitmapImage.getHeight() >= viewHeight) {
+        if (yCoordinate - getImage(theme).getHeight() >= viewHeight) {
             offScreen = true;
         }
     }

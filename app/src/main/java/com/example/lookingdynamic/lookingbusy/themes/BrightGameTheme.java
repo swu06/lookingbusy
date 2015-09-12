@@ -9,17 +9,17 @@ import com.example.lookingdynamic.lookingbusy.R;
 /**
  * Created by swu on 9/10/2015.
  */
-public class CrayonGameTheme implements GameTheme {
+public class BrightGameTheme implements GameTheme {
 
-    private static final String NAME = "Crayon Theme";
-    private static final int BALL_IMAGE = R.drawable.crayon_ball;
-    private static final int BALLOON_IMAGE = R.drawable.crayon_balloon;
-    private static final int DROPLET_IMAGE = R.drawable.crayon_droplet;
-    private static final int POPPED_BALL_IMAGE = R.drawable.crayon_popped_ball;
-    private static final int POPPED_BALLOON_IMAGE = R.drawable.crayon_popped_balloon;
-    private static final int POPPED_DROPLET_IMAGE = R.drawable.crayon_popped_droplet;
-    private static final int PAUSED_SIGN_IMAGE = R.drawable.crayon_pause;
-    private static final int ICON_IMAGE = R.drawable.crayon_icon;
+    private static final String NAME = "Bright Theme";
+    private static final int BALL_IMAGE = R.drawable.bright_ball;
+    private static final int BALLOON_IMAGE = R.drawable.bright_balloon;
+    private static final int DROPLET_IMAGE = R.drawable.bright_droplet;
+    private static final int POPPED_BALL_IMAGE = R.drawable.bright_popped_ball;
+    private static final int POPPED_BALLOON_IMAGE = R.drawable.bright_popped_balloon;
+    private static final int POPPED_DROPLET_IMAGE = R.drawable.bright_popped_droplet;
+    private static final int PAUSED_SIGN_IMAGE = R.drawable.bright_pause;
+    private static final int ICON_IMAGE = R.drawable.bright_icon;
 
     private Bitmap ball;
     private Bitmap balloon;
@@ -30,7 +30,7 @@ public class CrayonGameTheme implements GameTheme {
     private Bitmap paused_sign;
     private Bitmap icon;
 
-    public CrayonGameTheme(Resources myResources) {
+    public BrightGameTheme(Resources myResources) {
         ball = BitmapFactory.decodeResource(myResources, BALL_IMAGE);
         balloon = BitmapFactory.decodeResource(myResources, BALLOON_IMAGE);
         droplet = BitmapFactory.decodeResource(myResources, DROPLET_IMAGE);

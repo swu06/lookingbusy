@@ -5,7 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListAdapter;
+
+import com.example.lookingdynamic.lookingbusy.themes.BrightGameTheme;
+import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
 
 /**
  * Created by swu on 9/10/2015.
@@ -14,14 +20,14 @@ public class MenuManager {
 
     private static final String LOGGER = MenuManager.class.getSimpleName();
 
-    private static final String [] pausedMenuLabels = new String[] {"Themes", "GamePlay", };
-    private static final Integer[] pausedMenuIcons = new Integer[] {R.drawable.icon, R.drawable.ic_insert_emoticon_black_24dp};
+    private static final String [] pausedMenuLabels = new String[] {"Themes", "GamePlay"};
+    private static final Integer[] pausedMenuIcons = new Integer[] {R.drawable.crayon_icon, R.drawable.ic_insert_emoticon_black_24dp};
 
     private static final String [] gamePlayMenuLabels = new String[] {"Relaxing", "Challanging"};
     private static final Integer[] gamePlayMenuIcons = new Integer[] {R.drawable.ic_insert_emoticon_black_24dp, R.drawable.ic_verified_user_black_24dp};
 
-    private static final String [] themeMenuLabels = new String[] {"Crayon", "Other Thing"};
-    private static final Integer[] themeMenuIcons = new Integer[] {R.drawable.icon, R.drawable.icon2};
+    private static final String [] themeMenuLabels = new String[] {"Crayon Theme", "Bright Theme"};
+    private static final Integer[] themeMenuIcons = new Integer[] {R.drawable.crayon_icon, R.drawable.bright_icon};
 
 
     private Context myContext;
@@ -29,27 +35,33 @@ public class MenuManager {
         this.myContext = myContext;
     }
 
-    public void showPausedMenu(final PopAllTheThingsGame game) {
+    public void showPauseMenu(final PopAllTheThingsGame game) {
+        pausedMenuIcons[0] = game.getTheme().getIconImageId();
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_item, pausedMenuLabels, pausedMenuIcons);
 
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Pause Menu");
-        builder.setIcon(R.drawable.ic_pause_black_24dp);
-        builder.setPositiveButton("Start New Game", null);
-        builder.setNegativeButton("Continue Game", null);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Start New Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.d(LOGGER, "Restart Button Clicked: Starting a new game");
+                game.resume();
+            }
+        });
+        builder.setNegativeButton("Continue Game", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.d(LOGGER, "Continue Button Clicked: Continuing with current game");
+                game.resume();
+            }
+        });
+        builder.setSingleChoiceItems(adapter, -1, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (item == 0) {
                     showThemeMenu(game);
                 } else if (item == 1) {
                     showGamePlayMenu(game);
-                } else if (item == 2) {
-                    dialog.dismiss();
-                    game.resume();
-                } else if (item == 3) {
-                    dialog.dismiss();
-                    game.resume();
                 }
                 Log.d(LOGGER, "MenuClick Detected!, item# " + item);
 
@@ -63,18 +75,19 @@ public class MenuManager {
 
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Game Play Options");
-        builder.setIcon(R.drawable.ic_toys_black_24dp);
         builder.setPositiveButton("OK", null);
         builder.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "MenuClick Detected!, item# " + item);
-                if(item == 2){
-                    dialog.dismiss();
-                    showPausedMenu(game);
+                if (item == 0) {
+
+                } else if (item == 1) {
+
                 }
             }
         });
         builder.show();
+
     }
 
     public void showThemeMenu(final PopAllTheThingsGame game) {
@@ -82,14 +95,16 @@ public class MenuManager {
 
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Themes Options");
-        builder.setIcon(R.drawable.ic_insert_emoticon_black_24dp);
-        builder.setPositiveButton("OK",null);
+        builder.setPositiveButton("OK", null);
         builder.setSingleChoiceItems(adapter, 1, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "MenuClick Detected!, item# " + item);
-                if(item == 2){
-                    dialog.dismiss();
-                    showPausedMenu(game);
+                if(item == 0) {
+                    game.setTheme(new CrayonGameTheme(game.getResources()));
+                } if(item == 1) {
+                    game.setTheme(new BrightGameTheme(game.getResources()));
+                } else if(item == 2){
+                    showThemeMenu(game);
                 }
             }
         });

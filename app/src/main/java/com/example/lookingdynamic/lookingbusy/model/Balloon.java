@@ -20,7 +20,7 @@ public class Balloon extends PoppableObject {
     public static final int VALUE = 10;
 
     public Balloon(GameTheme theme, int xCoordinate, int yCoordinate, int yVelocity) {
-        bitmapImage = theme.getBalloon();
+        Bitmap bitmapImage = getImage(theme);
         this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
         this.yCoordinate = yCoordinate - bitmapImage.getHeight();
         this.yVelocity = yVelocity;
@@ -29,23 +29,19 @@ public class Balloon extends PoppableObject {
     }
 
     @Override
-    public void setTheme(GameTheme theme) {
-        if(popped == false) {
-            bitmapImage = theme.getBalloon();
-        } else {
+    public Bitmap getImage(GameTheme theme) {
+        Bitmap bitmapImage = theme.getBalloon();
+        if(popped == true) {
             bitmapImage = theme.getPoppedBalloon();
         }
-    }
 
-    @Override
-    public Bitmap getPoppedImage(GameTheme theme) {
-        return theme.getPoppedBalloon();
+        return bitmapImage;
     }
 
     // Balloons only move vertically
-    public void move(int viewWidth, int viewHeight) {
+    public void move(GameTheme theme, int viewWidth, int viewHeight) {
         yCoordinate = yCoordinate + yVelocity;
-        if (yCoordinate + bitmapImage.getHeight() <= 0) {
+        if (yCoordinate + getImage(theme).getHeight() <= 0) {
             offScreen = true;
         }
     }

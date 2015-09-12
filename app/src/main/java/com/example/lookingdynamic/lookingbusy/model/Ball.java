@@ -20,7 +20,7 @@ public class Ball extends PoppableObject {
     public static final int VALUE = 50;
 
     public Ball(GameTheme theme, int xCoordinate, int yCoordinate, int xVelocity, int yVelocity) {
-        bitmapImage = theme.getBall();
+        Bitmap bitmapImage = getImage(theme);
         this.xCoordinate = xCoordinate;
         if(this.xCoordinate > 0 ) {
             this.xCoordinate = this.xCoordinate - bitmapImage.getWidth();
@@ -36,24 +36,20 @@ public class Ball extends PoppableObject {
     }
 
     @Override
-    public void setTheme(GameTheme theme) {
-        if(popped == false) {
-            bitmapImage = theme.getBall();
-        } else {
+    public Bitmap getImage(GameTheme theme) {
+        Bitmap bitmapImage = theme.getBall();
+        if(popped == true) {
             bitmapImage = theme.getPoppedBall();
         }
-    }
 
-    @Override
-    public Bitmap getPoppedImage(GameTheme theme) {
-        return theme.getPoppedBall();
+        return bitmapImage;
     }
 
     // Balls bounce off walls
-    public void move(int viewWidth, int viewHeight) {
+    public void move(GameTheme theme, int viewWidth, int viewHeight) {
         // Check to see if we are against a wall
         if(xCoordinate < 0
-                || xCoordinate + bitmapImage.getWidth() > viewWidth) {
+                || xCoordinate + getImage(theme).getWidth() > viewWidth) {
             xVelocity = xVelocity * -1;
         }
 

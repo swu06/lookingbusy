@@ -13,7 +13,6 @@ import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
  */
 public abstract class PoppableObject {
 
-    protected Bitmap bitmapImage;
     protected int xCoordinate;
     protected int yCoordinate;
     protected int xVelocity;
@@ -28,10 +27,12 @@ public abstract class PoppableObject {
     public boolean isOffScreen() {
         return offScreen;
     }
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(bitmapImage, xCoordinate, yCoordinate, null);
+    public void draw(GameTheme theme, Canvas canvas) {
+        Bitmap bitmapImage = getImage(theme);
+        canvas.drawBitmap(getImage(theme), xCoordinate, yCoordinate, null);
     }
-    public boolean handleTouch(int eventX, int eventY) {
+    public boolean handleTouch(GameTheme theme, int eventX, int eventY) {
+        Bitmap bitmapImage = getImage(theme);
         if (eventX >= (xCoordinate - bitmapImage.getWidth() / 2) && eventX <= (xCoordinate + bitmapImage.getWidth()/2)
                 && eventY >= (yCoordinate - bitmapImage.getHeight() / 2) && (yCoordinate <= (yCoordinate + bitmapImage.getHeight() / 2))) {
             popped = true;
@@ -40,20 +41,8 @@ public abstract class PoppableObject {
         return popped;
     }
 
-    public void setPoppedImage(GameTheme theme) {
-        xCoordinate = xCoordinate + bitmapImage.getWidth() / 2;
-        yCoordinate = yCoordinate + bitmapImage.getHeight();
-
-        bitmapImage = getPoppedImage(theme);
-
-        xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
-        yCoordinate = yCoordinate - bitmapImage.getHeight();
-
-    }
-
-    abstract public void setTheme(GameTheme theme);
-    abstract public Bitmap getPoppedImage(GameTheme theme);
-    abstract public void move(int viewWidth, int viewHeight);
+    abstract public Bitmap getImage(GameTheme theme);
+    abstract public void move(GameTheme theme, int viewWidth, int viewHeight);
     abstract public int getScoreValue();
 
 }

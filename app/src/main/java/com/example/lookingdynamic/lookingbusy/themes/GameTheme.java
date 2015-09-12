@@ -18,5 +18,7 @@ public interface GameTheme {
     public Bitmap getPoppedDroplet();
     public Bitmap getPausedSign();
     public Bitmap getIcon();
+    public String getName();
+    public int getIconImageId();
 
 }

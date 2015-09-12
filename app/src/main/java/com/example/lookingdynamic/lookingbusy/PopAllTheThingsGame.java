@@ -1,9 +1,6 @@
 package com.example.lookingdynamic.lookingbusy;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -17,7 +14,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.ListAdapter;
 
 import com.example.lookingdynamic.lookingbusy.model.PoppableObject;
 import com.example.lookingdynamic.lookingbusy.model.GameStatistics;
@@ -101,7 +97,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
         thread.onPause();
 
-        menuManager.showPausedMenu(this);
+        menuManager.showPauseMenu(this);
     }
 
     public void resume() {
@@ -158,10 +154,10 @@ public class PopAllTheThingsGame extends SurfaceView implements
         canvas.drawBitmap(theme.getPausedSign(), 100, 100, translucentPainter);
 
         for(PoppableObject poppableObject : activePoppableObjects) {
-            poppableObject.draw(canvas);
+            poppableObject.draw(theme, canvas);
         }
         for(PoppableObject poppableObject : poppedPoppableObjects) {
-            poppableObject.draw(canvas);
+            poppableObject.draw(theme, canvas);
         }
     }
 
@@ -181,7 +177,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
                 stats.addToScore(-1);
                 activePoppableObjects.remove(i);
             } else {
-                poppableObject.move(getWidth(), getHeight());
+                poppableObject.move(theme, getWidth(), getHeight());
             }
         }
 
@@ -219,8 +215,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public boolean onDown(MotionEvent event) {
         Log.d(LOGGER, "onDown detected!");
         for(PoppableObject poppableObject : activePoppableObjects) {
-            if (poppableObject.handleTouch((int) event.getX(), (int) event.getY())) {
-                poppableObject.setPoppedImage(theme);
+            if (poppableObject.handleTouch(theme, (int) event.getX(), (int) event.getY())) {
                 thread.wakeIfSleeping();
                 break;
             }
@@ -256,4 +251,11 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
 
+    public GameTheme getTheme() {
+        return theme;
+    }
+
+    public void setTheme(GameTheme theme) {
+        this.theme = theme;
+    }
 }
