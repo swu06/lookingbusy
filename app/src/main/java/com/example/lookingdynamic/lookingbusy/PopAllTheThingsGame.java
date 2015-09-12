@@ -104,23 +104,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
         menuManager.showPausedMenu(this);
     }
 
-    private void showPausedMenu() {
-        final String [] items = new String[] {"Themes", "GamePlay", "Restart Game", "Continue Current Game"};
-        final Integer[] icons = new Integer[] {R.drawable.popped_balloon, R.drawable.popped_droplet, R.drawable.popped_balloon, R.drawable.popped_droplet};
-        ListAdapter adapter = new ArrayAdapterWithIcons(getContext(), items, icons);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Pause Menu");
-        builder.setIcon(R.drawable.popped_ball);
-        builder.setAdapter(adapter, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                Log.d(LOGGER, "MenuClick Detected!, item# " + item);
-                resume();
-            }
-        });
-        builder.show();
-    }
-
     public void resume() {
         if(thread.isPausedFlagIsSet()) {
             thread.onResume();
