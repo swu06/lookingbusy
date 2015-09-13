@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListAdapter;
 
+import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
 import com.example.lookingdynamic.lookingbusy.themes.BrightGameTheme;
 import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
 
@@ -76,13 +77,13 @@ public class MenuManager {
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Game Play Options");
         builder.setPositiveButton("OK", null);
-        builder.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(adapter, game.getGamePlayMode(), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "MenuClick Detected!, item# " + item);
-                if (item == 0) {
-
-                } else if (item == 1) {
-
+                if (item == GameStatistics.RELAXING_MODE) {
+                    game.setGamePlayMode(GameStatistics.RELAXING_MODE);
+                } else if (item == GameStatistics.CHALLANGING_MODE) {
+                    game.setGamePlayMode(GameStatistics.CHALLANGING_MODE);
                 }
             }
         });
@@ -93,10 +94,14 @@ public class MenuManager {
     public void showThemeMenu(final PopAllTheThingsGame game) {
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_singlechoice, themeMenuLabels, themeMenuIcons);
 
+        int currentTheme = 0;
+        if(game.getTheme().getName().equals("Bright Theme")) {
+            currentTheme = 1;
+        }
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Themes Options");
         builder.setPositiveButton("OK", null);
-        builder.setSingleChoiceItems(adapter, 1, new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(adapter, currentTheme, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "MenuClick Detected!, item# " + item);
                 if(item == 0) {

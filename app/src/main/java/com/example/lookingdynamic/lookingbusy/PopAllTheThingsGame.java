@@ -98,7 +98,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public void pause() {
 
         thread.onPause();
-
         menuManager.showPauseMenu(this);
     }
 
@@ -120,6 +119,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         // at this point the surface is created and
         // we can safely start the game loop
         thread.onStart();
+        resume();
     }
 
     @Override
@@ -260,5 +260,12 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     public void setTheme(GameTheme theme) {
         this.theme = theme;
+    }
+    public void setGamePlayMode(int mode) {
+        stats.setMode(mode);
+    }
+
+    public int getGamePlayMode() {
+        return stats.getMode();
     }
 }

@@ -11,20 +11,20 @@ import java.util.Random;
 /**
  * Created by swu on 9/12/2015.
  */
-public class LevelingGuide {
+public class LevelGuide {
     private static Random rand = new Random();
-    private static int SLOW_SPEED = 10;
-    private static int MEDIUM_SPEED = 20;
-    private static int FAST_SPEED = 30;
-    private static int SUPER_FAST_SPEED = 40;
+    private static int SLOW_SPEED = 40;
+    private static int MEDIUM_SPEED = 60;
+    private static int FAST_SPEED = 80;
+    private static int SUPER_FAST_SPEED = 100;
 
     public static boolean shouldCreateObject(int level){
         boolean createObject = false;
         int chanceOfReturningSomething = rand.nextInt(10);
         // Early levels have a 1 in 10 chance of making something new
         // Later levels have a 2in 10 chance of making something new
-        if(level < 7 && chanceOfReturningSomething < 1 ||
-                level >= 7 && chanceOfReturningSomething <= 1) {
+        if(level < 7 && chanceOfReturningSomething < 2 ||
+                level >= 7 && chanceOfReturningSomething < 4) {
             createObject = true;
         }
 
@@ -65,7 +65,7 @@ public class LevelingGuide {
                 case 1:
                 case 2:
                 case 3:
-                    toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * speed);
+                    toReturn = new Balloon(theme, width * randomLocation / 10, height, -1 * speed);
                     break;
                 case 4:
                 case 5:
@@ -82,7 +82,7 @@ public class LevelingGuide {
             }
         } else if(level == 1) {
             // Level 1 (100 points):    All Balloons, all slow speed
-            toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * SLOW_SPEED);
+            toReturn = new Balloon(theme, width * randomLocation / 10, height, -1 * SLOW_SPEED);
         } else if(level == 2) {
             //Level 2 (200 points):    100% Balloons - 50% at medium speed, 50% slow speed
             int speed = MEDIUM_SPEED;
@@ -97,24 +97,25 @@ public class LevelingGuide {
                     break;
             }
             toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * speed);
-        }
+        } else {
 
-        if (randomType < 5) {
-            toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * randomSpeed);
-        } else if (randomType < 7) {
-            toReturn = new Droplet(theme, width * randomLocation / 10, randomSpeed);
-        } else if (randomType == 8) {
-            randomType = rand.nextInt(4);
-            if (randomType == 0) {
-                toReturn = new Ball(theme, 0, 0, 2 * randomSpeed, randomSpeed);
-            } else if (randomType == 1) {
-                toReturn = new Ball(theme, width, 0, -2 * randomSpeed, randomSpeed);
-            } else if (randomType == 2) {
-                toReturn = new Ball(theme, 0, width, 2 * randomSpeed, -1 * randomSpeed);
-            } else if (randomType == 3) {
-                toReturn = new Ball(theme, width, height, -2 * randomSpeed, -1 * randomSpeed);
+            if (randomType < 5) {
+                toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * randomSpeed);
+            } else if (randomType < 7) {
+                toReturn = new Droplet(theme, width * randomLocation / 10, randomSpeed);
+            } else if (randomType == 8) {
+                randomType = rand.nextInt(4);
+                if (randomType == 0) {
+                    toReturn = new Ball(theme, 0, 0, 2 * randomSpeed, randomSpeed);
+                } else if (randomType == 1) {
+                    toReturn = new Ball(theme, width, 0, -2 * randomSpeed, randomSpeed);
+                } else if (randomType == 2) {
+                    toReturn = new Ball(theme, 0, width, 2 * randomSpeed, -1 * randomSpeed);
+                } else if (randomType == 3) {
+                    toReturn = new Ball(theme, width, height, -2 * randomSpeed, -1 * randomSpeed);
+                }
             }
-        } // Do nothing 1/10 times
+        }
 
         return toReturn;
     }

@@ -44,7 +44,7 @@ public class GameStatistics {
         if(mode == CHALLANGING_MODE) {
             scoreString = level + ": " + score;
         }
-        return "" + score;
+        return scoreString;
     }
 
     private void levelUp(){
@@ -53,6 +53,12 @@ public class GameStatistics {
     }
 
     public int getLevel() {
-        return level;
+        int levelToReturn;
+        if(mode == CHALLANGING_MODE) {
+            levelToReturn = level;
+        } else {
+            levelToReturn = 0;
+        }
+        return levelToReturn;
     }
 }

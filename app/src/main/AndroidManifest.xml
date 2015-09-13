@@ -12,15 +12,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_looking_busy" >
         </activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".LookingBusyActivity"
-            android:theme="@style/Theme.AppCompat" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.lookingdynamic.lookingbusy.LookingBusyActivity" />
-        </activity>
     </application>
 
 </manifest>
