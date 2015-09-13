@@ -1,6 +1,10 @@
 package com.example.lookingdynamic.lookingbusy.gameobjects;
 
+import android.graphics.Bitmap;
 import android.test.ActivityTestCase;
+
+import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 /**
  *
@@ -8,10 +12,12 @@ import android.test.ActivityTestCase;
  */
 public class BallTest extends ActivityTestCase {
 
+    public GameTheme theme = new CrayonGameTheme(getInstrumentation().getTargetContext().getResources());
+
     public void testCreateBall(){
         Ball testBall = new Ball(null, 0, 0, 0, 0);
 
-        assertNull(testBall.bitmapImage);
+        assertNull(testBall.getImage(theme));
         assertEquals(0, testBall.xCoordinate);
         assertEquals(0, testBall.yCoordinate);
         assertEquals(0, testBall.xVelocity);
@@ -21,10 +27,10 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testCreateBallAwayFromXOrigin(){
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 1, 0, 0, 0);
+        Ball testBall = new Ball(theme, 1, 0, 0, 0);
 
-        assertNotNull(testBall.bitmapImage);
-        assertTrue(1 < testBall.bitmapImage.getWidth());
+        assertNotNull(testBall.getImage(theme));
+        assertTrue(1 < testBall.getImage(theme).getWidth());
         assertTrue(0 > testBall.xCoordinate);
         assertEquals(0, testBall.yCoordinate);
         assertEquals(0, testBall.xVelocity);
@@ -34,10 +40,10 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testCreateBallAwayFromYOrigin(){
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 0, 1, 0, 0);
+        Ball testBall = new Ball(theme, 0, 1, 0, 0);
 
-        assertNotNull(testBall.bitmapImage);
-        assertTrue(1 < testBall.bitmapImage.getHeight());
+        assertNotNull(testBall.getImage(theme));
+        assertTrue(1 < testBall.getImage(theme).getHeight());
         assertEquals(0, testBall.xCoordinate);
         assertTrue(1 > testBall.yCoordinate);
         assertEquals(0, testBall.xVelocity);
@@ -46,17 +52,10 @@ public class BallTest extends ActivityTestCase {
         assertFalse(testBall.offScreen);
     }
 
-    public void testSetPoppedImage() {
-        Ball testBall = new Ball(null, 0, 0, 0, 0);
-        testBall.setPoppedImage(getInstrumentation().getTargetContext().getResources());
-
-        assertNotNull(testBall.bitmapImage);
-    }
-
     public void testMove() {
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 0, 0, 1, 1);
+        Ball testBall = new Ball(theme, 0, 0, 1, 1);
 
-        testBall.move(1000, 1000);
+        testBall.move(theme, 1000, 1000);
 
         assertEquals(1, testBall.xCoordinate);
         assertEquals(1, testBall.yCoordinate);
@@ -69,7 +68,7 @@ public class BallTest extends ActivityTestCase {
     public void testMoveBounceOffLeft() {
         Ball testBall = new Ball(null, -1, 0, -1, 1);
 
-        testBall.move(1000, 1000);
+        testBall.move(theme, 1000, 1000);
 
         assertEquals(0, testBall.xCoordinate);
         assertEquals(1, testBall.yCoordinate);
@@ -80,11 +79,11 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testMoveBounceOffRight() {
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 100, 0, 1, 1);
+        Ball testBall = new Ball(theme, 100, 0, 1, 1);
 
-        int initialLocation = 100 - testBall.bitmapImage.getWidth();
+        int initialLocation = 100 - testBall.getImage(theme).getWidth();
 
-        testBall.move(1, 1000);
+        testBall.move(theme, 1, 1000);
 
         assertEquals(initialLocation - 1, testBall.xCoordinate);
         assertEquals(1, testBall.yCoordinate);
@@ -95,9 +94,9 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testMoveFallOffTop() {
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 0, 0, 1, -1);
+        Ball testBall = new Ball(theme, 0, 0, 1, -1);
 
-        testBall.move(1000, 1000);
+        testBall.move(theme, 1000, 1000);
 
         assertEquals(1, testBall.xCoordinate);
         assertEquals(-1, testBall.yCoordinate);
@@ -108,11 +107,11 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testMoveFallOffBottom() {
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 0, 100, 1, 1);
+        Ball testBall = new Ball(theme, 0, 100, 1, 1);
 
-        int initialLocation = 100 - testBall.bitmapImage.getHeight();
+        int initialLocation = 100 - testBall.getImage(theme).getHeight();
 
-        testBall.move(1000, initialLocation - 1);
+        testBall.move(theme, 1000, initialLocation - 1);
 
         assertEquals(1, testBall.xCoordinate);
         assertEquals(initialLocation + 1, testBall.yCoordinate);
@@ -123,7 +122,7 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testIsOffScreen() {
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 0, 100, 1, 1);
+        Ball testBall = new Ball(theme, 0, 100, 1, 1);
 
         testBall.offScreen = true;
         assertTrue(testBall.isOffScreen());
@@ -132,7 +131,7 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testPopped() {
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 0, 100, 1, 1);
+        Ball testBall = new Ball(theme, 0, 100, 1, 1);
 
         testBall.popped = true;
         assertTrue(testBall.isPopped());
@@ -141,8 +140,8 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testHandleTouch() {
-        Ball testBall = new Ball(getInstrumentation().getTargetContext().getResources(), 0, 0, 0, 0);
-        testBall.handleTouch(0, 0);
+        Ball testBall = new Ball(theme, 0, 0, 0, 0);
+        testBall.handleTouch(theme, 0, 0);
 
         assertTrue(testBall.popped);
     }

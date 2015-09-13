@@ -9,7 +9,7 @@ import com.example.lookingdynamic.lookingbusy.R;
 /**
  * Created by swu on 9/10/2015.
  */
-public class BrightGameTheme implements GameTheme {
+public class BrightGameTheme extends GameTheme {
 
     private static final String NAME = "Bright Theme";
     private static final int BALL_IMAGE = R.drawable.bright_ball;
@@ -72,13 +72,8 @@ public class BrightGameTheme implements GameTheme {
     }
 
     @Override
-    public Bitmap getPausedSign() {
+    public Bitmap getPauseSign() {
         return paused_sign;
-    }
-
-    @Override
-    public Bitmap getIcon() {
-        return icon;
     }
 
     @Override

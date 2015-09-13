@@ -9,7 +9,7 @@ import com.example.lookingdynamic.lookingbusy.R;
 /**
  * Created by swu on 9/10/2015.
  */
-public class CrayonGameTheme implements GameTheme {
+public class CrayonGameTheme extends GameTheme {
 
     private static final String NAME = "Crayon Theme";
     private static final int BALL_IMAGE = R.drawable.crayon_ball;
@@ -72,13 +72,8 @@ public class CrayonGameTheme implements GameTheme {
     }
 
     @Override
-    public Bitmap getPausedSign() {
+    public Bitmap getPauseSign() {
         return paused_sign;
-    }
-
-    @Override
-    public Bitmap getIcon() {
-        return icon;
     }
 
     @Override

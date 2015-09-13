@@ -44,7 +44,8 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private TextPaint blackOutline;
     private Paint translucentPainter;
     private MenuManager menuManager;
-    private GameTheme theme;
+    private GameTheme themes[];
+    private int currentTheme;
     private boolean justStarted;
 
     /*
@@ -86,7 +87,10 @@ public class PopAllTheThingsGame extends SurfaceView implements
         thread = new GameThread(getHolder(), this);
 
         menuManager = new MenuManager(getContext());
-        theme = new CrayonGameTheme(getResources());
+
+        // Load all available themes
+        loadAvailableThemes();
+        currentTheme = 0;
         justStarted = true;
 
         // make the GamePanel focusable so it can handle events
@@ -94,6 +98,28 @@ public class PopAllTheThingsGame extends SurfaceView implements
         mDetector = new GestureDetectorCompat(getContext(), this);
         mDetector.setOnDoubleTapListener(this);
     }
+
+    public void loadAvailableThemes(){
+        String[] availableThemesArray = getResources().getStringArray(R.array.available_game_themes);
+        themes = new GameTheme[availableThemesArray.length];
+
+        for(int i=0; i < availableThemesArray.length; i++) {
+            themes[i] = new GameTheme(getResources(), availableThemesArray[i]);
+        }
+    }
+
+    public GameTheme[] getThemes() {
+        return themes;
+    }
+
+    public int getCurrentThemeID() {
+        return currentTheme;
+    }
+
+    public GameTheme getCurrentTheme() {
+        return themes[currentTheme];
+    }
+
 
     public void pause() {
 
@@ -153,13 +179,13 @@ public class PopAllTheThingsGame extends SurfaceView implements
         canvas.drawText(stats.toString(), getWidth() / 2, 500, whiteFont);
         canvas.drawText(stats.toString(), getWidth() / 2, 500, blackOutline);
 
-        canvas.drawBitmap(theme.getPausedSign(), 100, 100, translucentPainter);
+        canvas.drawBitmap(themes[currentTheme].getPauseSign(), 100, 100, translucentPainter);
 
         for(PoppableObject poppableObject : activePoppableObjects) {
-            poppableObject.draw(theme, canvas);
+            poppableObject.draw(themes[currentTheme], canvas);
         }
         for(PoppableObject poppableObject : poppedPoppableObjects) {
-            poppableObject.draw(theme, canvas);
+            poppableObject.draw(themes[currentTheme], canvas);
         }
     }
 
@@ -179,11 +205,11 @@ public class PopAllTheThingsGame extends SurfaceView implements
                 stats.addToScore(-1);
                 activePoppableObjects.remove(i);
             } else {
-                poppableObject.move(theme, getWidth(), getHeight());
+                poppableObject.move(themes[currentTheme], getWidth(), getHeight());
             }
         }
 
-        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(theme, stats.getLevel(), getWidth(), getHeight(), justStarted);
+        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(themes[currentTheme], stats.getLevel(), getWidth(), getHeight(), justStarted);
         if(toAdd != null) {
             activePoppableObjects.add(toAdd);
         }
@@ -218,7 +244,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public boolean onDown(MotionEvent event) {
         Log.d(LOGGER, "onDown detected!");
         for(PoppableObject poppableObject : activePoppableObjects) {
-            if (poppableObject.handleTouch(theme, (int) event.getX(), (int) event.getY())) {
+            if (poppableObject.handleTouch(themes[currentTheme], (int) event.getX(), (int) event.getY())) {
                 thread.wakeIfSleeping();
                 break;
             }
@@ -254,12 +280,20 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
 
-    public GameTheme getTheme() {
-        return theme;
+    public int getTheme() {
+        return currentTheme;
     }
 
-    public void setTheme(GameTheme theme) {
-        this.theme = theme;
+    /*
+     * This method switches between themes.  Whenever a new theme is selected, the old theme
+     * should be cleaned up to save memory
+     */
+    public void setTheme(int theme) {
+        if(theme != currentTheme)  {
+            themes[currentTheme].unloadImages();
+            currentTheme = theme;
+        }
+
     }
     public void setGamePlayMode(int mode) {
         stats.setMode(mode);

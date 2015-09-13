@@ -13,6 +13,7 @@ import android.widget.ListAdapter;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
 import com.example.lookingdynamic.lookingbusy.themes.BrightGameTheme;
 import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 /**
  * Created by swu on 9/10/2015.
@@ -27,9 +28,6 @@ public class MenuManager {
     private static final String [] gamePlayMenuLabels = new String[] {"Relaxing", "Challanging"};
     private static final Integer[] gamePlayMenuIcons = new Integer[] {R.drawable.ic_insert_emoticon_black_24dp, R.drawable.ic_verified_user_black_24dp};
 
-    private static final String [] themeMenuLabels = new String[] {"Crayon Theme", "Bright Theme"};
-    private static final Integer[] themeMenuIcons = new Integer[] {R.drawable.crayon_icon, R.drawable.bright_icon};
-
 
     private Context myContext;
     public MenuManager(Context myContext) {
@@ -37,7 +35,7 @@ public class MenuManager {
     }
 
     public void showPauseMenu(final PopAllTheThingsGame game) {
-        pausedMenuIcons[0] = game.getTheme().getIconImageId();
+        pausedMenuIcons[0] = game.getCurrentTheme().getIconImageId();
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_item, pausedMenuLabels, pausedMenuIcons);
 
         AlertDialog.Builder builder = getDialog(myContext);
@@ -92,27 +90,27 @@ public class MenuManager {
     }
 
     public void showThemeMenu(final PopAllTheThingsGame game) {
+        GameTheme[] themes =  game.getThemes();
+        String [] themeMenuLabels = new String[themes.length];
+        Integer[] themeMenuIcons = new Integer[themes.length];
+
+        for(int i=0; i < themes.length; i++){
+            themeMenuLabels[i] = themes[i].getName();
+            themeMenuIcons[i] = themes[i].getIconImageId();
+        }
+
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_singlechoice, themeMenuLabels, themeMenuIcons);
 
-        int currentTheme = 0;
-        if(game.getTheme().getName().equals("Bright Theme")) {
-            currentTheme = 1;
-        }
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Themes Options");
-        builder.setPositiveButton("OK", null);
-        builder.setSingleChoiceItems(adapter, currentTheme, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int item) {
-                Log.d(LOGGER, "MenuClick Detected!, item# " + item);
-                if(item == 0) {
-                    game.setTheme(new CrayonGameTheme(game.getResources()));
-                } if(item == 1) {
-                    game.setTheme(new BrightGameTheme(game.getResources()));
-                } else if(item == 2){
-                    showThemeMenu(game);
-                }
-            }
-        });
+                Log.d(LOGGER, "Theme Selected");
+                game.setTheme(item);
+                showThemeMenu(game);
+            }});
+        builder.setSingleChoiceItems(adapter, game.getCurrentThemeID(), null);
         builder.show();
     }
 

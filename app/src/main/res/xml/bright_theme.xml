@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gameTheme>
+    <name>Bright Theme</name>
+    <icon>bright_icon</icon>
+    <ball>bright_ball</ball>
+    <balloon>bright_balloon</balloon>
+    <droplet>bright_droplet</droplet>
+    <popped_ball>bright_popped_ball</popped_ball>
+    <popped_balloon>bright_popped_balloon</popped_balloon>
+    <popped_droplet>bright_popped_droplet</popped_droplet>
+    <pause>bright_pause</pause>
+</gameTheme>

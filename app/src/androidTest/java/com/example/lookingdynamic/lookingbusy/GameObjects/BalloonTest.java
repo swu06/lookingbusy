@@ -3,18 +3,23 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 import android.graphics.Bitmap;
 import android.test.ActivityTestCase;
 
+import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
+import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+
 /**
  *
  * Created by swu on 9/5/2015.
  */
 public class BalloonTest extends ActivityTestCase {
 
-    public void testCreateBalloon(){
-        Balloon testBalloon = new Balloon(getInstrumentation().getTargetContext().getResources(), 0, 0, 0);
+    public GameTheme theme = new CrayonGameTheme(getInstrumentation().getTargetContext().getResources());
 
-        assertNotNull(testBalloon.bitmapImage);
-        assertTrue(1 < testBalloon.bitmapImage.getWidth());
-        assertTrue(1 < testBalloon.bitmapImage.getHeight());
+    public void testCreateBalloon(){
+        Balloon testBalloon = new Balloon(theme, 0, 0, 0);
+
+        assertNotNull(testBalloon.getImage(theme));
+        assertTrue(1 < testBalloon.getImage(theme).getWidth());
+        assertTrue(1 < testBalloon.getImage(theme).getHeight());
         assertTrue(0 > testBalloon.xCoordinate);
         assertTrue(0 > testBalloon.yCoordinate);
         assertEquals(0, testBalloon.yVelocity);
@@ -22,21 +27,12 @@ public class BalloonTest extends ActivityTestCase {
         assertFalse(testBalloon.offScreen);
     }
 
-    public void testSetPoppedImage() {
-        Balloon testBalloon = new Balloon(getInstrumentation().getTargetContext().getResources(), 0, 0, 0);
-
-        Bitmap theImage = testBalloon.bitmapImage;
-        testBalloon.setPoppedImage(getInstrumentation().getTargetContext().getResources());
-
-        assertFalse(theImage.equals(testBalloon.bitmapImage));
-    }
-
     public void testMove() {
-        Balloon testBalloon = new Balloon(getInstrumentation().getTargetContext().getResources(), 1000, 1000, -1);
+        Balloon testBalloon = new Balloon(theme, 1000, 1000, -1);
 
         int oldXCoordinate = testBalloon.xCoordinate;
         int oldYCoordinate = testBalloon.yCoordinate;
-        testBalloon.move(1000, 1000);
+        testBalloon.move(theme, 1000, 1000);
 
         assertEquals(oldXCoordinate, testBalloon.xCoordinate);
         assertEquals(oldYCoordinate - 1, testBalloon.yCoordinate);
@@ -46,11 +42,11 @@ public class BalloonTest extends ActivityTestCase {
     }
 
     public void testMoveFallOffTop() {
-        Balloon testBalloon = new Balloon(getInstrumentation().getTargetContext().getResources(), 0, 0, -1);
+        Balloon testBalloon = new Balloon(theme, 0, 0, -1);
 
         int oldXCoordinate = testBalloon.xCoordinate;
         int oldYCoordinate = testBalloon.yCoordinate;
-        testBalloon.move(1, 1);
+        testBalloon.move(theme, 1, 1);
 
         assertEquals(oldXCoordinate, testBalloon.xCoordinate);
         assertEquals(oldYCoordinate - 1, testBalloon.yCoordinate);
