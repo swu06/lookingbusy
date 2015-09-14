@@ -166,12 +166,12 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     @Override
-    public synchronized boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent event) {
         return mDetector.onTouchEvent(event);
     }
 
     @Override
-    protected synchronized void onDraw(Canvas canvas) {
+    protected void onDraw(Canvas canvas) {
         // fills the canvas with black
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
@@ -180,37 +180,45 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
         canvas.drawBitmap(themes[currentTheme].getPauseSign(), 100, 100, translucentPainter);
 
-        for(PoppableObject poppableObject : activePoppableObjects) {
-            poppableObject.draw(themes[currentTheme], canvas);
+        synchronized(activePoppableObjects) {
+            for (PoppableObject poppableObject : activePoppableObjects) {
+                poppableObject.draw(themes[currentTheme], canvas);
+            }
         }
-        for(PoppableObject poppableObject : poppedPoppableObjects) {
-            poppableObject.draw(themes[currentTheme], canvas);
+        synchronized (poppedPoppableObjects) {
+            for (PoppableObject poppableObject : poppedPoppableObjects) {
+                poppableObject.draw(themes[currentTheme], canvas);
+            }
         }
     }
 
-    public synchronized void update() {
-        //Handle Dead Balloons
-        poppedPoppableObjects.removeAllElements();
-
-        //Move Active Balloons, remove popped balloons
-        for(int i=0; i < activePoppableObjects.size(); i++) {
-            PoppableObject poppableObject = activePoppableObjects.get(i);
-
-            if(poppableObject.isPopped()) {
-                stats.addToScore(poppableObject.getScoreValue());
-                poppedPoppableObjects.add(poppableObject);
-                activePoppableObjects.remove(i);
-            } else if(poppableObject.isOffScreen()) {
-                stats.addToScore(-1);
-                activePoppableObjects.remove(i);
-            } else {
-                poppableObject.move(themes[currentTheme], getWidth(), getHeight());
-            }
+    public void update() {
+        synchronized (poppedPoppableObjects) {
+            //Handle Dead Balloons
+            poppedPoppableObjects.removeAllElements();
         }
 
-        PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(themes[currentTheme], stats.getLevel(), getWidth(), getHeight(), justStarted);
-        if(toAdd != null) {
-            activePoppableObjects.add(toAdd);
+        synchronized (activePoppableObjects) {
+            //Move Active Balloons, remove popped balloons
+            for (int i = 0; i < activePoppableObjects.size(); i++) {
+                PoppableObject poppableObject = activePoppableObjects.get(i);
+
+                if (poppableObject.isPopped()) {
+                    stats.addToScore(poppableObject.getScoreValue());
+                    poppedPoppableObjects.add(poppableObject);
+                    activePoppableObjects.remove(i);
+                } else if (poppableObject.isOffScreen()) {
+                    stats.addToScore(-1);
+                    activePoppableObjects.remove(i);
+                } else {
+                    poppableObject.move(themes[currentTheme], getWidth(), getHeight());
+                }
+            }
+
+            PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(themes[currentTheme], stats.getLevel(), getWidth(), getHeight(), justStarted);
+            if (toAdd != null) {
+                activePoppableObjects.add(toAdd);
+            }
         }
 
         justStarted = false;
@@ -229,7 +237,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
             pause();
         }
 
-        Log.d(LOGGER, "Double-tap detected!");
+            Log.d(LOGGER, "Double-tap detected!");
         return false;
     }
 
@@ -240,12 +248,14 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     @Override
-    public boolean onDown(MotionEvent event) {
+    public boolean onDown (MotionEvent event){
         Log.d(LOGGER, "onDown detected!");
-        for(PoppableObject poppableObject : activePoppableObjects) {
-            if (poppableObject.handleTouch(themes[currentTheme], (int) event.getX(), (int) event.getY())) {
-                thread.wakeIfSleeping();
-                break;
+        synchronized (activePoppableObjects) {
+            for (PoppableObject poppableObject : activePoppableObjects) {
+                if (poppableObject.handleTouch(themes[currentTheme], (int) event.getX(), (int) event.getY())) {
+                    thread.wakeIfSleeping();
+                    break;
+                }
             }
         }
         return true;
