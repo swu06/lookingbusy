@@ -2,7 +2,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import android.graphics.Bitmap;
 
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  *
@@ -16,16 +16,9 @@ public class Ball extends PoppableObject {
     private static final String LOGGER = Ball.class.getSimpleName();
     public static final int VALUE = 50;
 
-    public Ball(GameTheme theme, int xCoordinate, int yCoordinate, int xVelocity, int yVelocity) {
-        Bitmap bitmapImage = getImage(theme);
+    public Ball(int xCoordinate, int yCoordinate, int xVelocity, int yVelocity) {
         this.xCoordinate = xCoordinate;
-        if(this.xCoordinate > 0 ) {
-            this.xCoordinate = this.xCoordinate - bitmapImage.getWidth();
-        }
         this.yCoordinate = yCoordinate;
-        if(this.yCoordinate > 0 ) {
-            this.yCoordinate = this.yCoordinate - bitmapImage.getHeight();
-        }
         this.xVelocity = xVelocity;
         this.yVelocity = yVelocity;
         popped = false;
@@ -44,19 +37,25 @@ public class Ball extends PoppableObject {
 
     // Balls bounce off walls
     public void move(GameTheme theme, int viewWidth, int viewHeight) {
-        // Check to see if we are against a wall
-        if(xCoordinate < 0
-                || xCoordinate + getImage(theme).getWidth() > viewWidth) {
-            xVelocity = xVelocity * -1;
-        }
-
+        Bitmap image = getImage(theme);
         // Move over and down
         xCoordinate = xCoordinate + xVelocity;
         yCoordinate = yCoordinate + yVelocity;
 
+        // Check to see if we have hit the left wall
+        if(xCoordinate <= 0) {
+            xCoordinate = 0;
+            xVelocity = xVelocity * -1;
+        }
+        // Check to see if we have hit the right wall
+        else if( xCoordinate + image.getWidth() >= viewWidth) {
+            xCoordinate = viewWidth - image.getWidth();
+            xVelocity = xVelocity * -1;
+        }
+
         // Check to see if we have fallen off the screen yet
         if (yCoordinate > viewHeight
-                || yCoordinate < 0) {
+                || yCoordinate + image.getHeight() < 0) {
             offScreen = true;
         }
     }

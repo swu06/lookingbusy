@@ -1,7 +1,7 @@
 package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.LevelGuide;
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 import java.util.Random;
 

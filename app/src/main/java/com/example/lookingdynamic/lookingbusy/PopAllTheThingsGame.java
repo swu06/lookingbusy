@@ -18,8 +18,7 @@ import android.view.SurfaceView;
 import com.example.lookingdynamic.lookingbusy.gameobjects.PoppableObject;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
 import com.example.lookingdynamic.lookingbusy.gameobjects.PoppableObjectFactory;
-import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 import java.util.Vector;
 
@@ -289,7 +288,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
      * should be cleaned up to save memory
      */
     public void setTheme(int theme) {
-        if(theme != currentTheme)  {
+        if(theme >= 0 && theme < themes.length && theme != currentTheme)  {
             themes[currentTheme].unloadImages();
             currentTheme = theme;
         }

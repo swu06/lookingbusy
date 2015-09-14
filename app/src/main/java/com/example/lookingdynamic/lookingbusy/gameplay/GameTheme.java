@@ -1,4 +1,4 @@
-package com.example.lookingdynamic.lookingbusy.themes;
+package com.example.lookingdynamic.lookingbusy.gameplay;
 
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
@@ -47,9 +47,7 @@ public class GameTheme {
     protected Bitmap popped_droplet = null;
     protected Bitmap pause_sign = null;
 
-    public GameTheme(){
-
-    }
+//    public GameTheme(){  }
 
     public GameTheme(Resources otherResources, String themeLabel) {
         this.myResources = otherResources;

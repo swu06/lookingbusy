@@ -3,7 +3,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  * Created by swu on 9/6/2015.
@@ -24,14 +24,14 @@ public abstract class PoppableObject {
     public boolean isOffScreen() {
         return offScreen;
     }
+
     public void draw(GameTheme theme, Canvas canvas) {
-        Bitmap bitmapImage = getImage(theme);
         canvas.drawBitmap(getImage(theme), xCoordinate, yCoordinate, null);
     }
     public boolean handleTouch(GameTheme theme, int eventX, int eventY) {
         Bitmap bitmapImage = getImage(theme);
-        if (eventX >= (xCoordinate - bitmapImage.getWidth() / 2) && eventX <= (xCoordinate + bitmapImage.getWidth()/2)
-                && eventY >= (yCoordinate - bitmapImage.getHeight() / 2) && (yCoordinate <= (yCoordinate + bitmapImage.getHeight() / 2))) {
+        if (eventX >= xCoordinate && eventX <= (xCoordinate + bitmapImage.getWidth())
+                && eventY >= yCoordinate && (yCoordinate <= (yCoordinate + bitmapImage.getHeight()))) {
             popped = true;
         }
 

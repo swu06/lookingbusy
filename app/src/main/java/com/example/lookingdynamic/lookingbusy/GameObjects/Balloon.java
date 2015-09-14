@@ -2,7 +2,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import android.graphics.Bitmap;
 
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  *
@@ -16,10 +16,9 @@ public class Balloon extends PoppableObject {
     private static final String LOGGER = Balloon.class.getSimpleName();
     public static final int VALUE = 10;
 
-    public Balloon(GameTheme theme, int xCoordinate, int yCoordinate, int yVelocity) {
-        Bitmap bitmapImage = getImage(theme);
-        this.xCoordinate = xCoordinate - bitmapImage.getWidth() / 2;
-        this.yCoordinate = yCoordinate - bitmapImage.getHeight();
+    public Balloon(int xCoordinate, int yCoordinate, int yVelocity) {
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
         this.yVelocity = yVelocity;
         popped = false;
         offScreen = false;

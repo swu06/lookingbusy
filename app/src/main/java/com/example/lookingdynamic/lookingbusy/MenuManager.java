@@ -5,15 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListAdapter;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
-import com.example.lookingdynamic.lookingbusy.themes.BrightGameTheme;
-import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  * Created by swu on 9/10/2015.
@@ -76,11 +71,12 @@ public class MenuManager {
         builder.setTitle("Game Play Options");
         builder.setPositiveButton("OK", null);
         builder.setSingleChoiceItems(adapter, game.getGamePlayMode(), new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int item) {
-                Log.d(LOGGER, "MenuClick Detected!, item# " + item);
-                if (item == GameStatistics.RELAXING_MODE) {
+                Log.d(LOGGER, "GamePlay Selected:" + item);
+                if (item == 0) {
                     game.setGamePlayMode(GameStatistics.RELAXING_MODE);
-                } else if (item == GameStatistics.CHALLANGING_MODE) {
+                } else if (item == 1) {
                     game.setGamePlayMode(GameStatistics.CHALLANGING_MODE);
                 }
             }
@@ -103,15 +99,16 @@ public class MenuManager {
 
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Themes Options");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("OK", null);
+        builder.setSingleChoiceItems(adapter, game.getCurrentThemeID(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                Log.d(LOGGER, "Theme Selected");
+                Log.d(LOGGER, "Theme Selected: " + item);
                 game.setTheme(item);
-                showThemeMenu(game);
-            }});
-        builder.setSingleChoiceItems(adapter, game.getCurrentThemeID(), null);
-        builder.show();
+            }
+        });
+
+                builder.show();
     }
 
     public AlertDialog.Builder getDialog(Context myContext) {

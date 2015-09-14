@@ -4,7 +4,6 @@ import com.example.lookingdynamic.lookingbusy.gameobjects.Ball;
 import com.example.lookingdynamic.lookingbusy.gameobjects.Balloon;
 import com.example.lookingdynamic.lookingbusy.gameobjects.Droplet;
 import com.example.lookingdynamic.lookingbusy.gameobjects.PoppableObject;
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
 
 import java.util.Random;
 
@@ -65,24 +64,24 @@ public class LevelGuide {
                 case 1:
                 case 2:
                 case 3:
-                    toReturn = new Balloon(theme, width * randomLocation / 10, height, -1 * speed);
+                    toReturn = new Balloon(width * randomLocation / 10, height, -1 * speed);
                     break;
                 case 4:
                 case 5:
                 case 6:
                 case 7:
-                    toReturn = new Droplet(theme, width * randomLocation / 10, speed);
+                    toReturn = new Droplet(width * randomLocation / 10, speed);
                     break;
                 case 8:
-                    toReturn = new Ball(theme, 0, 0, 2 * speed, speed);
+                    toReturn = new Ball(0, 0, 2 * speed, speed);
                     break;
                 case 9:
-                    toReturn = new Ball(theme, width, 0, -2 * speed, speed);
+                    toReturn = new Ball(width, 0, -2 * speed, speed);
                     break;
             }
         } else if(level == 1) {
             // Level 1 (100 points):    All Balloons, all slow speed
-            toReturn = new Balloon(theme, width * randomLocation / 10, height, -1 * SLOW_SPEED);
+            toReturn = new Balloon(width * randomLocation / 10, height, -1 * SLOW_SPEED);
         } else if(level == 2) {
             //Level 2 (200 points):    100% Balloons - 50% at medium speed, 50% slow speed
             int speed = MEDIUM_SPEED;
@@ -96,23 +95,23 @@ public class LevelGuide {
                     speed = MEDIUM_SPEED;
                     break;
             }
-            toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * speed);
+            toReturn = new Balloon(width * randomLocation / 10, height, -2 * speed);
         } else {
 
             if (randomType < 5) {
-                toReturn = new Balloon(theme, width * randomLocation / 10, height, -2 * randomSpeed);
+                toReturn = new Balloon(width * randomLocation / 10, height, -2 * randomSpeed);
             } else if (randomType < 7) {
-                toReturn = new Droplet(theme, width * randomLocation / 10, randomSpeed);
+                toReturn = new Droplet(width * randomLocation / 10, randomSpeed);
             } else if (randomType == 8) {
                 randomType = rand.nextInt(4);
                 if (randomType == 0) {
-                    toReturn = new Ball(theme, 0, 0, 2 * randomSpeed, randomSpeed);
+                    toReturn = new Ball(0, 0, 2 * randomSpeed, randomSpeed);
                 } else if (randomType == 1) {
-                    toReturn = new Ball(theme, width, 0, -2 * randomSpeed, randomSpeed);
+                    toReturn = new Ball(width, 0, -2 * randomSpeed, randomSpeed);
                 } else if (randomType == 2) {
-                    toReturn = new Ball(theme, 0, width, 2 * randomSpeed, -1 * randomSpeed);
+                    toReturn = new Ball(0, width, 2 * randomSpeed, -1 * randomSpeed);
                 } else if (randomType == 3) {
-                    toReturn = new Ball(theme, width, height, -2 * randomSpeed, -1 * randomSpeed);
+                    toReturn = new Ball(width, height, -2 * randomSpeed, -1 * randomSpeed);
                 }
             }
         }

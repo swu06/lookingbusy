@@ -1,11 +1,10 @@
-package com.example.lookingdynamic.lookingbusy.themes;
+package com.example.lookingdynamic.lookingbusy.gameplay;
 
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.test.ActivityTestCase;
 
 import com.example.lookingdynamic.lookingbusy.R;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  * Created by swu on 9/13/2015.

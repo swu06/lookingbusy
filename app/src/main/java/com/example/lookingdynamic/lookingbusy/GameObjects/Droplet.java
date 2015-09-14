@@ -2,7 +2,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import android.graphics.Bitmap;
 
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  *
@@ -16,8 +16,8 @@ public class Droplet extends PoppableObject {
     private static final String LOGGER = Droplet.class.getSimpleName();
     public static final int VALUE = 15;
 
-    public Droplet(GameTheme theme, int xCoordinate, int yVelocity) {
-        this.xCoordinate = xCoordinate - getImage(theme).getWidth() / 2;
+    public Droplet(int xCoordinate, int yVelocity) {
+        this.xCoordinate = xCoordinate;
         this.yCoordinate = 0;
         this.yVelocity = yVelocity;
         popped = false;

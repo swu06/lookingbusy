@@ -1,10 +1,8 @@
 package com.example.lookingdynamic.lookingbusy.gameobjects;
 
-import android.graphics.Bitmap;
 import android.test.ActivityTestCase;
 
-import com.example.lookingdynamic.lookingbusy.themes.CrayonGameTheme;
-import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  *
@@ -12,10 +10,10 @@ import com.example.lookingdynamic.lookingbusy.themes.GameTheme;
  */
 public class BalloonTest extends ActivityTestCase {
 
-    public GameTheme theme = new CrayonGameTheme(getInstrumentation().getTargetContext().getResources());
+    public GameTheme theme = new GameTheme(getInstrumentation().getTargetContext().getResources(), "crayon_theme");
 
     public void testCreateBalloon(){
-        Balloon testBalloon = new Balloon(theme, 0, 0, 0);
+        Balloon testBalloon = new Balloon(0, 0, 0);
 
         assertNotNull(testBalloon.getImage(theme));
         assertTrue(1 < testBalloon.getImage(theme).getWidth());
@@ -28,7 +26,7 @@ public class BalloonTest extends ActivityTestCase {
     }
 
     public void testMove() {
-        Balloon testBalloon = new Balloon(theme, 1000, 1000, -1);
+        Balloon testBalloon = new Balloon(1000, 1000, -1);
 
         int oldXCoordinate = testBalloon.xCoordinate;
         int oldYCoordinate = testBalloon.yCoordinate;
@@ -42,7 +40,7 @@ public class BalloonTest extends ActivityTestCase {
     }
 
     public void testMoveFallOffTop() {
-        Balloon testBalloon = new Balloon(theme, 0, 0, -1);
+        Balloon testBalloon = new Balloon(0, 0, -1);
 
         int oldXCoordinate = testBalloon.xCoordinate;
         int oldYCoordinate = testBalloon.yCoordinate;
