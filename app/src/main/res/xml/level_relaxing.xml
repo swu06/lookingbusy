@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Relaxing Lvl</name>
+    <chanceToCreate>40</chanceToCreate>
+    <balloonDefinition>
+        <percentCreated>40</percentCreated>
+        <percentSlow>25</percentSlow>
+        <percentMedium>50</percentMedium>
+        <percentFast>25</percentFast>
+    </balloonDefinition>
+    <dropletDefinition>
+        <percentCreated>40</percentCreated>
+        <percentSlow>25</percentSlow>
+        <percentMedium>50</percentMedium>
+        <percentFast>25</percentFast>
+    </dropletDefinition>
+    <ballDefinition>
+        <percentCreated>20</percentCreated>
+        <percentSlow>25</percentSlow>
+        <percentMedium>50</percentMedium>
+        <percentFast>25</percentFast>
+    </ballDefinition>
+</level>

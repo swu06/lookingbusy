@@ -4,4 +4,14 @@
         <item>crayon_theme</item>
         <item>bright_theme</item>
     </string-array>
+
+    <string-array name="challanging_levels">
+        <item>level1</item>
+        <item>level2</item>
+        <item>level7</item>
+    </string-array>
+
+    <string-array name="relaxing_levels">
+        <item>level_relaxing</item>
+    </string-array>
 </resources>

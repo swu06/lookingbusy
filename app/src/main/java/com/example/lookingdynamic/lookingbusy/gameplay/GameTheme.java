@@ -15,9 +15,9 @@ import java.io.IOException;
 public class GameTheme {
 
     private static final String LOGGER = GameTheme.class.getSimpleName();
-    public static final String DRAWABLE_DEF_TYPE = "drawable";
-    public static final String XML_DEF_TYPE = "xml";
-    public static final String DEF_PACKAGE = "com.example.lookingdynamic.lookingbusy";
+    private static final String DRAWABLE_DEF_TYPE = "drawable";
+    private static final String XML_DEF_TYPE = "xml";
+    private static final String DEF_PACKAGE = "com.example.lookingdynamic.lookingbusy";
     private static final String NAME_TAG = "name";
     private static final String ICON_TAG = "icon";
     private static final String BALL_TAG = "ball";
@@ -57,7 +57,7 @@ public class GameTheme {
 
         int eventType = -1;
         try {
-            while(eventType != XmlResourceParser.END_TAG) {
+            while(eventType != XmlResourceParser.END_DOCUMENT) {
                 if (themeXml.getEventType() == XmlResourceParser.START_TAG) {
                     if(themeXml.getName().equalsIgnoreCase(NAME_TAG)) {
                         name = themeXml.nextText();

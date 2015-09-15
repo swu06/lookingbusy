@@ -252,7 +252,8 @@ public class PopAllTheThingsGame extends SurfaceView implements
         Log.d(LOGGER, "onDown detected!");
         synchronized (activePoppableObjects) {
             for (PoppableObject poppableObject : activePoppableObjects) {
-                if (poppableObject.handleTouch(themes[currentTheme], (int) event.getX(), (int) event.getY())) {
+                if (!poppableObject.isPopped() &&
+                        poppableObject.handleTouch(themes[currentTheme], (int) event.getX(), (int) event.getY())) {
                     thread.wakeIfSleeping();
                     break;
                 }
