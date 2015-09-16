@@ -47,13 +47,8 @@ public class GameTheme {
     protected Bitmap popped_droplet = null;
     protected Bitmap pause_sign = null;
 
-//    public GameTheme(){  }
-
-    public GameTheme(Resources otherResources, String themeLabel) {
+    public GameTheme(Resources otherResources, XmlResourceParser themeXml) {
         this.myResources = otherResources;
-
-        XmlResourceParser themeXml = myResources.getXml(
-                myResources.getIdentifier(themeLabel, XML_DEF_TYPE, DEF_PACKAGE));
 
         int eventType = -1;
         try {

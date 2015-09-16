@@ -2,6 +2,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import android.test.ActivityTestCase;
 
+import com.example.lookingdynamic.lookingbusy.R;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
@@ -15,7 +16,8 @@ public class BallTest extends ActivityTestCase {
 
     public void setUp() throws Exception{
         super.setUp();
-        theme = new GameTheme(getInstrumentation().getTargetContext().getResources(), "crayon_theme");
+        theme = new GameTheme(getInstrumentation().getTargetContext().getResources(),
+                getInstrumentation().getTargetContext().getResources().getXml(R.xml.crayon_theme));
     }
 
     public void testCreateBall(){

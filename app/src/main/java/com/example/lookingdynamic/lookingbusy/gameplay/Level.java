@@ -14,10 +14,6 @@ import java.io.IOException;
  */
 public class Level {
 
-    private static final String LOGGER = Level.class.getSimpleName();
-    private static final String XML_DEF_TYPE = "xml";
-    private static final String DEF_PACKAGE = "com.example.lookingdynamic.lookingbusy";
-    private static final String LEVEL = "level";
     private static final String NAME = "name";
     private static final String POINTS_TO_NEXT_LEVEL = "pointsToNextLevel";
     private static final String PERCENT_CHANCE_OF_CREATION = "chanceToCreate";

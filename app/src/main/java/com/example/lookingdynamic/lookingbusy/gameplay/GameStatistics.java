@@ -17,12 +17,11 @@ public class GameStatistics {
         level = 1;
         pointsToNextLevel = 50;
         this.mode = mode;
-        pointsToNextLevel = 0;
     }
 
     public void addToScore(int points){
         score = score + points;
-        if(mode == CHALLANGING_MODE && pointsToNextLevel > 0) {
+        if(mode == CHALLANGING_MODE) {
             if (pointsToNextLevel - points <= 0) {
                 levelUp();
             } else {

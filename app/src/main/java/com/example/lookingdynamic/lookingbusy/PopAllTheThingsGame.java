@@ -1,6 +1,8 @@
 package com.example.lookingdynamic.lookingbusy;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -99,11 +101,12 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void loadAvailableThemes(){
-        String[] availableThemesArray = getResources().getStringArray(R.array.available_game_themes);
-        themes = new GameTheme[availableThemesArray.length];
+        TypedArray availableThemesArray = getResources().obtainTypedArray(R.array.available_game_themes);
 
-        for(int i=0; i < availableThemesArray.length; i++) {
-            themes[i] = new GameTheme(getResources(), availableThemesArray[i]);
+        themes = new GameTheme[availableThemesArray.length()];
+
+        for(int i=0; i < availableThemesArray.length(); i++) {
+            themes[i] = new GameTheme(getResources(), getResources().getXml(availableThemesArray.getResourceId(i,-1)));
         }
     }
 

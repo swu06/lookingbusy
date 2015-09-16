@@ -10,8 +10,6 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="title_activity_looking_busy">LookingBusyActivity</string>
-    <string name="relaxing_mode">Relaxing Mode</string>
-    <string name="challanging_mode">Challanging Mode</string>
     <string name="gameplay_type">Gameplay Type</string>
     <string name="sweets_theme">Sweets Theme</string>
     <string name="crayon_theme">Crayon Theme</string>
@@ -21,4 +19,6 @@
     <string name="gameplay_type_long">Type of gameplay experience, relaxed or fast-paced</string>
     <string name="game_theme">Theme</string>
     <string name="game_theme_long">Theme of the game pieces</string>
+    <string name="challenging_mode">Challenging Mode</string>
+    <string name="relaxing_mode">Relaxing Mode</string>
 </resources>

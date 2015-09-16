@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="available_game_themes">
-        <item>crayon_theme</item>
-        <item>bright_theme</item>
-    </string-array>
+    <array name="available_game_themes">
+        <item>@xml/crayon_theme</item>
+        <item>@xml/bright_theme</item>
+    </array>
 
-    <string-array name="challanging_levels">
-        <item>level1</item>
-        <item>level2</item>
-        <item>level7</item>
-    </string-array>
+    <array name="gameplay_modes">
+        <item>@array/challanging_mode</item>
+        <item>@array/relaxing_mode</item>
+    </array>
 
-    <string-array name="relaxing_levels">
-        <item>level_relaxing</item>
-    </string-array>
+    <array name="challanging_mode">
+        <item>@string/challenging_mode</item>
+        <item>@xml/level1</item>
+        <item>@xml/level2</item>
+        <item>@xml/level7</item>
+    </array>
+
+    <array name="relaxing_mode">
+        <item>@string/relaxing_mode</item>
+        <item>@xml/level_relaxing</item>
+    </array>
 </resources>
