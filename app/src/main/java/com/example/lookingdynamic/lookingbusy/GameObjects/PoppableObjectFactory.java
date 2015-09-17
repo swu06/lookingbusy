@@ -1,5 +1,6 @@
 package com.example.lookingdynamic.lookingbusy.gameobjects;
 
+import com.example.lookingdynamic.lookingbusy.gameplay.Level;
 import com.example.lookingdynamic.lookingbusy.gameplay.LevelGuide;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
@@ -11,7 +12,21 @@ import java.util.Random;
 public class PoppableObjectFactory {
 
     private static Random rand = new Random();
+    private static int SLOW_SPEED = 40;
+    private static int MEDIUM_SPEED = 60;
+    private static int FAST_SPEED = 80;
+    private static int SUPER_FAST_SPEED = 100;
 
+    public static boolean shouldCreateObject(Level level) {
+        boolean createObject = false;
+        int chanceOfReturningSomething = rand.nextInt(100);
+
+        if (chanceOfReturningSomething < level.getPercentChanceOfCreation()) {
+            createObject = true;
+        }
+
+        return createObject;
+    }
 
     /*
 
@@ -48,23 +63,81 @@ public class PoppableObjectFactory {
                             40% Bouncy Balls - 50% fast speed, 50% super-fast speed
                             Double the number of items created
     */
-    public static PoppableObject generatePoppableObject(GameTheme theme, int level, int width, int height, boolean justStarted) {
+    public static PoppableObject generatePoppableObject(Level level, int width, int height) {
 
         PoppableObject toReturn = null;
 
         boolean createANewObject = true;
 
-        // When we are first starting the game, we need to ensure something gets on the screen fast
-        // Otherwise, we should check the levelling guide to see if we should create a new object
-        if(!justStarted) {
-            createANewObject = LevelGuide.shouldCreateObject(level);
-        }
+        createANewObject = shouldCreateObject(level);
 
         // If we aren't going to make a new object, then just exit
-        if(createANewObject){
-            toReturn = LevelGuide.generateNewObject(theme, level, width, height);
+        if (createANewObject) {
+            toReturn = createObject(level, width, height);
         }
 
         return toReturn;
     }
+
+    public static PoppableObject createObject(Level level, int width, int height) {
+        PoppableObject toReturn = null;
+        int randomType = rand.nextInt(100);
+        int randomSpeed = rand.nextInt(100);
+        int randomLocation = rand.nextInt(9) + 1;
+
+        if(randomType < level.getBalloonPercentCreated()) {
+            int speed;
+            if(randomSpeed < level.getBalloonPercentSlow()) {
+                speed = SLOW_SPEED;
+            } else if(randomSpeed < level.getBalloonPercentSlow() + level.getBalloonPercentMedium()) {
+                speed = MEDIUM_SPEED;
+            } else if(randomSpeed < level.getBalloonPercentSlow() + level.getBalloonPercentMedium()
+                                    + level.getBalloonPercentFast()) {
+                speed = FAST_SPEED;
+            } else {
+                speed = SUPER_FAST_SPEED;
+            }
+            toReturn = new Balloon(width * randomLocation / 10, height, -1 * speed);
+
+        } else if(randomType < level.getBalloonPercentCreated() + level.getDropletPercentCreated()){
+            int speed;
+            if(randomSpeed < level.getDropletPercentSlow()) {
+                speed = SLOW_SPEED;
+            } else if(randomSpeed < level.getDropletPercentSlow() + level.getDropletPercentMedium()) {
+                speed = MEDIUM_SPEED;
+            } else if(randomSpeed < level.getDropletPercentSlow() + level.getDropletPercentMedium()
+                    + level.getDropletPercentFast()) {
+                speed = FAST_SPEED;
+            } else {
+                speed = SUPER_FAST_SPEED;
+            }
+            toReturn = new Droplet(width * randomLocation / 10, speed);
+        } else {
+            int speed;
+            if(randomSpeed < level.getBallPercentSlow()) {
+                speed = SLOW_SPEED;
+            } else if(randomSpeed < level.getBallPercentSlow() + level.getBallPercentMedium()) {
+                speed = MEDIUM_SPEED;
+            } else if(randomSpeed < level.getBallPercentSlow() + level.getBallPercentMedium()
+                    + level.getBallPercentFast()) {
+                speed = FAST_SPEED;
+            } else {
+                speed = SUPER_FAST_SPEED;
+            }
+
+            int whichBalloon = rand.nextInt(4);
+            if(whichBalloon == 0) {
+                toReturn = new Ball(0, 0, 2 * speed, speed);
+            } else if(whichBalloon == 1) {
+                toReturn = new Ball(width, 0, -2 * speed, speed);
+            } else if(whichBalloon == 2) {
+                toReturn = new Ball(0, height, -2 * speed, speed);
+            } else {
+                toReturn = new Ball(width, height, -2 * speed, speed);
+            }
+        }
+
+        return toReturn;
+    }
+
 }

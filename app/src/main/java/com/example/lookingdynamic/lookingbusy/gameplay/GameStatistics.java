@@ -1,27 +1,40 @@
 package com.example.lookingdynamic.lookingbusy.gameplay;
 
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+
+import com.example.lookingdynamic.lookingbusy.R;
+
 /**
  * Created by swu on 9/6/2015.
  */
 public class GameStatistics {
 
-    public static final int RELAXING_MODE = 0;
-    public static final int CHALLANGING_MODE = 1;
+    private GameplayMode[] modes;
     private int score;
     private int level;
     private int pointsToNextLevel;
-    private int mode;
+    private int currentMode;
 
-    public GameStatistics(int mode) {
+    public GameStatistics(Resources myResources) {
+
+        TypedArray items = myResources.obtainTypedArray(R.array.gameplay_modes);
+        modes = new GameplayMode[items.length()];
+
+        for(int i=0;i<items.length();i++){
+            modes[i] = new GameplayMode(myResources, myResources.obtainTypedArray(items.getResourceId(i,-1)));
+        }
+
         score = 0;
-        level = 1;
-        pointsToNextLevel = 50;
-        this.mode = mode;
+        currentMode = 0;
+        level = 0;
+        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(level);
+
     }
 
     public void addToScore(int points){
         score = score + points;
-        if(mode == CHALLANGING_MODE) {
+        if(pointsToNextLevel > 0) {
             if (pointsToNextLevel - points <= 0) {
                 levelUp();
             } else {
@@ -30,34 +43,37 @@ public class GameStatistics {
         }
     }
 
-    public int getMode(){
-        return mode;
+    public int getCurrentGameplayMode(){
+        return currentMode;
     }
 
-    public void setMode(int mode){
-        this.mode = mode;
+    public GameplayMode[] getGameplayModes(){
+        return modes;
+    }
+
+    public int getIconImageId(){
+        return modes[currentMode].getIconImageId();
+    }
+
+    public void setCurrentMode(int currentMode){
+        this.currentMode = currentMode;
     }
 
     public String toString(){
-        String scoreString = "" + score;
-        if(mode == CHALLANGING_MODE) {
-            scoreString = level + ": " + score;
-        }
+        String scoreString = modes[currentMode].getLevelName(level) + ": " + score;
         return scoreString;
     }
 
     private void levelUp(){
         level++;
-        pointsToNextLevel = level*100;
+        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(level);
     }
 
     public int getLevel() {
-        int levelToReturn;
-        if(mode == CHALLANGING_MODE) {
-            levelToReturn = level;
-        } else {
-            levelToReturn = 0;
-        }
-        return levelToReturn;
+        return level;
+    }
+
+    public Level getCurrentLevel() {
+        return modes[currentMode].getLevel(level);
     }
 }

@@ -12,6 +12,7 @@
 
     <array name="challanging_mode">
         <item>@string/challenging_mode</item>
+        <item>@drawable/ic_verified_user_black_24dp</item>
         <item>@xml/level1</item>
         <item>@xml/level2</item>
         <item>@xml/level7</item>
@@ -19,6 +20,7 @@
 
     <array name="relaxing_mode">
         <item>@string/relaxing_mode</item>
+        <item>@drawable/ic_insert_emoticon_black_24dp</item>
         <item>@xml/level_relaxing</item>
     </array>
 </resources>

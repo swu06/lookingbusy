@@ -22,15 +22,15 @@ public class LevelGuide {
         int chanceOfReturningSomething = rand.nextInt(10);
         // Early levels have a 1 in 10 chance of making something new
         // Later levels have a 2in 10 chance of making something new
-        if(level < 7 && chanceOfReturningSomething < 2 ||
-                level >= 7 && chanceOfReturningSomething < 4) {
+        if(level < 7 && chanceOfReturningSomething < 4 ||
+                level >= 7 && chanceOfReturningSomething < 6) {
             createObject = true;
         }
 
         return createObject;
     }
 
-    public static PoppableObject generateNewObject(GameTheme theme, int level, int width, int height){
+    public static PoppableObject generateNewObject(int level, int width, int height){
         PoppableObject toReturn = null;
         int randomType = rand.nextInt(10);
         int randomLocation = rand.nextInt(9) + 1;

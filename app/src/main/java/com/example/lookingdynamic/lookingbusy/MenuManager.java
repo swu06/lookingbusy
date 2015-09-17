@@ -9,6 +9,7 @@ import android.widget.ListAdapter;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameplayMode;
 
 /**
  * Created by swu on 9/10/2015.
@@ -30,7 +31,8 @@ public class MenuManager {
     }
 
     public void showPauseMenu(final PopAllTheThingsGame game) {
-        pausedMenuIcons[0] = game.getCurrentTheme().getIconImageId();
+        pausedMenuIcons[0] = game.getCurrentThemeIcon();
+        pausedMenuIcons[1] = game.getCurrentGameplayModeIcon();
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_item, pausedMenuLabels, pausedMenuIcons);
 
         AlertDialog.Builder builder = getDialog(myContext);
@@ -65,20 +67,24 @@ public class MenuManager {
     }
 
     public void showGamePlayMenu(final PopAllTheThingsGame game) {
+        GameplayMode[] modes =  game.getGameplayModes();
+        String [] gameplayMenuLabels = new String[modes.length];
+        Integer[] gameplayMenuIcons = new Integer[modes.length];
+
+        for(int i=0; i < modes.length; i++){
+            gameplayMenuLabels[i] = modes[i].getName();
+            gameplayMenuIcons[i] = modes[i].getIconImageId();
+        }
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_singlechoice, gamePlayMenuLabels, gamePlayMenuIcons);
 
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Game Play Options");
         builder.setPositiveButton("OK", null);
-        builder.setSingleChoiceItems(adapter, game.getGamePlayMode(), new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(adapter, game.getCurrentGamePlayModeID(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "GamePlay Selected:" + item);
-                if (item == 0) {
-                    game.setGamePlayMode(GameStatistics.RELAXING_MODE);
-                } else if (item == 1) {
-                    game.setGamePlayMode(GameStatistics.CHALLANGING_MODE);
-                }
+                game.setGameplayMode(item);
             }
         });
         builder.show();

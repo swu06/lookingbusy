@@ -1,7 +1,6 @@
 package com.example.lookingdynamic.lookingbusy;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -21,6 +20,7 @@ import com.example.lookingdynamic.lookingbusy.gameobjects.PoppableObject;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
 import com.example.lookingdynamic.lookingbusy.gameobjects.PoppableObjectFactory;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.GameplayMode;
 
 import java.util.Vector;
 
@@ -63,7 +63,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         // create holder for balloons
         activePoppableObjects = new Vector<PoppableObject>();
         poppedPoppableObjects = new Vector<PoppableObject>();
-        stats = new GameStatistics(GameStatistics.CHALLANGING_MODE);
+        stats = new GameStatistics(getResources());
 
         whiteFont = new TextPaint();
         whiteFont.setTextSize(200);
@@ -118,10 +118,43 @@ public class PopAllTheThingsGame extends SurfaceView implements
         return currentTheme;
     }
 
+    public int getCurrentThemeIcon() {
+        return themes[currentTheme].getIconImageId();
+    }
+
+    public int getCurrentGameplayModeIcon() {
+        return stats.getIconImageId();
+    }
+
     public GameTheme getCurrentTheme() {
         return themes[currentTheme];
     }
 
+    public int getTheme() {
+        return currentTheme;
+    }
+
+    /*
+     * This method switches between themes.  eWhenever a new theme is selected, the old theme
+     * should be cleaned up to save memory
+     */
+    public void setTheme(int theme) {
+        if(theme >= 0 && theme < themes.length && theme != currentTheme)  {
+            themes[currentTheme].unloadImages();
+            currentTheme = theme;
+        }
+
+    }
+    public void setGameplayMode(int mode) {
+        stats.setCurrentMode(mode);
+    }
+
+    public int getCurrentGamePlayModeID() {
+        return stats.getCurrentGameplayMode();
+    }
+    public GameplayMode[] getGameplayModes() {
+        return stats.getGameplayModes();
+    }
 
     public void pause() {
 
@@ -218,13 +251,12 @@ public class PopAllTheThingsGame extends SurfaceView implements
                 }
             }
 
-            PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(themes[currentTheme], stats.getLevel(), getWidth(), getHeight(), justStarted);
+            PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(stats.getCurrentLevel(), getWidth(), getHeight());
             if (toAdd != null) {
                 activePoppableObjects.add(toAdd);
             }
         }
 
-        justStarted = false;
     }
 
     @Override
@@ -293,26 +325,4 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
 
-    public int getTheme() {
-        return currentTheme;
-    }
-
-    /*
-     * This method switches between themes.  Whenever a new theme is selected, the old theme
-     * should be cleaned up to save memory
-     */
-    public void setTheme(int theme) {
-        if(theme >= 0 && theme < themes.length && theme != currentTheme)  {
-            themes[currentTheme].unloadImages();
-            currentTheme = theme;
-        }
-
-    }
-    public void setGamePlayMode(int mode) {
-        stats.setMode(mode);
-    }
-
-    public int getGamePlayMode() {
-        return stats.getMode();
-    }
 }
