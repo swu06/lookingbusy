@@ -8,5 +8,5 @@
     <popped_ball>crayon_popped_ball</popped_ball>
     <popped_balloon>crayon_popped_balloon</popped_balloon>
     <popped_droplet>crayon_popped_droplet</popped_droplet>
-    <pause>crayon_pause</pause>
+    <pause>pause</pause>
 </gameTheme>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Lvl 10</name>
+    <pointsToNextLevel>1000</pointsToNextLevel>
+    <chanceToCreate>6</chanceToCreate>
+    <balloonDefinition>
+        <percentCreated>30</percentCreated>
+        <percentMedium>90</percentMedium>
+        <percentFast>10</percentFast>
+    </balloonDefinition>
+    <dropletDefinition>
+        <percentCreated>30</percentCreated>
+        <percentMedium>50</percentMedium>
+        <percentFast>50</percentFast>
+    </dropletDefinition>
+    <ballDefinition>
+        <percentCreated>40</percentCreated>
+        <percentFast>50</percentFast>
+        <percentSuperFast>50</percentSuperFast>
+    </ballDefinition>
+</level>

@@ -12,10 +12,10 @@ import java.util.Random;
 public class PoppableObjectFactory {
 
     private static Random rand = new Random();
-    private static int SLOW_SPEED = 40;
-    private static int MEDIUM_SPEED = 60;
-    private static int FAST_SPEED = 80;
-    private static int SUPER_FAST_SPEED = 100;
+    private static int SLOW_SPEED = 2;
+    private static int MEDIUM_SPEED = 4;
+    private static int FAST_SPEED = 8;
+    private static int SUPER_FAST_SPEED = 10;
 
     public static boolean shouldCreateObject(Level level) {
         boolean createObject = false;

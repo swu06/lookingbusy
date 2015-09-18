@@ -41,7 +41,7 @@ public class MenuManager {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "Restart Button Clicked: Starting a new game");
-                game.resume();
+                game.startNewGame();
             }
         });
         builder.setNegativeButton("Continue Game", new DialogInterface.OnClickListener() {

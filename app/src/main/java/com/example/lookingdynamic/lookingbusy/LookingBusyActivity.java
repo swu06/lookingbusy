@@ -49,7 +49,6 @@ public class LookingBusyActivity extends Activity {
     protected void onDestroy() {
         Log.d(LOGGER, "Destroying the activity");
         super.onDestroy();
-        game = null;
     }
 
     /*
@@ -71,7 +70,8 @@ public class LookingBusyActivity extends Activity {
     protected void onResume() {
         Log.d(LOGGER, "Resuming...");
         super.onResume();
-        game.resume();
+        game = new PopAllTheThingsGame(this);
+        setContentView(game);
     }
 
     /*

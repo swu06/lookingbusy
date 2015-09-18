@@ -2,6 +2,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
@@ -25,8 +26,8 @@ public abstract class PoppableObject {
         return offScreen;
     }
 
-    public void draw(GameTheme theme, Canvas canvas) {
-        canvas.drawBitmap(getImage(theme), xCoordinate, yCoordinate, null);
+    public void draw(GameTheme theme, Canvas canvas, Paint painter) {
+        canvas.drawBitmap(getImage(theme), xCoordinate, yCoordinate, painter);
     }
     public boolean handleTouch(GameTheme theme, int eventX, int eventY) {
         Bitmap bitmapImage = getImage(theme);

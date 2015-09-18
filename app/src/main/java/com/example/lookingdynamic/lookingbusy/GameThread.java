@@ -10,6 +10,7 @@ import android.view.SurfaceHolder;
 public class GameThread extends Thread implements Runnable{
 
     private static final String LOGGER = GameThread.class.getSimpleName();
+    private static final int SLEEP_TIME_MS = 17;
 
     private SurfaceHolder surfaceHolder;
     private PopAllTheThingsGame gamePanel;
@@ -72,7 +73,7 @@ public class GameThread extends Thread implements Runnable{
                         this.gamePanel.onDraw(canvas);
                     }
                 }
-                waitUnlessNeeded(17);
+                waitUnlessNeeded(SLEEP_TIME_MS);
             } finally {
                 if (canvas != null) {
                     surfaceHolder.unlockCanvasAndPost(canvas);

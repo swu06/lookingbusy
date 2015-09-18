@@ -15,7 +15,14 @@
         <item>@drawable/ic_verified_user_black_24dp</item>
         <item>@xml/level1</item>
         <item>@xml/level2</item>
+        <item>@xml/level3</item>
+        <item>@xml/level4</item>
+        <item>@xml/level5</item>
+        <item>@xml/level6</item>
         <item>@xml/level7</item>
+        <item>@xml/level8</item>
+        <item>@xml/level9</item>
+        <item>@xml/level10</item>
     </array>
 
     <array name="relaxing_mode">

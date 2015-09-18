@@ -2,7 +2,7 @@
 <level>
     <name>Lvl 1</name>
     <pointsToNextLevel>100</pointsToNextLevel>
-    <chanceToCreate>20</chanceToCreate>
+    <chanceToCreate>3</chanceToCreate>
     <balloonDefinition>
         <percentCreated>100</percentCreated>
         <percentSlow>100</percentSlow>

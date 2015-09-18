@@ -44,10 +44,10 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private TextPaint whiteFont;
     private TextPaint blackOutline;
     private Paint translucentPainter;
+    private Paint lessTranslucentPainter;
     private MenuManager menuManager;
     private GameTheme themes[];
     private int currentTheme;
-    private boolean justStarted;
 
     /*
      * Creating the game is all about creating variables
@@ -60,44 +60,57 @@ public class PopAllTheThingsGame extends SurfaceView implements
         getHolder().addCallback(this);
         getHolder().setFormat(PixelFormat.TRANSPARENT);
 
-        // create holder for balloons
-        activePoppableObjects = new Vector<PoppableObject>();
-        poppedPoppableObjects = new Vector<PoppableObject>();
-        stats = new GameStatistics(getResources());
+        mDetector = new GestureDetectorCompat(getContext(), this);
+        mDetector.setOnDoubleTapListener(this);
 
+        // create the game loop thread
+        thread = new GameThread(getHolder(), this);
+
+        setUpFormatters();
+        startNewGame();
+        // make the GamePanel focusable so it can handle events
+        setFocusable(true);
+
+    }
+
+    public void setUpFormatters() {
         whiteFont = new TextPaint();
-        whiteFont.setTextSize(200);
+        whiteFont.setTextSize(100);
         whiteFont.setTextAlign(Paint.Align.CENTER);
         whiteFont.setColor(Color.WHITE);
         whiteFont.setTypeface(Typeface.DEFAULT_BOLD);
-        whiteFont.setAlpha(90);
+        whiteFont.setAlpha(150);
 
         blackOutline = new TextPaint();
-        blackOutline.setTextSize(200);
+        blackOutline.setTextSize(100);
         blackOutline.setTextAlign(Paint.Align.CENTER);
         blackOutline.setColor(Color.BLACK);
         blackOutline.setTypeface(Typeface.DEFAULT_BOLD);
         blackOutline.setStyle(Paint.Style.STROKE);
         blackOutline.setStrokeWidth(2);
-        blackOutline.setAlpha(90);
+        blackOutline.setAlpha(150);
 
         translucentPainter =  new Paint();
-        translucentPainter.setAlpha(90);
+        translucentPainter.setAlpha(200);
 
-        // create the game loop thread
-        thread = new GameThread(getHolder(), this);
+        lessTranslucentPainter =  new Paint();
+        lessTranslucentPainter.setAlpha(240);
 
         menuManager = new MenuManager(getContext());
 
         // Load all available themes
         loadAvailableThemes();
         currentTheme = 0;
-        justStarted = true;
+    }
 
-        // make the GamePanel focusable so it can handle events
-        setFocusable(true);
-        mDetector = new GestureDetectorCompat(getContext(), this);
-        mDetector.setOnDoubleTapListener(this);
+    public void startNewGame() {
+        // create holder for balloons
+        activePoppableObjects = new Vector<PoppableObject>();
+        poppedPoppableObjects = new Vector<PoppableObject>();
+
+        stats = new GameStatistics(getResources());
+
+        resume();
     }
 
     public void loadAvailableThemes(){
@@ -157,7 +170,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void pause() {
-
         thread.onPause();
         menuManager.showPauseMenu(this);
     }
@@ -202,28 +214,23 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return mDetector.onTouchEvent(event);
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         // fills the canvas with black
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-        canvas.drawText(stats.toString(), getWidth() / 2, 500, whiteFont);
-        canvas.drawText(stats.toString(), getWidth() / 2, 500, blackOutline);
+        canvas.drawText(stats.toString(), getWidth() / 2, 300, whiteFont);
+        canvas.drawText(stats.toString(), getWidth() / 2, 300, blackOutline);
 
         canvas.drawBitmap(themes[currentTheme].getPauseSign(), 100, 100, translucentPainter);
 
         synchronized(activePoppableObjects) {
             for (PoppableObject poppableObject : activePoppableObjects) {
-                poppableObject.draw(themes[currentTheme], canvas);
+                poppableObject.draw(themes[currentTheme], canvas, translucentPainter);
             }
         }
         synchronized (poppedPoppableObjects) {
             for (PoppableObject poppableObject : poppedPoppableObjects) {
-                poppableObject.draw(themes[currentTheme], canvas);
+                poppableObject.draw(themes[currentTheme], canvas,translucentPainter);
             }
         }
     }
@@ -259,12 +266,34 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     }
 
+    /*
+     * onDown events can trigger balloons to pop
+     */
     @Override
-    public boolean onSingleTapConfirmed(MotionEvent e) {
-        Log.d(LOGGER, "onSingleTapConfirmed detected!");
-        return false;
+    public boolean onDown (MotionEvent event){
+        Log.d(LOGGER, "onDown detected!");
+        boolean objectPopped = false;
+        synchronized (activePoppableObjects) {
+            for (PoppableObject poppableObject : activePoppableObjects) {
+                if (!poppableObject.isPopped() &&
+                        poppableObject.handleTouch(themes[currentTheme], (int) event.getX(), (int) event.getY())) {
+                    objectPopped = true;
+                    break;
+                }
+            }
+        }
+
+        if(objectPopped) {
+            thread.wakeIfSleeping();
+        }
+
+        return true;
     }
 
+
+    /*
+     * Double-Tap on the Pause Icon is the trigger to open the PauseMenu
+     */
     @Override
     public boolean onDoubleTap(MotionEvent event) {
         if(event.getX() >= 100 && event.getY() >= 100 &&
@@ -272,41 +301,15 @@ public class PopAllTheThingsGame extends SurfaceView implements
             pause();
         }
 
-            Log.d(LOGGER, "Double-tap detected!");
+        Log.d(LOGGER, "Double-tap detected!");
         return false;
     }
 
     @Override
-    public boolean onDoubleTapEvent(MotionEvent e) {
-        Log.d(LOGGER, "Double-tap event detected!");
-        return true;
-    }
+    public void onShowPress(MotionEvent e) { }
 
     @Override
-    public boolean onDown (MotionEvent event){
-        Log.d(LOGGER, "onDown detected!");
-        synchronized (activePoppableObjects) {
-            for (PoppableObject poppableObject : activePoppableObjects) {
-                if (!poppableObject.isPopped() &&
-                        poppableObject.handleTouch(themes[currentTheme], (int) event.getX(), (int) event.getY())) {
-                    thread.wakeIfSleeping();
-                    break;
-                }
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent e) {
-
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        Log.d(LOGGER, "onSingleTapUp detected!");
-        return false;
-    }
+    public boolean onSingleTapUp(MotionEvent e) { return false; }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
@@ -315,7 +318,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     @Override
     public void onLongPress(MotionEvent e) {
-
     }
 
     @Override
@@ -325,4 +327,21 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
 
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+        Log.d(LOGGER, "Double-tap event detected!");
+        return true;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+        Log.d(LOGGER, "onSingleTapConfirmed detected!");
+        return false;
+    }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return mDetector.onTouchEvent(event);
+    }
 }
