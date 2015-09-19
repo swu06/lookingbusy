@@ -48,6 +48,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private MenuManager menuManager;
     private GameTheme themes[];
     private int currentTheme;
+    private boolean gameStopped = false;
 
     /*
      * Creating the game is all about creating variables
@@ -56,24 +57,11 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public PopAllTheThingsGame(Context context) {
         super(context);
 
-        setZOrderOnTop(true);
-        getHolder().addCallback(this);
-        getHolder().setFormat(PixelFormat.TRANSPARENT);
-
-        mDetector = new GestureDetectorCompat(getContext(), this);
-        mDetector.setOnDoubleTapListener(this);
-
-        // create the game loop thread
-        thread = new GameThread(getHolder(), this);
-
-        setUpFormatters();
+        setUpGame();
         startNewGame();
-        // make the GamePanel focusable so it can handle events
-        setFocusable(true);
-
     }
 
-    public void setUpFormatters() {
+    public void setUpGame() {
         whiteFont = new TextPaint();
         whiteFont.setTextSize(100);
         whiteFont.setTextAlign(Paint.Align.CENTER);
@@ -101,6 +89,17 @@ public class PopAllTheThingsGame extends SurfaceView implements
         // Load all available themes
         loadAvailableThemes();
         currentTheme = 0;
+
+        mDetector = new GestureDetectorCompat(getContext(), this);
+        mDetector.setOnDoubleTapListener(this);
+
+        // create the game loop thread
+        thread = new GameThread(this);
+
+        getHolder().addCallback(this);
+        getHolder().setFormat(PixelFormat.TRANSPARENT);
+
+        setZOrderOnTop(true);
     }
 
     public void startNewGame() {
@@ -111,6 +110,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         stats = new GameStatistics(getResources());
 
         resume();
+        setFocusable(true);
     }
 
     public void loadAvailableThemes(){
@@ -170,15 +170,17 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void pause() {
-        thread.onPause();
-        menuManager.showPauseMenu(this);
+        if(!thread.isInPausedState()) {
+            thread.onPause();
+            menuManager.showPauseMenu(this);
+        }
     }
 
     public void resume() {
         if(thread.isPausedFlagIsSet()) {
             thread.onResume();
+            setFocusable(true);
         }
-
     }
 
     @Override
@@ -191,25 +193,42 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public void surfaceCreated(SurfaceHolder holder) {
         // at this point the surface is created and
         // we can safely start the game loop
-        thread.onStart();
+        if(!thread.isRunning()) {
+            thread.updateSurfaceHolder(holder);
+            thread.onStart();
+        }
         resume();
     }
 
+    /*
+     * I don't think anything needs done here until the new surface appears
+     */
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
         Log.d(LOGGER, "Surface is being destroyed");
+        pause();
+    }
+
+    public boolean isGameStopped() {
+        return gameStopped;
+    }
+
+    public void stop() {
         // tell the thread to shut down and wait for it to finish
         // this is a clean shutdown
-        thread.onStop();
-        boolean retry = true;
-        while (retry) {
-            try {
-                thread.join();
-                retry = false;
-            } catch (InterruptedException e) {
-                // try again shutting down the thread
+        if(thread.isRunning()) {
+            thread.onStop();
+            boolean retry = true;
+            while (retry) {
+                try {
+                    thread.join();
+                    retry = false;
+                } catch (InterruptedException e) {
+                    // try again shutting down the thread
+                }
             }
         }
+        gameStopped = true;
         Log.d(LOGGER, "Thread was shut down cleanly");
     }
 

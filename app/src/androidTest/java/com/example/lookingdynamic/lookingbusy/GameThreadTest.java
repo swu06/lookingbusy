@@ -8,7 +8,7 @@ import android.test.ActivityTestCase;
 public class GameThreadTest extends ActivityTestCase {
 
     public void testCreateNullThreadStartsPaused() {
-        GameThread myThread = new GameThread(null, null);
+        GameThread myThread = new GameThread(null);
 
         assertTrue("Test Failed: Pause Flag should be set during initialization",
                     myThread.isPausedFlagIsSet());
@@ -19,7 +19,7 @@ public class GameThreadTest extends ActivityTestCase {
     }
 
     public void testCreateNullThreadDoesNothing() {
-        GameThread myThread = new GameThread(null, null);
+        GameThread myThread = new GameThread(null);
         myThread.start();
         try {
             myThread.join();
@@ -33,8 +33,9 @@ public class GameThreadTest extends ActivityTestCase {
 
     public void testThreadCanBeRun() {
         PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext());
-        GameThread myThread = new GameThread(game.getHolder(), game);
+        GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
+        myThread.updateSurfaceHolder(game.getHolder());
         myThread.onStart();
         assertEquals("Test Failed: Thread should be RUNNABLE immediately after starting",
                     Thread.State.RUNNABLE, myThread.getState());
@@ -44,8 +45,9 @@ public class GameThreadTest extends ActivityTestCase {
 
     public void testThreadCanStop() {
         PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext());
-        GameThread myThread = new GameThread(game.getHolder(), game);
+        GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
+        myThread.updateSurfaceHolder(game.getHolder());
         myThread.onStart();
         assertEquals(Thread.State.RUNNABLE, myThread.getState());
         myThread.onStop();
@@ -62,8 +64,9 @@ public class GameThreadTest extends ActivityTestCase {
 
     public void testThreadCanPause() {
         PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext());
-        GameThread myThread = new GameThread(game.getHolder(), game);
+        GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
+        myThread.updateSurfaceHolder(game.getHolder());
         myThread.onStart();
         assertEquals(Thread.State.RUNNABLE, myThread.getState());
         myThread.onPause();
@@ -78,8 +81,9 @@ public class GameThreadTest extends ActivityTestCase {
 
     public void testThreadCanResume() {
         PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext());
-        GameThread myThread = new GameThread(game.getHolder(), game);
+        GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
+        myThread.updateSurfaceHolder(game.getHolder());
         myThread.onStart();
         assertEquals(Thread.State.RUNNABLE, myThread.getState());
 
@@ -108,8 +112,9 @@ public class GameThreadTest extends ActivityTestCase {
 
     public void testThreadCanResumeRepeatedly() {
         PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext());
-        GameThread myThread = new GameThread(game.getHolder(), game);
+        GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
+        myThread.updateSurfaceHolder(game.getHolder());
         myThread.onStart();
         assertEquals(Thread.State.RUNNABLE, myThread.getState());
 

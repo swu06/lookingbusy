@@ -1,8 +1,6 @@
 package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.Level;
-import com.example.lookingdynamic.lookingbusy.gameplay.LevelGuide;
-import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 import java.util.Random;
 
@@ -131,9 +129,9 @@ public class PoppableObjectFactory {
             } else if(whichBalloon == 1) {
                 toReturn = new Ball(width, 0, -2 * speed, speed);
             } else if(whichBalloon == 2) {
-                toReturn = new Ball(0, height, -2 * speed, speed);
+                toReturn = new Ball(0, height, -2 * speed, -1 * speed);
             } else {
-                toReturn = new Ball(width, height, -2 * speed, speed);
+                toReturn = new Ball(width, height, -2 * speed, -1 * speed);
             }
         }
 

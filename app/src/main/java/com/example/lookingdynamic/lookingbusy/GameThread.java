@@ -22,9 +22,8 @@ public class GameThread extends Thread implements Runnable{
     private boolean pausedFlagIsSet;
     private boolean inPausedState;
 
-    public GameThread(SurfaceHolder surfaceHolder, PopAllTheThingsGame gamePanel) {
+    public GameThread(PopAllTheThingsGame gamePanel) {
         super();
-        this.surfaceHolder = surfaceHolder;
         this.gamePanel = gamePanel;
         pauseLock = new Object();
         sleepLock = new Object();
@@ -41,6 +40,7 @@ public class GameThread extends Thread implements Runnable{
 
     public boolean isPausedFlagIsSet() { return pausedFlagIsSet; }
     public boolean isInPausedState() { return inPausedState; }
+    public boolean isRunning() { return running; }
 
     /*
      * This is the main loop for the game. It handles the two main calls:

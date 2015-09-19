@@ -24,7 +24,7 @@ public class GameThemeTest extends ActivityTestCase {
         assertEquals("Test Failure: Crayon Theme crayon_popped_ball has changed", R.drawable.crayon_popped_ball, theme.poppedBallImage);
         assertEquals("Test Failure: Crayon Theme crayon_popped_balloon has changed", R.drawable.crayon_popped_balloon, theme.poppedBalloonImage);
         assertEquals("Test Failure: Crayon Theme crayon_popped_droplet has changed", R.drawable.crayon_popped_droplet, theme.poppedDropletImage);
-        assertEquals("Test Failure: Crayon Theme crayon_pause has changed", R.drawable.crayon_pause, theme.pauseSignImage);
+        assertEquals("Test Failure: Crayon Theme crayon_pause has changed", R.drawable.pause, theme.pauseSignImage);
     }
 
     public void testGetBallBitmap() {
@@ -95,7 +95,7 @@ public class GameThemeTest extends ActivityTestCase {
         assertEquals("Test Failure: Bright Theme bright_popped_ball has changed", R.drawable.bright_popped_ball, theme.poppedBallImage);
         assertEquals("Test Failure: Bright Theme bright_popped_balloon has changed", R.drawable.bright_popped_balloon, theme.poppedBalloonImage);
         assertEquals("Test Failure: Bright Theme bright_popped_droplet has changed", R.drawable.bright_popped_droplet, theme.poppedDropletImage);
-        assertEquals("Test Failure: Bright Theme bright_pause has changed", R.drawable.bright_pause, theme.pauseSignImage);
+        assertEquals("Test Failure: Bright Theme bright_pause has changed", R.drawable.pause, theme.pauseSignImage);
     }
 
     public void testCreateThemeBasedOnArrayValue() {

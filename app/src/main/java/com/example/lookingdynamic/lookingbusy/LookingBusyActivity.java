@@ -34,21 +34,24 @@ public class LookingBusyActivity extends Activity {
         super.onCreate(savedInstanceState);
         // Removing the title to save previous screen space
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        // Initialize the game, and set it as this activity's content
-        game = new PopAllTheThingsGame(this);
-        setContentView(game);
     }
 
     /*
-     * This method handles the final phase of life: destruction
-     * This game will never come back from this state, so we
-     * just need to clear up and head home.
+     * Resume the game when it is ready to be visible
+     * This will be called after onCreate or after onPause
+     * Note that this needs to be a safe resume,  because
+     * the playing surface may not yet be available.
      */
     @Override
-    protected void onDestroy() {
-        Log.d(LOGGER, "Destroying the activity");
-        super.onDestroy();
+    protected void onResume() {
+        Log.d(LOGGER, "Resuming...");
+        super.onResume();
+
+        // Initialize the game as needed, and set it as this activity's content
+        if(game == null || game.isGameStopped()) {
+            game = new PopAllTheThingsGame(this);
+        }
+        setContentView(game);
     }
 
     /*
@@ -62,17 +65,20 @@ public class LookingBusyActivity extends Activity {
     }
 
     /*
-     * Resume the game when it is ready to be visible again
-     * Note that this needs to be a safe resume,  because
-     * the playing surface may note yet be available.
+     * This method handles the final phase of life: destruction
+     * This game will never come back from this state, so we
+     * just need to clear up and head home.
      */
     @Override
-    protected void onResume() {
-        Log.d(LOGGER, "Resuming...");
-        super.onResume();
-        game = new PopAllTheThingsGame(this);
-        setContentView(game);
+    protected void onDestroy() {
+        Log.d(LOGGER, "Destroying the activity");
+        super.onDestroy();
+        game.stop();
     }
+
+
+
+
 
     /*
      * This method handles a user pushing the "menu" button
