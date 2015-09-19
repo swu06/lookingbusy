@@ -8,7 +8,7 @@ import com.example.lookingdynamic.lookingbusy.R;
 /**
  * Created by swu on 9/6/2015.
  */
-public class GameStatistics {
+public class GameplayManager {
 
     private GameplayMode[] modes;
     private int score;
@@ -16,7 +16,7 @@ public class GameStatistics {
     private int pointsToNextLevel;
     private int currentMode;
 
-    public GameStatistics(Resources myResources) {
+    public GameplayManager(Resources myResources) {
 
         TypedArray items = myResources.obtainTypedArray(R.array.gameplay_modes);
         modes = new GameplayMode[items.length()];

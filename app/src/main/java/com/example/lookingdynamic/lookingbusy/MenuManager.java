@@ -7,7 +7,6 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.ListAdapter;
 
-import com.example.lookingdynamic.lookingbusy.gameplay.GameStatistics;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameplayMode;
 
@@ -18,21 +17,16 @@ public class MenuManager {
 
     private static final String LOGGER = MenuManager.class.getSimpleName();
 
-    private static final String [] pausedMenuLabels = new String[] {"Themes", "GamePlay"};
-    private static final Integer[] pausedMenuIcons = new Integer[] {R.drawable.crayon_icon, R.drawable.ic_insert_emoticon_black_24dp};
-
-    private static final String [] gamePlayMenuLabels = new String[] {"Relaxing", "Challanging"};
-    private static final Integer[] gamePlayMenuIcons = new Integer[] {R.drawable.ic_insert_emoticon_black_24dp, R.drawable.ic_verified_user_black_24dp};
-
-
     private Context myContext;
     public MenuManager(Context myContext) {
         this.myContext = myContext;
     }
 
     public void showPauseMenu(final PopAllTheThingsGame game) {
-        pausedMenuIcons[0] = game.getCurrentThemeIcon();
-        pausedMenuIcons[1] = game.getCurrentGameplayModeIcon();
+
+        String [] pausedMenuLabels = new String[] {"Themes", "GamePlay"};
+        Integer[] pausedMenuIcons = new Integer[] {game.getCurrentThemeIcon(), game.getCurrentGameplayModeIcon()};
+
         ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_item, pausedMenuLabels, pausedMenuIcons);
 
         AlertDialog.Builder builder = getDialog(myContext);
@@ -75,7 +69,7 @@ public class MenuManager {
             gameplayMenuLabels[i] = modes[i].getName();
             gameplayMenuIcons[i] = modes[i].getIconImageId();
         }
-        ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_singlechoice, gamePlayMenuLabels, gamePlayMenuIcons);
+        ListAdapter adapter = new ArrayAdapterWithIcons(myContext, android.R.layout.select_dialog_singlechoice, gameplayMenuLabels, gameplayMenuIcons);
 
         AlertDialog.Builder builder = getDialog(myContext);
         builder.setTitle("Game Play Options");

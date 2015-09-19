@@ -1,10 +1,12 @@
 package com.example.lookingdynamic.lookingbusy;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.Window;
+import android.widget.Toast;
 
 /**
  * Welcome to The Entry Point for this game! The LookingBusyActivity is the main
@@ -22,6 +24,7 @@ public class LookingBusyActivity extends Activity {
 
     private static final String LOGGER = LookingBusyActivity.class.getSimpleName();
     private PopAllTheThingsGame game = null;
+    int backButtonCount = 0;
 
     /*
      * This method is for a brand new activity
@@ -37,9 +40,9 @@ public class LookingBusyActivity extends Activity {
     }
 
     /*
-     * Resume the game when it is ready to be visible
+     * Resume the game when it is ready to be visible.
      * This will be called after onCreate or after onPause
-     * Note that this needs to be a safe resume,  because
+     * Note that this needs to be a safe resume because
      * the playing surface may not yet be available.
      */
     @Override
@@ -48,14 +51,20 @@ public class LookingBusyActivity extends Activity {
         super.onResume();
 
         // Initialize the game as needed, and set it as this activity's content
-        if(game == null || game.isGameStopped()) {
+        if(game == null || game.isStopped()) {
             game = new PopAllTheThingsGame(this);
+            setContentView(game);
         }
-        setContentView(game);
+
+        if(game.isPaused()){
+            game.resume();
+        }
+
     }
 
     /*
      * Pause the game if it is not visible for any reason
+     * This is called before onStop, and nothing extra needs done in onStop.
      */
     @Override
     protected void onPause() {
@@ -65,8 +74,30 @@ public class LookingBusyActivity extends Activity {
     }
 
     /*
+     * This method forces the back button to behave properly.
+     * It is needed to prevent a crash if the user opens up the
+     * game immediately after hitting back
+     */
+    @Override
+    public void onBackPressed(){
+        if(backButtonCount >= 1)
+        {
+            game.pause();
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+            backButtonCount++;
+        }
+    }
+
+    /*
      * This method handles the final phase of life: destruction
-     * This game will never come back from this state, so we
+     * This game will "never" come back from this state, so we
      * just need to clear up and head home.
      */
     @Override
@@ -74,11 +105,8 @@ public class LookingBusyActivity extends Activity {
         Log.d(LOGGER, "Destroying the activity");
         super.onDestroy();
         game.stop();
+        game = null;
     }
-
-
-
-
 
     /*
      * This method handles a user pushing the "menu" button
@@ -101,6 +129,5 @@ public class LookingBusyActivity extends Activity {
     public void onOptionsMenuClosed(Menu menu) {
         game.resume();
     }
-
-
+    
 }
