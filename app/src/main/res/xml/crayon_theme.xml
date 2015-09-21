@@ -3,10 +3,10 @@
     <name>Crayon Theme</name>
     <icon>crayon_icon</icon>
     <ball>crayon_ball</ball>
-    <balloon>crayon_balloon</balloon>
+    <balloons>crayon_balloon1</balloons>
     <droplet>crayon_droplet</droplet>
     <popped_ball>crayon_popped_ball</popped_ball>
-    <popped_balloon>crayon_popped_balloon</popped_balloon>
+    <popped_balloons>crayon_popped_balloon1</popped_balloons>
     <popped_droplet>crayon_popped_droplet</popped_droplet>
     <pause>pause</pause>
 </gameTheme>

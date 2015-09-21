@@ -82,6 +82,7 @@ public class PoppableObjectFactory {
         int randomType = rand.nextInt(100);
         int randomSpeed = rand.nextInt(100);
         int randomLocation = rand.nextInt(9) + 1;
+        int oneInFour = rand.nextInt(4);
 
         if(randomType < level.getBalloonPercentCreated()) {
             int speed;
@@ -95,7 +96,7 @@ public class PoppableObjectFactory {
             } else {
                 speed = SUPER_FAST_SPEED;
             }
-            toReturn = new Balloon(width * randomLocation / 10, height, -1 * speed);
+            toReturn = new Balloon(width * randomLocation / 10, height, -1 * speed, oneInFour);
 
         } else if(randomType < level.getBalloonPercentCreated() + level.getDropletPercentCreated()){
             int speed;
@@ -123,12 +124,12 @@ public class PoppableObjectFactory {
                 speed = SUPER_FAST_SPEED;
             }
 
-            int whichBalloon = rand.nextInt(4);
-            if(whichBalloon == 0) {
+
+            if(oneInFour == 0) {
                 toReturn = new Ball(0, 0, 2 * speed, speed);
-            } else if(whichBalloon == 1) {
+            } else if(oneInFour == 1) {
                 toReturn = new Ball(width, 0, -2 * speed, speed);
-            } else if(whichBalloon == 2) {
+            } else if(oneInFour == 2) {
                 toReturn = new Ball(0, height, -2 * speed, -1 * speed);
             } else {
                 toReturn = new Ball(width, height, -2 * speed, -1 * speed);

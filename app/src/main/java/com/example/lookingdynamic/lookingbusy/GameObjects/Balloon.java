@@ -15,20 +15,22 @@ public class Balloon extends PoppableObject {
 
     private static final String LOGGER = Balloon.class.getSimpleName();
     public static final int VALUE = 10;
+    private int whichBalloon;
 
-    public Balloon(int xCoordinate, int yCoordinate, int yVelocity) {
+    public Balloon(int xCoordinate, int yCoordinate, int yVelocity, int whichBalloon) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
         this.yVelocity = yVelocity;
         popped = false;
         offScreen = false;
+        this.whichBalloon = whichBalloon;
     }
 
     @Override
     public Bitmap getImage(GameTheme theme) {
-        Bitmap bitmapImage = theme.getBalloon();
+        Bitmap bitmapImage = theme.getBalloon(whichBalloon);
         if(popped == true) {
-            bitmapImage = theme.getPoppedBalloon();
+            bitmapImage = theme.getPoppedBalloon(whichBalloon);
         }
 
         return bitmapImage;

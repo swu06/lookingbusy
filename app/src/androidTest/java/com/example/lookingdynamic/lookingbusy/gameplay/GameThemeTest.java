@@ -19,10 +19,10 @@ public class GameThemeTest extends ActivityTestCase {
         assertEquals("Test Failure: Crayon Theme Name has changed","Crayon Theme", theme.getName());
         assertEquals("Test Failure: Crayon Theme crayon_icon has changed", R.drawable.crayon_icon, theme.getIconImageId());
         assertEquals("Test Failure: Crayon Theme crayon_ball has changed", R.drawable.crayon_ball, theme.ballImage);
-        assertEquals("Test Failure: Crayon Theme crayon_balloon has changed", R.drawable.crayon_balloon, theme.balloonImage);
+        assertEquals("Test Failure: Crayon Theme crayon_balloon has changed", R.drawable.crayon_balloon1, theme.balloonImages[0]);
         assertEquals("Test Failure: Crayon Theme crayon_droplet has changed", R.drawable.crayon_droplet, theme.dropletImage);
         assertEquals("Test Failure: Crayon Theme crayon_popped_ball has changed", R.drawable.crayon_popped_ball, theme.poppedBallImage);
-        assertEquals("Test Failure: Crayon Theme crayon_popped_balloon has changed", R.drawable.crayon_popped_balloon, theme.poppedBalloonImage);
+        assertEquals("Test Failure: Crayon Theme crayon_popped_balloon has changed", R.drawable.crayon_popped_balloon1, theme.poppedBalloonImages[0]);
         assertEquals("Test Failure: Crayon Theme crayon_popped_droplet has changed", R.drawable.crayon_popped_droplet, theme.poppedDropletImage);
         assertEquals("Test Failure: Crayon Theme crayon_pause has changed", R.drawable.pause, theme.pauseSignImage);
     }
@@ -40,7 +40,7 @@ public class GameThemeTest extends ActivityTestCase {
         GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Balloon Bitmap does not load properly",
-                theme.getBalloon());
+                theme.getBalloon(0));
     }
 
     public void testGetDropletBitmap() {
@@ -64,7 +64,7 @@ public class GameThemeTest extends ActivityTestCase {
         GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Popped Balloon Bitmap does not load properly",
-                theme.getPoppedBalloon());
+                theme.getPoppedBalloon(0));
     }
 
     public void testGetPoppedDropletBitmap() {
@@ -90,10 +90,10 @@ public class GameThemeTest extends ActivityTestCase {
         assertEquals("Test Failure: Bright Theme Name has changed", "Bright Theme", theme.getName());
         assertEquals("Test Failure: Bright Theme bright_icon has changed", R.drawable.bright_icon, theme.getIconImageId());
         assertEquals("Test Failure: Bright Theme bright_ball has changed", R.drawable.bright_ball, theme.ballImage);
-        assertEquals("Test Failure: Bright Theme bright_balloon has changed", R.drawable.bright_balloon, theme.balloonImage);
+        assertEquals("Test Failure: Bright Theme bright_balloon has changed", R.drawable.bright_balloon1, theme.balloonImages[0]);
         assertEquals("Test Failure: Bright Theme bright_droplet has changed", R.drawable.bright_droplet, theme.dropletImage);
         assertEquals("Test Failure: Bright Theme bright_popped_ball has changed", R.drawable.bright_popped_ball, theme.poppedBallImage);
-        assertEquals("Test Failure: Bright Theme bright_popped_balloon has changed", R.drawable.bright_popped_balloon, theme.poppedBalloonImage);
+        assertEquals("Test Failure: Bright Theme bright_popped_balloon has changed", R.drawable.bright_popped_balloon1, theme.poppedBalloonImages[0]);
         assertEquals("Test Failure: Bright Theme bright_popped_droplet has changed", R.drawable.bright_popped_droplet, theme.poppedDropletImage);
         assertEquals("Test Failure: Bright Theme bright_pause has changed", R.drawable.pause, theme.pauseSignImage);
     }
@@ -118,10 +118,10 @@ public class GameThemeTest extends ActivityTestCase {
         GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.bright_theme));
 
         assertNull("Test Failure: ball Image was pre-loaded", theme.ball);
-        assertNull("Test Failure: balloon Image was pre-loaded", theme.balloon);
+        assertNull("Test Failure: balloon Image was pre-loaded", theme.balloons);
         assertNull("Test Failure: droplet Image was pre-loaded", theme.droplet);
         assertNull("Test Failure: popped_ball Image was pre-loaded", theme.popped_ball);
-        assertNull("Test Failure: popped_balloon Image was pre-loaded", theme.popped_balloon);
+        assertNull("Test Failure: popped_balloon Image was pre-loaded", theme.popped_balloons);
         assertNull("Test Failure: popped_droplet Image was pre-loaded", theme.popped_droplet);
         assertNull("Test Failure: pause_sign Image was pre-loaded", theme.pause_sign);
     }
@@ -132,19 +132,19 @@ public class GameThemeTest extends ActivityTestCase {
 
         //Load all images first
         theme.getBall();
-        theme.getBalloon();
+        theme.getBalloon(0);
         theme.getDroplet();
         theme.getPoppedBall();
-        theme.getPoppedBalloon();
+        theme.getPoppedBalloon(0);
         theme.getPoppedDroplet();
         theme.getPauseSign();
         theme.unloadImages();
 
         assertNull("Test Failure: ball Image was not dereferenced", theme.ball);
-        assertNull("Test Failure: balloon Image was not dereferenced", theme.balloon);
+        assertNull("Test Failure: balloon Image was not dereferenced", theme.balloons);
         assertNull("Test Failure: droplet Image was not dereferenced", theme.droplet);
         assertNull("Test Failure: popped_ball Image was not dereferenced", theme.popped_ball);
-        assertNull("Test Failure: popped_balloon Image was not dereferenced", theme.popped_balloon);
+        assertNull("Test Failure: popped_balloon Image was not dereferenced", theme.popped_balloons);
         assertNull("Test Failure: popped_droplet Image was not dereferenced", theme.popped_droplet);
         assertNull("Test Failure: pause_sign Image was not dereferenced", theme.pause_sign);
     }

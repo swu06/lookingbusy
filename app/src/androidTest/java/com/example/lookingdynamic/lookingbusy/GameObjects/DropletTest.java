@@ -11,15 +11,19 @@ import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
  */
 public class DropletTest extends ActivityTestCase {
 
-    public GameTheme theme = new GameTheme(getInstrumentation().getTargetContext().getResources(),
-            getInstrumentation().getTargetContext().getResources().getXml(R.xml.crayon_theme));
+    public GameTheme theme;
+
+    public void setUp() throws Exception{
+        super.setUp();
+        theme = new GameTheme(getInstrumentation().getTargetContext().getResources(),
+                getInstrumentation().getTargetContext().getResources().getXml(R.xml.crayon_theme));
+    }
 
     public void testCreateBalloon(){
         Droplet testDroplet = new Droplet(0, 0);
 
         assertNotNull(testDroplet.getImage(theme));
-        assertTrue(1 < testDroplet.getImage(theme).getWidth());
-        assertTrue(0 > testDroplet.xCoordinate);
+        assertEquals(0, testDroplet.xCoordinate);
         assertEquals(0, testDroplet.yCoordinate);
         assertEquals(0, testDroplet.yVelocity);
         assertFalse(testDroplet.popped);
