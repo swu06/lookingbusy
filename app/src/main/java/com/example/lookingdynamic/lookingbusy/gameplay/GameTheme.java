@@ -217,4 +217,10 @@ public class GameTheme {
         popped_droplet = null;
         pause_sign = null;
     }
+
+    public void setBalloonImage(Bitmap image){
+        for(int i=0; i<balloons.length;i++) {
+            balloons[i] = image;
+        }
+    }
 }

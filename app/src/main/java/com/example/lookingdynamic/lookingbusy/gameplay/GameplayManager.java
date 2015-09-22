@@ -77,6 +77,13 @@ public class GameplayManager {
         return scoreString;
     }
 
+    public boolean isHighScore() {
+        if(newHighScore > currentHighScore) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     protected void levelUp(){
         level++;
         pointsToNextLevel = modes[currentMode].getPointsToNextLevel(level);

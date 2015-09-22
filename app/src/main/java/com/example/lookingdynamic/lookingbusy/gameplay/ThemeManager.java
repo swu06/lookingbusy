@@ -4,8 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.example.lookingdynamic.lookingbusy.R;
+
+import java.io.File;
 
 /**
  * Created by swu on 9/20/2015.
@@ -14,6 +18,7 @@ public class ThemeManager {
     private SettingsManager settings;
     private GameTheme themes[];
     private int currentTheme;
+    private Bitmap randomBotImage;
 
     public ThemeManager(SettingsManager settings, Resources myResources) {
         this.settings = settings;
@@ -28,6 +33,15 @@ public class ThemeManager {
         currentTheme = settings.getTheme();
         if(currentTheme >= themes.length) {
             currentTheme = 0;
+        }
+        String randomBotImagePath = settings.getRandomBotLocation();
+        if(randomBotImage != null) {
+            try{
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                randomBotImage = BitmapFactory.decodeFile(randomBotImagePath,bmOptions);
+            } catch(Exception E) {
+                settings.setRandomBotLocation(null);
+            }
         }
     }
 
@@ -72,4 +86,14 @@ public class ThemeManager {
 
     }
 
+    public void setRandomBotImage(Bitmap randomBotImage) {
+        this.randomBotImage = randomBotImage;
+        for(int i=0;i < themes.length; i++) {
+            themes[i].setBalloonImage(randomBotImage);
+        }
+    }
+
+    public Bitmap getRandomBotImage() {
+        return randomBotImage;
+    }
 }

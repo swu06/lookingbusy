@@ -1,6 +1,8 @@
 package com.example.lookingdynamic.lookingbusy;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -47,7 +49,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private SettingsManager settings;
     private GameplayManager gameplay;
     private ThemeManager themes;
-    private MenuManager menuManager;
+    private LookingBusyActivity activity;
 
     private boolean gameStopped = false;
     private boolean firstRun = false;
@@ -56,16 +58,18 @@ public class PopAllTheThingsGame extends SurfaceView implements
      * Creating the game is all about creating variables
      * and giving them things to hold.  It's the boss!
      */
-    public PopAllTheThingsGame(Context context, boolean firstRun) {
-        super(context);
+    public PopAllTheThingsGame(LookingBusyActivity activity, boolean firstRun) {
+        super((Context) activity);
+        this.activity = activity;
         this.firstRun = firstRun;
+
 
         setUpGame(firstRun);
         startNewGame();
 
         if(firstRun) {
             translucentPainter.setAlpha(255);
-            menuManager.showIntroMenu(this);
+            activity.showIntroMenu();
         }
     }
 
@@ -83,7 +87,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         blackOutline.setColor(Color.BLACK);
         blackOutline.setTypeface(Typeface.DEFAULT_BOLD);
         blackOutline.setStyle(Paint.Style.STROKE);
-        blackOutline.setStrokeWidth(2);
+        blackOutline.setStrokeWidth(4);
         blackOutline.setAlpha(200);
 
         translucentPainter =  new Paint();
@@ -92,7 +96,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
         settings = new SettingsManager(getContext());
         gameplay = new GameplayManager(settings, getResources());
         themes = new ThemeManager(settings, getResources());
-        menuManager = new MenuManager(getContext());
 
         mDetector = new GestureDetectorCompat(getContext(), this);
         mDetector.setOnDoubleTapListener(this);
@@ -132,10 +135,15 @@ public class PopAllTheThingsGame extends SurfaceView implements
         return gameplay;
     }
 
+    public void setRandomBotImage(String path, Bitmap image) {
+        settings.setRandomBotLocation(path);
+        themes.setRandomBotImage(image);
+    }
+
     public void pause() {
         if(!thread.isPausedFlagIsSet()) {
             thread.onPause();
-            menuManager.showPauseMenu(this);
+            activity.showPauseMenu();
         }
     }
 
@@ -209,6 +217,12 @@ public class PopAllTheThingsGame extends SurfaceView implements
         canvas.drawText(gameplay.getDisplayString(), getWidth() / 2, 300, whiteFont);
         canvas.drawText(gameplay.getDisplayString(), getWidth() / 2, 300, blackOutline);
 
+        if(gameplay.isHighScore()) {
+            float y = 300 + blackOutline.descent() - blackOutline.ascent();
+            canvas.drawText("New High Score!!", getWidth() / 2, y, whiteFont);
+            canvas.drawText("New High Score!!", getWidth() / 2, y, blackOutline);
+        }
+
         canvas.drawBitmap(themes.getCurrentTheme().getPauseSign(), 100, 100, translucentPainter);
 
         synchronized (activePoppableObjects) {
@@ -256,9 +270,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
             }
         }
 
-        if(newHighScoreAchieved) {
-            Toast.makeText(getContext(), "New High Score!", Toast.LENGTH_LONG).show();
-        }
 
     }
 
@@ -340,4 +351,5 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public boolean onTouchEvent(MotionEvent event) {
         return mDetector.onTouchEvent(event);
     }
+
 }
