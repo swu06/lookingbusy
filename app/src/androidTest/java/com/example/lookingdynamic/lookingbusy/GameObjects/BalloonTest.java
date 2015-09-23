@@ -1,10 +1,16 @@
 package com.example.lookingdynamic.lookingbusy.gameobjects;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.test.ActivityTestCase;
+import android.util.Log;
 
 import com.example.lookingdynamic.lookingbusy.R;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 /**
  *
@@ -31,6 +37,7 @@ public class BalloonTest extends ActivityTestCase {
         assertEquals(0, testBalloon.yVelocity);
         assertFalse(testBalloon.popped);
         assertFalse(testBalloon.offScreen);
+
     }
 
     public void testMove() {

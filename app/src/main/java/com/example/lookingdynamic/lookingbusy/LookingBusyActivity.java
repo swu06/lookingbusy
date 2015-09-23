@@ -143,7 +143,7 @@ public class LookingBusyActivity extends Activity {
         Log.d(LOGGER, "Destroying the activity");
         super.onDestroy();
         game.stop();
-        game = null;
+        //game = null;
     }
 
     /*
@@ -353,8 +353,10 @@ public class LookingBusyActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == CAMERA_RESULT) {
+                Log.d(LOGGER, "Camera has returned a file.");
                 storeBitmap((Bitmap) data.getExtras().get("data"));
             } else if (requestCode == FILE_RESULT) {
+                Log.d(LOGGER, "Gallery has returned a file.");
                 Uri selectedImageUri = data.getData();
                 storeBitmap(BitmapFactory.decodeFile(selectedImageUri.getPath()));
             }
@@ -363,17 +365,38 @@ public class LookingBusyActivity extends Activity {
     }
 
     public void storeBitmap(Bitmap existingFile) {
-        Bitmap scaledFile = Bitmap.createScaledBitmap(existingFile, 100, 100, false);
+        Log.d(LOGGER, "Scaling file ...");
 
-        File destination = new File(Environment.getExternalStorageDirectory(),
+        final int maxSize = 200;
+        int outWidth;
+        int outHeight;
+        int inWidth = existingFile.getWidth();
+        int inHeight = existingFile.getHeight();
+        if(inWidth > inHeight){
+            outWidth = maxSize;
+            outHeight = (inHeight * maxSize) / inWidth;
+        } else {
+            outHeight = maxSize;
+            outWidth = (inWidth * maxSize) / inHeight;
+        }
+        Bitmap scaledFile = Bitmap.createScaledBitmap(existingFile, outWidth, outHeight, false);
+
+        File destination = new File(Environment.getExternalStorageDirectory() + "/pictures",
                 System.currentTimeMillis() + ".png");
         FileOutputStream fOut;
         try {
+            destination.mkdirs();
+            destination.createNewFile();
             fOut = new FileOutputStream(destination);
+            Log.d(LOGGER, "Storing file ...");
             scaledFile.compress(Bitmap.CompressFormat.PNG, 100, fOut);
             fOut.flush();
             fOut.close();
         } catch (Exception e) {}
+        Log.d(LOGGER, "RandomBot File ready to use.");
+        if(game == null) {
+            Log.d(LOGGER, "Game is null?!?!");
+        }
         game.setRandomBotImage(destination.getPath(), scaledFile);
     }
 

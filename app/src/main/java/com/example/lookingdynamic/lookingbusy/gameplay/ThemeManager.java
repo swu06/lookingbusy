@@ -18,24 +18,14 @@ public class ThemeManager {
     private SettingsManager settings;
     private GameTheme themes[];
     private int currentTheme;
-    private Bitmap randomBotImage;
+    private Bitmap randomBotImage = null;
 
     public ThemeManager(SettingsManager settings, Resources myResources) {
         this.settings = settings;
         TypedArray availableThemesArray = myResources.obtainTypedArray(R.array.available_game_themes);
 
-        themes = new GameTheme[availableThemesArray.length()];
-
-        for(int i=0; i < availableThemesArray.length(); i++) {
-            themes[i] = new GameTheme(myResources, myResources.getXml(availableThemesArray.getResourceId(i,-1)));
-        }
-        
-        currentTheme = settings.getTheme();
-        if(currentTheme >= themes.length) {
-            currentTheme = 0;
-        }
         String randomBotImagePath = settings.getRandomBotLocation();
-        if(randomBotImage != null) {
+        if(randomBotImagePath != null) {
             try{
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 randomBotImage = BitmapFactory.decodeFile(randomBotImagePath,bmOptions);
@@ -43,6 +33,20 @@ public class ThemeManager {
                 settings.setRandomBotLocation(null);
             }
         }
+
+        themes = new GameTheme[availableThemesArray.length()];
+
+        for(int i=0; i < availableThemesArray.length(); i++) {
+            themes[i] = new GameTheme(myResources,
+                                    myResources.getXml(availableThemesArray.getResourceId(i,-1)),
+                                    randomBotImage);
+        }
+        
+        currentTheme = settings.getTheme();
+        if(currentTheme >= themes.length) {
+            currentTheme = 0;
+        }
+
     }
 
     public String[] getLabels() {

@@ -1,5 +1,6 @@
 package com.example.lookingdynamic.lookingbusy;
 
+import android.app.Activity;
 import android.test.ActivityTestCase;
 
 /**
@@ -32,7 +33,7 @@ public class GameThreadTest extends ActivityTestCase {
     }
 
     public void testThreadCanBeRun() {
-        PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext(), false);
+        PopAllTheThingsGame game = new PopAllTheThingsGame(new LookingBusyActivity(), false);
         GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.updateSurfaceHolder(game.getHolder());
@@ -44,7 +45,7 @@ public class GameThreadTest extends ActivityTestCase {
     }
 
     public void testThreadCanStop() {
-        PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext(), false);
+        PopAllTheThingsGame game = new PopAllTheThingsGame(new LookingBusyActivity(), false);
         GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.updateSurfaceHolder(game.getHolder());
@@ -63,7 +64,7 @@ public class GameThreadTest extends ActivityTestCase {
     }
 
     public void testThreadCanPause() {
-        PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext(), false);
+        PopAllTheThingsGame game = new PopAllTheThingsGame(new LookingBusyActivity(), false);
         GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.updateSurfaceHolder(game.getHolder());
@@ -80,7 +81,7 @@ public class GameThreadTest extends ActivityTestCase {
     }
 
     public void testThreadCanResume() {
-        PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext(), false);
+        PopAllTheThingsGame game = new PopAllTheThingsGame(new LookingBusyActivity(), false);
         GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.updateSurfaceHolder(game.getHolder());
@@ -111,7 +112,7 @@ public class GameThreadTest extends ActivityTestCase {
     }
 
     public void testThreadCanResumeRepeatedly() {
-        PopAllTheThingsGame game = new PopAllTheThingsGame(getInstrumentation().getContext(), false);
+        PopAllTheThingsGame game = new PopAllTheThingsGame(new LookingBusyActivity(), false);
         GameThread myThread = new GameThread(game);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.updateSurfaceHolder(game.getHolder());
