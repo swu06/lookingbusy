@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 /**
  * Created by swu on 9/6/2015.
@@ -17,6 +18,7 @@ public abstract class PoppableObject {
     protected int yVelocity;
     protected boolean popped;
     protected boolean offScreen;
+    protected int VALUE;
 
     public boolean isPopped() {
         return popped;
@@ -26,10 +28,10 @@ public abstract class PoppableObject {
         return offScreen;
     }
 
-    public void draw(GameTheme theme, Canvas canvas, Paint painter) {
+    public void draw(ThemeManager theme, Canvas canvas, Paint painter) {
         canvas.drawBitmap(getImage(theme), xCoordinate, yCoordinate, painter);
     }
-    public boolean handleTouch(GameTheme theme, int eventX, int eventY) {
+    public boolean handleTouch(ThemeManager theme, int eventX, int eventY) {
         Bitmap bitmapImage = getImage(theme);
         if (eventX >= xCoordinate && eventX <= (xCoordinate + bitmapImage.getWidth())
                 && eventY >= yCoordinate && (yCoordinate <= (yCoordinate + bitmapImage.getHeight()))) {
@@ -39,8 +41,8 @@ public abstract class PoppableObject {
         return popped;
     }
 
-    abstract public Bitmap getImage(GameTheme theme);
-    abstract public void move(GameTheme theme, int viewWidth, int viewHeight);
     abstract public int getScoreValue();
+    abstract public Bitmap getImage(ThemeManager theme);
+    abstract public void move(ThemeManager theme, int viewWidth, int viewHeight);
 
 }

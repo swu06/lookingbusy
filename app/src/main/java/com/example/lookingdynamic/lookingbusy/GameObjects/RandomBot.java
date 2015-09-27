@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
+import java.util.Random;
+
 /**
  *
  * This is a balloon model.  It knows everything possible about the balloon
@@ -12,60 +14,48 @@ import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
  * does not know any of this information, but uses it to make the world turn.
  * Created by swu on 9/5/2015.
  */
-public class Ball extends PoppableObject {
+public class RandomBot extends PoppableObject {
 
-    private static final String LOGGER = Ball.class.getSimpleName();
-    public static final int TOP_LEFT_START = 0;
-    public static final int TOP_RIGHT_START = 1;
-    public static final int BOTTOM_RIGHT_START = 2;
-    public static final int BOTTOM_LEFT_START = 3;
-    public static final int VALUE = 40;
+    private static final String LOGGER = RandomBot.class.getSimpleName();
+    public static final int VALUE = 50;
+    private int speed;
+    private int consecutiveMovesRemaining;
+    private Random random;
 
-    public Ball(int width, int height, int type, int speed) {
-        switch(type) {
-            case TOP_LEFT_START:
-                xCoordinate = 0;
-                yCoordinate = 0;
-                xVelocity = speed * 2;
-                yVelocity = speed;
-                break;
-            case TOP_RIGHT_START:
-                xCoordinate = width;
-                yCoordinate = 0;
-                xVelocity = speed * -2;
-                yVelocity = speed;
-                break;
-            case BOTTOM_RIGHT_START:
-                xCoordinate = width;
-                yCoordinate = height;
-                xVelocity = speed * -2;
-                yVelocity = speed * -1;
-                break;
-            case BOTTOM_LEFT_START: default:
-                xCoordinate = 0;
-                yCoordinate = height;
-                xVelocity = speed * 2;
-                yVelocity = speed * -1;
-                break;
-        }
-
+    public RandomBot(int width, int height, int speed) {
+        random = new Random();
+        int locationOffset = random.nextInt(100) - 50;
+        this.xCoordinate = width / 2 + locationOffset;
+        this.yCoordinate = height / 2 + locationOffset;
+        this.speed = speed;
         popped = false;
         offScreen = false;
+        consecutiveMovesRemaining = 0;
     }
 
     @Override
     public Bitmap getImage(ThemeManager theme) {
-        Bitmap bitmapImage = theme.getBall();
+        Bitmap bitmapImage = theme.getRandomBot();
         if(popped == true) {
-            bitmapImage = theme.getPoppedBall();
+            bitmapImage = theme.getRandomBotPopped();
         }
 
         return bitmapImage;
     }
 
-    // Balls bounce off walls
+    // Bounce off walls, but fall out of the top and bottom
     public void move(ThemeManager theme, int viewWidth, int viewHeight) {
         Bitmap image = getImage(theme);
+
+        // Get the random Direction/Velocity
+        if(consecutiveMovesRemaining == 0) {
+            xVelocity = (random.nextInt(3) - 1) * speed;
+            yVelocity = (random.nextInt(3) - 1) * speed;
+            consecutiveMovesRemaining = random.nextInt(50);
+        } else {
+            consecutiveMovesRemaining--;
+        }
+
         // Move over and down
         xCoordinate = xCoordinate + xVelocity;
         yCoordinate = yCoordinate + yVelocity;
@@ -78,9 +68,7 @@ public class Ball extends PoppableObject {
         // Check to see if we have hit the right wall
         else if( xCoordinate + image.getWidth() >= viewWidth) {
             xCoordinate = viewWidth - image.getWidth();
-            if(xVelocity > 0) {
-                xVelocity = xVelocity * -1;
-            }
+            xVelocity = xVelocity * -1;
         }
 
         // Check to see if we have fallen off the screen yet

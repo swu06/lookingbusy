@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
     <name>Lvl 9</name>
-    <pointsToNextLevel>1000</pointsToNextLevel>
-    <chanceToCreate>6</chanceToCreate>
+    <pointsToNextLevel>5000</pointsToNextLevel>
+    <chanceToCreate>7</chanceToCreate>
     <balloonDefinition>
-        <percentCreated>30</percentCreated>
+        <percentCreated>25</percentCreated>
         <percentMedium>90</percentMedium>
         <percentFast>10</percentFast>
     </balloonDefinition>
     <dropletDefinition>
-        <percentCreated>30</percentCreated>
+        <percentCreated>25</percentCreated>
         <percentMedium>50</percentMedium>
         <percentFast>50</percentFast>
     </dropletDefinition>
     <ballDefinition>
-        <percentCreated>40</percentCreated>
+        <percentCreated>35</percentCreated>
         <percentFast>100</percentFast>
     </ballDefinition>
+    <randomBotDefinition>
+        <percentCreated>15</percentCreated>
+        <percentMedium>50</percentMedium>
+        <percentFast>50</percentFast>
+    </randomBotDefinition>
 </level>

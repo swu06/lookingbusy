@@ -3,21 +3,27 @@
     <name></name>
     <chanceToCreate>4</chanceToCreate>
     <balloonDefinition>
-        <percentCreated>40</percentCreated>
+        <percentCreated>35</percentCreated>
         <percentSlow>25</percentSlow>
         <percentMedium>50</percentMedium>
         <percentFast>25</percentFast>
     </balloonDefinition>
     <dropletDefinition>
-        <percentCreated>40</percentCreated>
+        <percentCreated>35</percentCreated>
         <percentSlow>25</percentSlow>
         <percentMedium>50</percentMedium>
         <percentFast>25</percentFast>
     </dropletDefinition>
     <ballDefinition>
-        <percentCreated>20</percentCreated>
+        <percentCreated>15</percentCreated>
         <percentSlow>25</percentSlow>
         <percentMedium>50</percentMedium>
         <percentFast>25</percentFast>
     </ballDefinition>
+    <randomBotDefinition>
+        <percentCreated>15</percentCreated>
+        <percentSlow>25</percentSlow>
+        <percentMedium>50</percentMedium>
+        <percentFast>25</percentFast>
+    </randomBotDefinition>
 </level>

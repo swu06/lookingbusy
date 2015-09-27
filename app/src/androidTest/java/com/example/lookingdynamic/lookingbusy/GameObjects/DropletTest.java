@@ -4,6 +4,7 @@ import android.test.ActivityTestCase;
 
 import com.example.lookingdynamic.lookingbusy.R;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 /**
  *
@@ -11,12 +12,11 @@ import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
  */
 public class DropletTest extends ActivityTestCase {
 
-    public GameTheme theme;
+    public ThemeManager theme;
 
     public void setUp() throws Exception{
         super.setUp();
-        theme = new GameTheme(getInstrumentation().getTargetContext().getResources(),
-                getInstrumentation().getTargetContext().getResources().getXml(R.xml.crayon_theme));
+        theme = new ThemeManager(null, getInstrumentation().getTargetContext().getResources());
     }
 
     public void testCreateBalloon(){

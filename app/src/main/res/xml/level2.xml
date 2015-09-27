@@ -4,8 +4,13 @@
     <pointsToNextLevel>100</pointsToNextLevel>
     <chanceToCreate>3</chanceToCreate>
     <balloonDefinition>
-        <percentCreated>100</percentCreated>
+        <percentCreated>10</percentCreated>
         <percentSlow>50</percentSlow>
         <percentMedium>50</percentMedium>
     </balloonDefinition>
+    <randomBotDefinition>
+        <percentCreated>10</percentCreated>
+        <percentSlow>50</percentSlow>
+        <percentMedium>50</percentMedium>
+    </randomBotDefinition>
 </level>

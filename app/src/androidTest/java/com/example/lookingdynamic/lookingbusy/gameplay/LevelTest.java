@@ -18,8 +18,8 @@ public class LevelTest extends ActivityTestCase{
 
         assertEquals("Test Failure: Level 1 Value has changed", "Lvl 1", lvl.getName());
         assertEquals("Test Failure: Level 1 Value has changed", 100, lvl.getPointsToNextLevel());
-        assertEquals("Test Failure: Level 1 Value has changed", 99, lvl.getPercentChanceOfCreation());
-        assertEquals("Test Failure: Level 1 Value has changed", 100, lvl.getBalloonPercentCreated());
+        assertEquals("Test Failure: Level 1 Value has changed", 3, lvl.getPercentChanceOfCreation());
+        assertEquals("Test Failure: Level 1 Value has changed", 90, lvl.getBalloonPercentCreated());
         assertEquals("Test Failure: Level 1 Value has changed", 100, lvl.getBalloonPercentSlow());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getBalloonPercentMedium());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getBalloonPercentFast());

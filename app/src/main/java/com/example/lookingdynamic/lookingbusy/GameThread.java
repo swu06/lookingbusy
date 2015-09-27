@@ -33,9 +33,14 @@ public class GameThread extends Thread implements Runnable{
     }
 
     public void updateSurfaceHolder(SurfaceHolder surfaceHolder) {
-        synchronized (surfaceHolder) {
+        if(this.surfaceHolder != null) {
+            synchronized (this.surfaceHolder) {
+                this.surfaceHolder = surfaceHolder;
+            }
+        } else {
             this.surfaceHolder = surfaceHolder;
         }
+
     }
 
     public boolean isPausedFlagIsSet() { return pausedFlagIsSet; }
@@ -59,18 +64,22 @@ public class GameThread extends Thread implements Runnable{
             // This are the two commands run to keep the game moving: update and draw
             canvas = null;
             try {
-                canvas = this.surfaceHolder.lockCanvas();
-                synchronized (surfaceHolder) {
-                    if(canvas != null) {
-                        this.gamePanel.update();
+                if(surfaceHolder != null) {
+                    canvas = surfaceHolder.lockCanvas();
+                    synchronized (surfaceHolder) {
+                        if(canvas != null && gamePanel != null) {
+                            gamePanel.update();
+                        }
                     }
                 }
 
-                checkAndHandlePause();
 
-                synchronized (surfaceHolder) {
-                    if(canvas != null) {
-                        this.gamePanel.onDraw(canvas);
+                checkAndHandlePause();
+                if(surfaceHolder != null) {
+                    synchronized (surfaceHolder) {
+                        if (canvas != null && gamePanel != null) {
+                            gamePanel.onDraw(canvas);
+                        }
                     }
                 }
                 waitUnlessNeeded(SLEEP_TIME_MS);

@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,7 +49,7 @@ public class LookingBusyActivity extends Activity {
     private boolean firstRun;
 
     public static final int CAMERA_RESULT = 0;
-    public static final int FILE_RESULT = 0;
+    public static final int FILE_RESULT = 1;
 
     /*
      * This method is for a brand new activity
@@ -310,7 +312,7 @@ public class LookingBusyActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "RandomBogImage will be cleared");
-                game.setRandomBotImage(null, BitmapFactory.decodeResource(getResources(), R.drawable.bright_balloon1));
+                game.setRandomBotImage(null, null);
             }
         });
         builder.setNeutralButton("Close", null);
@@ -357,11 +359,45 @@ public class LookingBusyActivity extends Activity {
                 storeBitmap((Bitmap) data.getExtras().get("data"));
             } else if (requestCode == FILE_RESULT) {
                 Log.d(LOGGER, "Gallery has returned a file.");
-                Uri selectedImageUri = data.getData();
-                storeBitmap(BitmapFactory.decodeFile(selectedImageUri.getPath()));
+                try {
+                    Bitmap selectedImage = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
+                    storeBitmap(getCorrectBitmap(selectedImage, data.getData().getPath()));
+                } catch(Exception e){
+                    Log.e(LOGGER, "Cannot load file");
+                }
+            }
+        }
+    }
+
+    public static Bitmap getCorrectBitmap(Bitmap bitmap, String filePath) {
+        ExifInterface ei;
+        Bitmap correctBitmap = bitmap;
+        try {
+            ei = new ExifInterface(filePath);
+
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            int rotationInDegrees = exifToDegrees(orientation);
+
+            Matrix matrix = new Matrix();
+            if (rotationInDegrees != 0f) {
+                Log.d(LOGGER, "Image is stored rotated.");
+                matrix.preRotate(rotationInDegrees);
             }
 
+            correctBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return correctBitmap;
+    }
+
+    private static int exifToDegrees(int exifOrientation) {
+        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
+        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
+        return 0;
     }
 
     public void storeBitmap(Bitmap existingFile) {
@@ -381,22 +417,20 @@ public class LookingBusyActivity extends Activity {
         }
         Bitmap scaledFile = Bitmap.createScaledBitmap(existingFile, outWidth, outHeight, false);
 
-        File destination = new File(Environment.getExternalStorageDirectory() + "/pictures",
-                System.currentTimeMillis() + ".png");
+        File destination = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                                "LookingBusy"+ System.currentTimeMillis() + ".png");
         FileOutputStream fOut;
         try {
-            destination.mkdirs();
-            destination.createNewFile();
             fOut = new FileOutputStream(destination);
             Log.d(LOGGER, "Storing file ...");
             scaledFile.compress(Bitmap.CompressFormat.PNG, 100, fOut);
             fOut.flush();
             fOut.close();
-        } catch (Exception e) {}
-        Log.d(LOGGER, "RandomBot File ready to use.");
-        if(game == null) {
-            Log.d(LOGGER, "Game is null?!?!");
+        } catch (Exception e) {
+            Log.e(LOGGER, "Exception was thrown:" + e.getMessage());
         }
+        Log.d(LOGGER, "RandomBot File ready to use.");
+
         game.setRandomBotImage(destination.getPath(), scaledFile);
     }
 

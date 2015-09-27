@@ -223,16 +223,16 @@ public class PopAllTheThingsGame extends SurfaceView implements
             canvas.drawText("New High Score!!", getWidth() / 2, y, blackOutline);
         }
 
-        canvas.drawBitmap(themes.getCurrentTheme().getPauseSign(), 100, 100, translucentPainter);
+        canvas.drawBitmap(themes.getPauseSign(), 100, 100, translucentPainter);
 
         synchronized (activePoppableObjects) {
             for (PoppableObject poppableObject : activePoppableObjects) {
-                poppableObject.draw(themes.getCurrentTheme(), canvas, translucentPainter);
+                poppableObject.draw(themes, canvas, translucentPainter);
             }
         }
         synchronized (poppedPoppableObjects) {
             for (PoppableObject poppableObject : poppedPoppableObjects) {
-                poppableObject.draw(themes.getCurrentTheme(), canvas, translucentPainter);
+                poppableObject.draw(themes, canvas, translucentPainter);
             }
         }
 
@@ -260,14 +260,20 @@ public class PopAllTheThingsGame extends SurfaceView implements
                     gameplay.addToScore(-1);
                     activePoppableObjects.remove(i);
                 } else {
-                    poppableObject.move(themes.getCurrentTheme(), getWidth(), getHeight());
+                    poppableObject.move(themes, getWidth(), getHeight());
                 }
             }
 
-            PoppableObject toAdd = PoppableObjectFactory.generatePoppableObject(gameplay.getCurrentLevel(), getWidth(), getHeight());
+            PoppableObject toAdd =
+                    PoppableObjectFactory.generatePoppableObject(gameplay,
+                                                                 getWidth(),
+                                                                 getHeight(),
+                                                                 themes.getRandomBot() != null);
+
             if (toAdd != null && !firstRun) {
                 activePoppableObjects.add(toAdd);
             }
+
         }
 
 
@@ -283,7 +289,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         synchronized (activePoppableObjects) {
             for (PoppableObject poppableObject : activePoppableObjects) {
                 if (!poppableObject.isPopped() &&
-                        poppableObject.handleTouch(themes.getCurrentTheme(), (int) event.getX(), (int) event.getY())) {
+                        poppableObject.handleTouch(themes, (int) event.getX(), (int) event.getY())) {
                     objectPopped = true;
                     break;
                 }

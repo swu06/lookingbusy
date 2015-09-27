@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
     <name>Lvl 3</name>
-    <pointsToNextLevel>100</pointsToNextLevel>
+    <pointsToNextLevel>500</pointsToNextLevel>
     <chanceToCreate>5</chanceToCreate>
     <balloonDefinition>
-        <percentCreated>70</percentCreated>
+        <percentCreated>85</percentCreated>
         <percentSlow>50</percentSlow>
         <percentMedium>50</percentMedium>
     </balloonDefinition>
     <dropletDefinition>
-        <percentCreated>30</percentCreated>
+        <percentCreated>25</percentCreated>
         <percentMedium>100</percentMedium>
     </dropletDefinition>
+    <randomBotDefinition>
+        <percentCreated>10</percentCreated>
+        <percentSlow>50</percentSlow>
+        <percentMedium>50</percentMedium>
+    </randomBotDefinition>
 </level>

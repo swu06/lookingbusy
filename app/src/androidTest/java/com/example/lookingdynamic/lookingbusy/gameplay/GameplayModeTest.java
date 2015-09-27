@@ -25,8 +25,8 @@ public class GameplayModeTest extends ActivityTestCase {
 
         GameplayMode mode = new GameplayMode(myResources, myResources.obtainTypedArray(R.array.relaxing_mode));
 
-        assertEquals("Test Failure: SafeLevel should not adjust viable level values", 0, mode.safeLevel(0));
-        assertEquals("Test Failure: SafeLevel should adjust level values that are too high", 0, mode.safeLevel(1));
+        assertEquals("Test Failure: SafeLevel should not adjust viable currentLevel values", 0, mode.safeLevel(0));
+        assertEquals("Test Failure: SafeLevel should adjust currentLevel values that are too high", 0, mode.safeLevel(1));
     }
 
     public void testGetLevels() {

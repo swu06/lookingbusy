@@ -14,7 +14,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testCreateCrayonGameTheme() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertEquals("Test Failure: Crayon Theme Name has changed","Crayon Theme", theme.getName());
         assertEquals("Test Failure: Crayon Theme crayon_icon has changed", R.drawable.crayon_icon, theme.getIconImageId());
@@ -29,7 +29,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testGetBallBitmap() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Ball Bitmap does not load properly",
                 theme.getBall());
@@ -37,7 +37,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testGetBalloonBitmap() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Balloon Bitmap does not load properly",
                 theme.getBalloon(0));
@@ -45,7 +45,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testGetDropletBitmap() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Droplet Bitmap does not load properly",
                 theme.getDroplet());
@@ -53,7 +53,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testGetPoppedBallBitmap() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Popped Ball Bitmap does not load properly",
                 theme.getPoppedBall());
@@ -61,7 +61,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testGetPoppedBalloonBitmap() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Popped Balloon Bitmap does not load properly",
                 theme.getPoppedBalloon(0));
@@ -69,7 +69,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testGetPoppedDropletBitmap() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Popped Droplet Bitmap does not load properly",
                 theme.getPoppedDroplet());
@@ -77,7 +77,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testGetPausedSignBitmap() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.crayon_theme));
 
         assertNotNull("Test Failure: Pause Bitmap does not load properly",
                 theme.getPauseSign());
@@ -85,7 +85,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testCreateBrightGameTheme() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.bright_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.bright_theme));
 
         assertEquals("Test Failure: Bright Theme Name has changed", "Bright Theme", theme.getName());
         assertEquals("Test Failure: Bright Theme bright_icon has changed", R.drawable.bright_icon, theme.getIconImageId());
@@ -106,7 +106,7 @@ public class GameThemeTest extends ActivityTestCase {
         assertEquals("Test Failure: Available Themes have changed", 2, availableThemesArray.length());
 
         for(int i=0; i < availableThemesArray.length(); i++) {
-            themes[i] = new GameTheme(myResources, myResources.getXml(availableThemesArray.getResourceId(i,-1)), null);
+            themes[i] = new GameTheme(myResources, myResources.getXml(availableThemesArray.getResourceId(i,-1)));
         }
 
         assertEquals("Test Failure: Theme order has changed", "Crayon Theme", themes[0].name);
@@ -115,7 +115,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testLazyLoadStartsNull(){
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.bright_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.bright_theme));
 
         assertNull("Test Failure: ball Image was pre-loaded", theme.ball);
         assertNull("Test Failure: balloon Image was pre-loaded", theme.balloons);
@@ -128,7 +128,7 @@ public class GameThemeTest extends ActivityTestCase {
 
     public void testunloadReturnsToNull(){
         Resources myResources = getInstrumentation().getTargetContext().getResources();
-        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.bright_theme), null);
+        GameTheme theme = new GameTheme(myResources, myResources.getXml(R.xml.bright_theme));
 
         //Load all images first
         theme.getBall();

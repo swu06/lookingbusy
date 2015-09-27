@@ -9,7 +9,7 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
-    <string name="title_activity_looking_busy">LookingBusyActivity</string>
+    <string name="title_activity_looking_busy">Looking Busy</string>
     <string name="gameplay_type">Gameplay Type</string>
     <string name="sweets_theme">Sweets Theme</string>
     <string name="crayon_theme">Crayon Theme</string>

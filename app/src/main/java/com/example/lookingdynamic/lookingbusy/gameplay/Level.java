@@ -20,6 +20,7 @@ public class Level {
     private static final String BALL_DEFINITION = "ballDefinition";
     private static final String BALLOON_DEFINITION = "balloonDefinition";
     private static final String DROPLET_DEFINITION = "dropletDefinition";
+    private static final String RANDOM_BOT_DEFINITION = "randomBotDefinition";
     private static final String PERCENT_CREATED = "percentCreated";
     private static final String PERCENT_SLOW = "percentSlow";
     private static final String PERCENT_MEDIUM = "percentMedium";
@@ -32,6 +33,7 @@ public class Level {
     protected LevelObjectSettings ballSettings;
     protected LevelObjectSettings balloonSettings;
     protected LevelObjectSettings dropletSettings;
+    protected LevelObjectSettings randomBotSettings;
 
     public Level(XmlResourceParser levelXml) {
         name = "";
@@ -40,6 +42,7 @@ public class Level {
         ballSettings = new LevelObjectSettings();
         balloonSettings = new LevelObjectSettings();
         dropletSettings = new LevelObjectSettings();
+        randomBotSettings = new LevelObjectSettings();
 
         int eventType = -1;
         try {
@@ -57,6 +60,8 @@ public class Level {
                         loadObjectSettings(balloonSettings, levelXml, BALLOON_DEFINITION);
                     } else if(levelXml.getName().equalsIgnoreCase(DROPLET_DEFINITION)) {
                         loadObjectSettings(dropletSettings, levelXml, DROPLET_DEFINITION);
+                    } else if(levelXml.getName().equalsIgnoreCase(RANDOM_BOT_DEFINITION)) {
+                        loadObjectSettings(randomBotSettings, levelXml, RANDOM_BOT_DEFINITION);
                     }
                 }
                 eventType = levelXml.next();
@@ -160,6 +165,26 @@ public class Level {
 
     public int getDropletPercentSuperFast(){
         return dropletSettings.getPercentSuperFast();
+    }
+
+    public int getRandomBotPercentCreated() {
+        return randomBotSettings.getPercentCreated();
+    }
+
+    public int getRandomBotPercentSlow(){
+        return randomBotSettings.getPercentSlow();
+    }
+
+    public int getRandomBotPercentMedium(){
+        return randomBotSettings.getPercentMedium();
+    }
+
+    public int getRandomBotPercentFast(){
+        return randomBotSettings.getPercentFast();
+    }
+
+    public int getRandomBotPercentSuperFast(){
+        return randomBotSettings.getPercentSuperFast();
     }
 
 }

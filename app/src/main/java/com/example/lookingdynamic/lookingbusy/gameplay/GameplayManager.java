@@ -3,7 +3,6 @@ package com.example.lookingdynamic.lookingbusy.gameplay;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.lookingdynamic.lookingbusy.R;
 
@@ -18,7 +17,7 @@ public class GameplayManager {
     protected int currentHighScore;
     protected int score;
     protected int newHighScore;
-    protected int level;
+    protected int currentLevel;
     protected int pointsToNextLevel;
     protected int currentMode;
 
@@ -40,8 +39,8 @@ public class GameplayManager {
         score = 0;
         currentHighScore = settings.getHighScore(currentMode);
 
-        level = 0;
-        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(level);
+        currentLevel = 0;
+        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
 
     }
 
@@ -70,8 +69,8 @@ public class GameplayManager {
 
     public String getDisplayString(){
         String scoreString = "";
-        if(modes[currentMode].getLevelName(level) != "") {
-            scoreString = scoreString + modes[currentMode].getLevelName(level) + ": ";
+        if(modes[currentMode].getLevelName(currentLevel) != "") {
+            scoreString = scoreString + modes[currentMode].getLevelName(currentLevel) + ": ";
         }
         scoreString = scoreString + score;
         return scoreString;
@@ -85,16 +84,16 @@ public class GameplayManager {
         }
     }
     protected void levelUp(){
-        level++;
-        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(level);
+        currentLevel++;
+        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
     }
 
     public int getLevel() {
-        return level;
+        return currentLevel;
     }
 
     public Level getCurrentLevel() {
-        return modes[currentMode].getLevel(level);
+        return modes[currentMode].getLevel(currentLevel);
     }
 
     public String[] getLabels() {
@@ -129,7 +128,7 @@ public class GameplayManager {
             score = 0;
             newHighScore = 0;
             currentHighScore = settings.getHighScore(currentMode);
-            level = 0;
+            currentLevel = 0;
 
         }
     }
@@ -153,6 +152,90 @@ public class GameplayManager {
         for(int i=0; i<modes.length; i++) {
             settings.setHighScore(i, 0);
         }
+    }
+
+    public int getPercentChanceOfCreation() {
+        return modes[currentMode].getLevel(currentLevel).getPercentChanceOfCreation();
+    }
+
+    public int getBallPercentCreated() {
+        return modes[currentMode].getLevel(currentLevel).getBallPercentCreated();
+    }
+
+    public int getBallPercentSlow(){
+        return modes[currentMode].getLevel(currentLevel).getBallPercentSlow();
+    }
+
+    public int getBallPercentMedium(){
+        return modes[currentMode].getLevel(currentLevel).getBallPercentMedium();
+    }
+
+    public int getBallPercentFast(){
+        return modes[currentMode].getLevel(currentLevel).getBallPercentMedium();
+    }
+
+    public int getBallPercentSuperFast(){
+        return modes[currentMode].getLevel(currentLevel).getBallPercentSuperFast();
+    }
+
+    public int getBalloonPercentCreated() {
+        return modes[currentMode].getLevel(currentLevel).getBalloonPercentCreated();
+    }
+
+    public int getBalloonPercentSlow(){
+        return modes[currentMode].getLevel(currentLevel).getBalloonPercentSlow();
+    }
+
+    public int getBalloonPercentMedium(){
+        return modes[currentMode].getLevel(currentLevel).getBalloonPercentMedium();
+    }
+
+    public int getBalloonPercentFast(){
+        return modes[currentMode].getLevel(currentLevel).getBalloonPercentFast();
+    }
+
+    public int getBalloonPercentSuperFast(){
+        return modes[currentMode].getLevel(currentLevel).getBalloonPercentSuperFast();
+    }
+
+    public int getDropletPercentCreated() {
+        return modes[currentMode].getLevel(currentLevel).getDropletPercentCreated();
+    }
+
+    public int getDropletPercentSlow(){
+        return modes[currentMode].getLevel(currentLevel).getDropletPercentSlow();
+    }
+
+    public int getDropletPercentMedium(){
+        return modes[currentMode].getLevel(currentLevel).getDropletPercentMedium();
+    }
+
+    public int getDropletPercentFast(){
+        return modes[currentMode].getLevel(currentLevel).getDropletPercentFast();
+    }
+
+    public int getDropletPercentSuperFast(){
+        return modes[currentMode].getLevel(currentLevel).getDropletPercentSuperFast();
+    }
+
+    public int getRandomBotPercentCreated() {
+        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentCreated();
+    }
+
+    public int getRandomBotPercentSlow(){
+        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentSlow();
+    }
+
+    public int getRandomBotPercentMedium(){
+        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentMedium();
+    }
+
+    public int getRandomBotPercentFast(){
+        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentFast();
+    }
+
+    public int getRandomBotPercentSuperFast(){
+        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentSuperFast();
     }
 
 }

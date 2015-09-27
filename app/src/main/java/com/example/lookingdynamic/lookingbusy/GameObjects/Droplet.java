@@ -3,6 +3,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 import android.graphics.Bitmap;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 /**
  *
@@ -14,7 +15,7 @@ import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
 public class Droplet extends PoppableObject {
 
     private static final String LOGGER = Droplet.class.getSimpleName();
-    public static final int VALUE = 15;
+    public static final int VALUE = 25;
 
     public Droplet(int xCoordinate, int yVelocity) {
         this.xCoordinate = xCoordinate;
@@ -25,7 +26,7 @@ public class Droplet extends PoppableObject {
     }
 
     @Override
-    public Bitmap getImage(GameTheme theme) {
+    public Bitmap getImage(ThemeManager theme) {
         Bitmap bitmapImage = theme.getDroplet();
         if(popped == true) {
             bitmapImage = theme.getPoppedDroplet();
@@ -35,16 +36,15 @@ public class Droplet extends PoppableObject {
     }
 
     // Droplets only move vertically
-    public void move(GameTheme theme, int viewWidth, int viewHeight) {
+    public void move(ThemeManager theme, int viewWidth, int viewHeight) {
         yCoordinate = yCoordinate + yVelocity;
         if (yCoordinate - getImage(theme).getHeight() >= viewHeight) {
             offScreen = true;
         }
     }
 
-    @Override
     public int getScoreValue() {
-        return 15;
+        return VALUE;
     }
 
 }

@@ -4,6 +4,7 @@ import android.test.ActivityTestCase;
 
 import com.example.lookingdynamic.lookingbusy.R;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 /**
  * This Test class tests the methods within Ball, and the methods implemented in the
@@ -12,16 +13,15 @@ import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
  */
 public class BallTest extends ActivityTestCase {
 
-    public GameTheme theme;
+    public ThemeManager theme;
 
     public void setUp() throws Exception{
         super.setUp();
-        theme = new GameTheme(getInstrumentation().getTargetContext().getResources(),
-                getInstrumentation().getTargetContext().getResources().getXml(R.xml.crayon_theme));
+        theme = new ThemeManager(null, getInstrumentation().getTargetContext().getResources());
     }
 
     public void testCreateBall(){
-        Ball testBall = new Ball(0, 0, 0, 0);
+        Ball testBall = new Ball(0, 0, Ball.TOP_LEFT_START, 0);
 
         assertEquals(0, testBall.xCoordinate);
         assertEquals(0, testBall.yCoordinate);
@@ -31,21 +31,65 @@ public class BallTest extends ActivityTestCase {
         assertFalse(testBall.offScreen);
     }
 
-    public void testMove() {
-        Ball testBall = new Ball(0, 0, 1, 1);
+    public void testMoveTopLeft() {
+        Ball testBall = new Ball(1000, 1000, Ball.TOP_LEFT_START, 1);
 
         testBall.move(theme, 1000, 1000);
 
-        assertEquals(1, testBall.xCoordinate);
+        assertEquals(2, testBall.xCoordinate);
         assertEquals(1, testBall.yCoordinate);
-        assertEquals(1, testBall.xVelocity);
+        assertEquals(2, testBall.xVelocity);
         assertEquals(1, testBall.yVelocity);
         assertFalse(testBall.popped);
         assertFalse(testBall.offScreen);
     }
 
+    public void testMoveTopRight() {
+        Ball testBall = new Ball(1000, 1000, Ball.TOP_RIGHT_START, 1);
+
+        int imageWidth = testBall.getImage(theme).getWidth();
+        testBall.move(theme, 1000, 1000);
+
+        assertEquals(1000 - imageWidth, testBall.xCoordinate);
+        assertEquals(1, testBall.yCoordinate);
+        assertEquals(-2, testBall.xVelocity);
+        assertEquals(1, testBall.yVelocity);
+        assertFalse(testBall.popped);
+        assertFalse(testBall.offScreen);
+    }
+
+    public void testMoveBottomRight() {
+        Ball testBall = new Ball(1000, 1000, Ball.BOTTOM_RIGHT_START, 1);
+        int imageWidth = testBall.getImage(theme).getWidth();
+
+        testBall.move(theme, 1000, 1000);
+
+        assertEquals(1000 - imageWidth, testBall.xCoordinate);
+        assertEquals(999, testBall.yCoordinate);
+        assertEquals(-2, testBall.xVelocity);
+        assertEquals(-1, testBall.yVelocity);
+        assertFalse(testBall.popped);
+        assertFalse(testBall.offScreen);
+    }
+
+    public void testMoveBottomLeft() {
+        Ball testBall = new Ball(1000, 1000, Ball.BOTTOM_LEFT_START, 1);
+
+        testBall.move(theme, 1000, 1000);
+
+        assertEquals(2, testBall.xCoordinate);
+        assertEquals(999, testBall.yCoordinate);
+        assertEquals(2, testBall.xVelocity);
+        assertEquals(-1, testBall.yVelocity);
+        assertFalse(testBall.popped);
+        assertFalse(testBall.offScreen);
+    }
+
     public void testMoveBounceOffLeft() {
-        Ball testBall = new Ball(-1, 0, -1, 1);
+        Ball testBall = new Ball(1000, 1000, Ball.TOP_LEFT_START, 1);
+
+        testBall.xCoordinate = 0;
+        testBall.xVelocity = -1;
 
         testBall.move(theme, 1000, 1000);
 
@@ -58,12 +102,15 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testMoveBounceOffRight() {
-        Ball testBall = new Ball(100, 0, 1, 1);
+        Ball testBall = new Ball(100, 0, Ball.TOP_LEFT_START, 1);
 
         int imageWidth = testBall.getImage(theme).getWidth();
         int imageHeight = testBall.getImage(theme).getHeight();
 
         int wallLocation = 100 + imageWidth;
+
+        testBall.xCoordinate = wallLocation;
+        testBall.xVelocity = 1;
 
         testBall.move(theme, wallLocation, imageHeight + 2);
 
@@ -76,33 +123,35 @@ public class BallTest extends ActivityTestCase {
     }
 
     public void testMoveFallOffTop() {
-        Ball testBall = new Ball(0, 0, 1, -1);
+        Ball testBall = new Ball(100, 0, Ball.TOP_LEFT_START, 1);
 
         int imageWidth = testBall.getImage(theme).getWidth();
         int imageHeight = testBall.getImage(theme).getHeight();
 
-        testBall = new Ball(0, 0 - imageHeight, 1, -1);
+        testBall.yCoordinate = 0 - imageHeight;
+        testBall.yVelocity = -1;
 
-        testBall.move(theme, imageWidth + 2, imageHeight + 2);
+        testBall.move(theme, imageWidth + 4, imageHeight + 4);
 
-        assertEquals(1, testBall.xCoordinate);
-        assertEquals(0 - imageHeight- 1, testBall.yCoordinate);
-        assertEquals(1, testBall.xVelocity);
+        assertEquals(2, testBall.xCoordinate);
+        assertEquals(0 - imageHeight - 1, testBall.yCoordinate);
+        assertEquals(2, testBall.xVelocity);
         assertEquals(-1, testBall.yVelocity);
         assertFalse(testBall.popped);
         assertTrue(testBall.offScreen);
     }
 
     public void testMoveFallOffBottom() {
-        Ball testBall = new Ball(0, 100, 1, 1);
+        Ball testBall = new Ball(100, 100, Ball.BOTTOM_LEFT_START, 1);
 
         int imageWidth = testBall.getImage(theme).getWidth();
+        testBall.yVelocity = 1;
 
-        testBall.move(theme, imageWidth + 2, 100);
+        testBall.move(theme, imageWidth + 4, 100);
 
-        assertEquals(1, testBall.xCoordinate);
+        assertEquals(2, testBall.xCoordinate);
         assertEquals(101, testBall.yCoordinate);
-        assertEquals(1, testBall.xVelocity);
+        assertEquals(2, testBall.xVelocity);
         assertEquals(1, testBall.yVelocity);
         assertFalse(testBall.popped);
         assertTrue(testBall.offScreen);

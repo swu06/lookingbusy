@@ -3,6 +3,7 @@ package com.example.lookingdynamic.lookingbusy.gameobjects;
 import android.graphics.Bitmap;
 
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 /**
  *
@@ -17,17 +18,17 @@ public class Balloon extends PoppableObject {
     public static final int VALUE = 10;
     private int whichBalloon;
 
-    public Balloon(int xCoordinate, int yCoordinate, int yVelocity, int whichBalloon) {
+    public Balloon(int xCoordinate, int yCoordinate, int speed, int whichBalloon) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
-        this.yVelocity = yVelocity;
+        this.yVelocity = speed;
         popped = false;
         offScreen = false;
         this.whichBalloon = whichBalloon;
     }
 
     @Override
-    public Bitmap getImage(GameTheme theme) {
+    public Bitmap getImage(ThemeManager theme) {
         Bitmap bitmapImage = theme.getBalloon(whichBalloon);
         if(popped == true) {
             bitmapImage = theme.getPoppedBalloon(whichBalloon);
@@ -37,15 +38,14 @@ public class Balloon extends PoppableObject {
     }
 
     // Balloons only move vertically
-    public void move(GameTheme theme, int viewWidth, int viewHeight) {
+    public void move(ThemeManager theme, int viewWidth, int viewHeight) {
         yCoordinate = yCoordinate + yVelocity;
         if (yCoordinate + getImage(theme).getHeight() <= 0) {
             offScreen = true;
         }
     }
 
-    @Override
     public int getScoreValue() {
-        return 10;
+        return VALUE;
     }
 }

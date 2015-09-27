@@ -2,8 +2,6 @@ package com.example.lookingdynamic.lookingbusy.gameplay;
 
 import android.test.ActivityTestCase;
 
-import com.example.lookingdynamic.lookingbusy.R;
-
 /**
  * Created by swu on 9/20/2015.
  */
@@ -43,7 +41,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         assertEquals("Test Failure: currentHighScore should start at 0", 0, gameplay.currentHighScore);
         assertEquals("Test Failure: score should start at 0", 0, gameplay.score);
         assertEquals("Test Failure: newHighScore should start at 0", 0, gameplay.newHighScore);
-        assertEquals("Test Failure: level should start at 0", 0, gameplay.level);
+        assertEquals("Test Failure: currentLevel should start at 0", 0, gameplay.currentLevel);
         assertEquals("Test Failure: currentMode should start at 0", 0, gameplay.currentMode);
         assertTrue("Test Failure: pointsToNextLevel should start at 0 or greater", 0 <= gameplay.pointsToNextLevel);
     }
@@ -64,7 +62,7 @@ public class GameplayManagerTest extends ActivityTestCase{
 
         gameplay.pointsToNextLevel = 5;
         gameplay.addToScore(10);
-        assertEquals("Test Failure: Score should increase level by 1", 1, gameplay.getLevel());
+        assertEquals("Test Failure: Score should increase currentLevel by 1", 1, gameplay.getLevel());
     }
 
     public void testAddToScoreDoesntLevelUp() {
@@ -74,7 +72,7 @@ public class GameplayManagerTest extends ActivityTestCase{
 
         gameplay.pointsToNextLevel = 0;
         gameplay.addToScore(10);
-        assertEquals("Test Failure: Score should increase level by 1", 0, gameplay.getLevel());
+        assertEquals("Test Failure: Score should increase currentLevel by 1", 0, gameplay.getLevel());
     }
 
     public void testAddToScoreDoesntLevelUpAgain() {
@@ -84,7 +82,7 @@ public class GameplayManagerTest extends ActivityTestCase{
 
         gameplay.pointsToNextLevel = 20;
         gameplay.addToScore(10);
-        assertEquals("Test Failure: Score should increase level by 1", 0, gameplay.getLevel());
+        assertEquals("Test Failure: Score should increase currentLevel by 1", 0, gameplay.getLevel());
     }
 
     public void testAddToScoreAddsToHighScore() {
@@ -93,7 +91,7 @@ public class GameplayManagerTest extends ActivityTestCase{
                 getInstrumentation().getTargetContext().getResources());
 
         gameplay.addToScore(10);
-        assertEquals("Test Failure: Score should increase level by 1", 10, gameplay.newHighScore);
+        assertEquals("Test Failure: Score should increase currentLevel by 1", 10, gameplay.newHighScore);
     }
 
     public void testAddToScoreSignalsNewHighScore() {
@@ -142,7 +140,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         gameplay.setGameplayMode(1);
         gameplay.pointsToNextLevel = 1;
         gameplay.levelUp();
-        assertEquals("Test Failure: Did not increment level", 1, gameplay.getLevel());
+        assertEquals("Test Failure: Did not increment currentLevel", 1, gameplay.getLevel());
         assertEquals("Test Failure: Did not reset pointsToNextLevel", 0, gameplay.pointsToNextLevel);
     }
 
@@ -154,7 +152,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         gameplay.score = 1;
         gameplay.newHighScore = 2;
         gameplay.currentHighScore = 1;
-        gameplay.level = 100;
+        gameplay.currentLevel = 100;
 
         gameplay.setGameplayMode(1);
         assertEquals("Test Failure: HighScore Should be saved", 2, settings.getHighScore(0));

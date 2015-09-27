@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.example.lookingdynamic.lookingbusy.R;
 import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.example.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,12 +19,11 @@ import java.io.FileOutputStream;
  */
 public class BalloonTest extends ActivityTestCase {
 
-    public GameTheme theme;
+    public ThemeManager theme;
 
     public void setUp() throws Exception{
         super.setUp();
-        theme = new GameTheme(getInstrumentation().getTargetContext().getResources(),
-                getInstrumentation().getTargetContext().getResources().getXml(R.xml.crayon_theme));
+        theme = new ThemeManager(null, getInstrumentation().getTargetContext().getResources());
     }
 
     public void testCreateBalloon(){

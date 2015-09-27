@@ -39,7 +39,6 @@ public class GameTheme {
     protected int pauseSignImage = -1;
 
     private Resources myResources;
-    private Bitmap randomBotImage = null;
     protected Bitmap ball = null;
     protected Bitmap[] balloons;
     protected Bitmap droplet = null;
@@ -48,9 +47,9 @@ public class GameTheme {
     protected Bitmap popped_droplet = null;
     protected Bitmap pause_sign = null;
 
-    public GameTheme(Resources otherResources, XmlResourceParser themeXml, Bitmap randomBotImage) {
+
+    public GameTheme(Resources otherResources, XmlResourceParser themeXml) {
         this.myResources = otherResources;
-        this.randomBotImage = randomBotImage;
 
         int eventType = -1;
         try {
@@ -148,11 +147,7 @@ public class GameTheme {
     private void loadBalloons() {
         balloons = new Bitmap[balloonImages.length];
         for(int i=0; i<balloonImages.length;i++) {
-            if(randomBotImage == null) {
-                balloons[i] = BitmapFactory.decodeResource(myResources, balloonImages[i]);
-            } else {
-                balloons[i] = randomBotImage;
-            }
+            balloons[i] = BitmapFactory.decodeResource(myResources, balloonImages[i]);
         }
     }
 
@@ -230,4 +225,6 @@ public class GameTheme {
             balloons[i] = image;
         }
     }
+
+
 }
