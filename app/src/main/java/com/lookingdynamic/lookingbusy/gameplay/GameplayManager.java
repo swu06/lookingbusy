@@ -19,6 +19,7 @@ public class GameplayManager {
     protected int newHighScore;
     protected int currentLevel;
     protected int pointsToNextLevel;
+    protected long levelEndTime;
     protected int currentMode;
 
     public GameplayManager(SettingsManager settings, Resources myResources) {
@@ -36,18 +37,17 @@ public class GameplayManager {
             currentMode = 0;
         }
 
-        score = 0;
         currentHighScore = settings.getHighScore(currentMode);
 
-        currentLevel = 0;
-        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
-
+        score = 0;
+        clearCurrentStats();
     }
 
     public void clearCurrentStats() {
         score = 0;
         currentLevel = 0;
         pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
+        setLevelEndTime(modes[currentMode].getTimeToNextLevel(currentLevel));
     }
 
     public boolean addToScore(int points){
@@ -73,13 +73,25 @@ public class GameplayManager {
         return newHighScoreAchieved;
     }
 
-    public String getDisplayString(){
+    public String getScoreDisplayString(){
         String scoreString = "";
         if(modes[currentMode].getLevelName(currentLevel) != "") {
             scoreString = scoreString + modes[currentMode].getLevelName(currentLevel) + ": ";
         }
         scoreString = scoreString + score;
         return scoreString;
+    }
+
+    public String getTimeRemainingDisplayString() {
+        String returnString = null;
+        long millisLeft = (levelEndTime - System.currentTimeMillis()) / 1000;
+        if(millisLeft > 0) {
+            returnString = "Time Left: " + millisLeft;
+        } else {
+            returnString = "Time is up!";
+            levelUp();
+        }
+        return returnString;
     }
 
     public boolean isHighScore() {
@@ -89,10 +101,27 @@ public class GameplayManager {
             return false;
         }
     }
+
+    public boolean isTimedLevel() {
+        if(levelEndTime != 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     protected void levelUp(){
         currentLevel++;
         pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
+        setLevelEndTime(modes[currentMode].getTimeToNextLevel(currentLevel));
     }
+    private void setLevelEndTime(int timeToNextLevel) {
+        if(timeToNextLevel == 0){
+            levelEndTime = 0;
+        } else {
+            levelEndTime = System.currentTimeMillis() + (timeToNextLevel * 1000);
+        }
+    }
+
 
     public int getLevel() {
         return currentLevel;

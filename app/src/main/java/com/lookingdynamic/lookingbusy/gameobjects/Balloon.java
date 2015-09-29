@@ -40,8 +40,14 @@ public class Balloon extends PoppableObject {
     // Balloons only move vertically
     public void move(ThemeManager theme, int viewWidth, int viewHeight) {
         yCoordinate = yCoordinate + yVelocity;
-        if (yCoordinate + getImage(theme).getHeight() <= 0) {
+        int imageHeight = getImage(theme).getHeight();
+        if (yCoordinate + imageHeight <= 0) {
             offScreen = true;
+        }
+
+        // Shift up the balloons that start off the screen when they first move
+        if(yCoordinate > viewHeight - imageHeight) {
+            yCoordinate = viewHeight - imageHeight;
         }
     }
 

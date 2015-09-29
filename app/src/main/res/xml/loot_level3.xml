@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Loot3</name>
+    <timeToNextLevel>10</timeToNextLevel>
+    <chanceToCreate>100</chanceToCreate>
+    <ballDefinition>
+        <percentCreated>100</percentCreated>
+        <percentFast>100</percentFast>
+    </ballDefinition>
+</level>

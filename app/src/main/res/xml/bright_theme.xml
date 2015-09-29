@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <gameTheme>
     <name>Bright Theme</name>
+    <alpha>200</alpha>
     <icon>bright_icon</icon>
     <ball>bright_ball</ball>
     <balloons>bright_balloon1,bright_balloon2,bright_balloon3,bright_balloon4</balloons>

@@ -78,12 +78,16 @@ public class PopAllTheThingsGame extends SurfaceView implements
         thread.onPause();
 
         // create/clear holder for balloons
-        activePoppableObjects = new Vector<PoppableObject>();
-        poppedPoppableObjects = new Vector<PoppableObject>();
+        clearObjects();
         gameplay.clearCurrentStats();
 
         thread.onResume();
         setFocusable(true);
+    }
+
+    public void clearObjects() {
+        activePoppableObjects = new Vector<PoppableObject>();
+        poppedPoppableObjects = new Vector<PoppableObject>();
     }
 
     public void resumeFirstRun() {
@@ -200,16 +204,13 @@ public class PopAllTheThingsGame extends SurfaceView implements
             poppedPoppableObjects.removeAllElements();
         }
 
-        boolean newHighScoreAchieved = false;
         synchronized (activePoppableObjects) {
             //Move Active Balloons, remove popped balloons
             for (int i = 0; i < activePoppableObjects.size(); i++) {
                 PoppableObject poppableObject = activePoppableObjects.get(i);
 
                 if (poppableObject.isPopped()) {
-                    if(gameplay.addToScore(poppableObject.getScoreValue())) {
-                        newHighScoreAchieved = true;
-                    }
+                    gameplay.addToScore(poppableObject.getScoreValue());
                     poppedPoppableObjects.add(poppableObject);
                     activePoppableObjects.remove(i);
                 } else if (poppableObject.isOffScreen()) {

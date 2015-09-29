@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Loot 4</name>
+    <timeToNextLevel>10</timeToNextLevel>
+    <chanceToCreate>100</chanceToCreate>
+    <randomBotDefinition>
+        <percentCreated>100</percentCreated>
+        <percentSuperFast>100</percentSuperFast>
+    </randomBotDefinition>
+</level>

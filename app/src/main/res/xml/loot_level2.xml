@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Loot 2</name>
+    <timeToNextLevel>10</timeToNextLevel>
+    <chanceToCreate>100</chanceToCreate>
+    <dropletDefinition>
+        <percentCreated>100</percentCreated>
+        <percentMedium>100</percentMedium>
+    </dropletDefinition>
+</level>

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <gameTheme>
     <name>Crayon Theme</name>
+    <alpha>200</alpha>
     <icon>crayon_icon</icon>
     <ball>crayon_ball</ball>
-    <balloons>crayon_balloon1</balloons>
+    <balloons>crayon_balloon1,crayon_balloon2,crayon_balloon3,crayon_balloon4</balloons>
     <droplet>crayon_droplet</droplet>
     <popped_ball>crayon_popped_ball</popped_ball>
     <popped_balloons>crayon_popped_balloon1</popped_balloons>

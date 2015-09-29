@@ -32,6 +32,8 @@ public class GameInfoDisplay {
     private int endXsecondaryLocation;
     private int endYsecondaryLocation;
 
+    private boolean wasOnTimedLevel;
+
     public GameInfoDisplay(PopAllTheThingsGame game) {
         this.game = game;
         readyToPause = false;
@@ -76,6 +78,8 @@ public class GameInfoDisplay {
         endXsecondaryLocation = startXsecondaryLocation + game.getThemeManager().getPauseSign().getWidth();
         endYsecondaryLocation = startYsecondaryLocation + game.getThemeManager().getPauseSign().getHeight();
 
+        wasOnTimedLevel = false;
+
         Log.d(LOGGER, "SecondaryLocation = "+ startXsecondaryLocation);
 
     }
@@ -86,13 +90,22 @@ public class GameInfoDisplay {
 
     public void draw(Canvas canvas) {
 
-        canvas.drawText(game.getGameplayManager().getDisplayString(), game.getWidth() / 2, 300, whiteFont);
-        canvas.drawText(game.getGameplayManager().getDisplayString(), game.getWidth() / 2, 300, blackOutline);
+        canvas.drawText(game.getGameplayManager().getScoreDisplayString(), game.getWidth() / 2, 300, whiteFont);
+        canvas.drawText(game.getGameplayManager().getScoreDisplayString(), game.getWidth() / 2, 300, blackOutline);
+        float height = 300 + blackOutline.descent() - blackOutline.ascent();
 
+        if(game.getGameplayManager().isTimedLevel()) {
+            wasOnTimedLevel = true;
+            canvas.drawText(game.getGameplayManager().getTimeRemainingDisplayString(), game.getWidth() / 2, height, whiteFont);
+            canvas.drawText(game.getGameplayManager().getTimeRemainingDisplayString(), game.getWidth() / 2, height, blackOutline);
+            height = height + blackOutline.descent() - blackOutline.ascent();
+        } else if(wasOnTimedLevel) {
+            game.clearObjects();
+            wasOnTimedLevel = false;
+        }
         if(game.getGameplayManager().isHighScore()) {
-            float height2 = 300 + blackOutline.descent() - blackOutline.ascent();
-            canvas.drawText("High Score!!", game.getWidth() / 2, height2, whiteFont);
-            canvas.drawText("High Score!!", game.getWidth() / 2, height2, blackOutline);
+            canvas.drawText("High Score!!", game.getWidth() / 2, height, whiteFont);
+            canvas.drawText("High Score!!", game.getWidth() / 2, height, blackOutline);
         }
 
         if(readyToPause) {
@@ -133,7 +146,7 @@ public class GameInfoDisplay {
      */
     public void handleOnUp(float x, float y) {
         Log.d(LOGGER, "Handling the Up");
-        if(startXsecondaryLocation - MARGIN <= x
+        if(readyToPause && startXsecondaryLocation - MARGIN <= x
                 && y <= endYsecondaryLocation + MARGIN){
             game.pause();
         }

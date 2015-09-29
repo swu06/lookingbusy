@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Loot 1</name>
+    <timeToNextLevel>10</timeToNextLevel>
+    <chanceToCreate>100</chanceToCreate>
+    <balloonDefinition>
+        <percentCreated>100</percentCreated>
+        <percentSlow>100</percentSlow>
+    </balloonDefinition>
+</level>

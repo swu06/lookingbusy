@@ -55,4 +55,8 @@ public class GameplayMode {
     public int getPointsToNextLevel(int currentLevel) {
         return levels[safeLevel(currentLevel)].getPointsToNextLevel();
     }
+
+    public int getTimeToNextLevel(int currentLevel) {
+        return levels[safeLevel(currentLevel)].getTimeToNextLevel();
+    }
 }
