@@ -19,6 +19,7 @@
     <string name="gameplay_type_long">Type of gameplay experience, relaxed or fast-paced</string>
     <string name="game_theme">Theme</string>
     <string name="game_theme_long">Theme of the game pieces</string>
+    <string name="classic_mode">Classic Mode</string>
     <string name="challenging_mode">Challenging Mode</string>
     <string name="relaxing_mode">Relaxing Mode</string>
 </resources>

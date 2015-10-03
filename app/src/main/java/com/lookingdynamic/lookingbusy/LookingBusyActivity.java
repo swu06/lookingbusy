@@ -191,6 +191,22 @@ public class LookingBusyActivity extends Activity {
         builder.show();
     }
 
+    public void showGameOverMenu() {
+        Log.d(LOGGER, "Displaying Game Over Menu");
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Game Over!");
+        builder.setMessage("Better luck next time.  Click below to start a new game!");
+        builder.setPositiveButton("Let's Play Again!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.d(LOGGER, "Starting New Game");
+                game.startNewGame();
+            }
+        });
+        builder.show();
+    }
+
     public void showPauseMenu() {
 
         String[] pausedMenuLabels = new String[] {"Themes", "GamePlay", "Picture For RandomBot", "High Scores"};
@@ -447,5 +463,6 @@ public class LookingBusyActivity extends Activity {
 
         game.setRandomBotImage(destination.getPath(), scaledFile);
     }
+
 
 }

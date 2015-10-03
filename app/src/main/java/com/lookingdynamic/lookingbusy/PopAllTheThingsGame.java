@@ -95,7 +95,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
         firstRun = false;
     }
 
-
     public ThemeManager getThemeManager() {
         return themes;
     }
@@ -112,7 +111,11 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public void pause() {
         if(!thread.isPausedFlagIsSet()) {
             thread.onPause();
-            activity.showPauseMenu();
+            if(gameplay.isGameOver()) {
+                activity.showGameOverMenu();
+            } else {
+                activity.showPauseMenu();
+            }
         }
     }
 
@@ -185,78 +188,86 @@ public class PopAllTheThingsGame extends SurfaceView implements
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         gameInfo.draw(canvas);
 
-        synchronized (activePoppableObjects) {
-            for (PoppableObject poppableObject : activePoppableObjects) {
-                poppableObject.draw(themes, canvas, themes.getPainter());
-            }
-        }
-        synchronized (poppedPoppableObjects) {
-            for (PoppableObject poppableObject : poppedPoppableObjects) {
-                poppableObject.draw(themes, canvas, themes.getPainter());
-            }
-        }
+        if(!gameplay.isGameOver()) {
 
+            synchronized (activePoppableObjects) {
+                for (PoppableObject poppableObject : activePoppableObjects) {
+                    poppableObject.draw(themes, canvas, themes.getPainter());
+                }
+            }
+            synchronized (poppedPoppableObjects) {
+                for (PoppableObject poppableObject : poppedPoppableObjects) {
+                    poppableObject.draw(themes, canvas, themes.getPainter());
+                }
+            }
+        }
     }
 
     public void update() {
-        synchronized (poppedPoppableObjects) {
-            //Handle Dead Balloons
-            poppedPoppableObjects.removeAllElements();
-        }
+        if(!gameplay.isGameOver()) {
+            synchronized (poppedPoppableObjects) {
+                //Handle Dead Balloons
+                poppedPoppableObjects.removeAllElements();
+            }
 
-        synchronized (activePoppableObjects) {
-            //Move Active Balloons, remove popped balloons
-            for (int i = 0; i < activePoppableObjects.size(); i++) {
-                PoppableObject poppableObject = activePoppableObjects.get(i);
+            synchronized (activePoppableObjects) {
+                //Move Active Balloons, remove popped balloons
+                for (int i = 0; i < activePoppableObjects.size(); i++) {
+                    PoppableObject poppableObject = activePoppableObjects.get(i);
 
-                if (poppableObject.isPopped()) {
-                    gameplay.addToScore(poppableObject.getScoreValue());
-                    poppedPoppableObjects.add(poppableObject);
-                    activePoppableObjects.remove(i);
-                } else if (poppableObject.isOffScreen()) {
-                    gameplay.addToScore(-1);
-                    activePoppableObjects.remove(i);
-                } else {
-                    poppableObject.move(themes, getWidth(), getHeight());
+                    if (poppableObject.isPopped()) {
+                        gameplay.addToScore(poppableObject.getScoreValue());
+                        poppedPoppableObjects.add(poppableObject);
+                        activePoppableObjects.remove(i);
+                    } else if (poppableObject.isOffScreen()) {
+                        gameplay.missedObject(poppableObject.getScoreValue());
+                        activePoppableObjects.remove(i);
+                    } else {
+                        poppableObject.move(themes, getWidth(), getHeight());
+                    }
+                }
+
+                PoppableObject toAdd =
+                        PoppableObjectFactory.generatePoppableObject(gameplay,
+                                activePoppableObjects.size(),
+                                getWidth(),
+                                getHeight(),
+                                themes.getRandomBot() != null);
+
+                if (toAdd != null && !firstRun) {
+                    activePoppableObjects.add(toAdd);
                 }
             }
-
-            PoppableObject toAdd =
-                    PoppableObjectFactory.generatePoppableObject(gameplay,
-                                                                 getWidth(),
-                                                                 getHeight(),
-                                                                 themes.getRandomBot() != null);
-
-            if (toAdd != null && !firstRun) {
-                activePoppableObjects.add(toAdd);
-            }
         }
-
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_UP) {
-            Log.d(LOGGER, "onUp detected!");
-            gameInfo.handleOnUp(event.getX(), event.getY());
-        } else if(event.getAction() == MotionEvent.ACTION_DOWN) {
-            Log.d(LOGGER, "onDown detected!");
-            boolean objectPopped = false;
-            synchronized (activePoppableObjects) {
-                for (PoppableObject poppableObject : activePoppableObjects) {
-                    if (!poppableObject.isPopped() &&
-                            poppableObject.handleTouch(themes, (int) event.getX(), (int) event.getY())) {
-                        objectPopped = true;
-                        break;
+        if(gameplay.isGameOver()) {
+            pause();
+        } else {
+            if (event.getAction() == MotionEvent.ACTION_UP) {
+                Log.d(LOGGER, "onUp detected!");
+                gameInfo.handleOnUp(event.getX(), event.getY());
+            } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                Log.d(LOGGER, "onDown detected!");
+                boolean objectPopped = false;
+                synchronized (activePoppableObjects) {
+                    for (PoppableObject poppableObject : activePoppableObjects) {
+                        if (!poppableObject.isPopped() &&
+                                poppableObject.handleTouch(themes, (int) event.getX(), (int) event.getY())) {
+                            objectPopped = true;
+                            break;
+                        }
                     }
                 }
-            }
 
-            if(objectPopped) {
-                thread.wakeIfSleeping();
-            }
+                if (objectPopped) {
+                    thread.wakeIfSleeping();
+                }
 
-            gameInfo.handleOnDown(event.getX(), event.getY());
+                gameInfo.handleOnDown(event.getX(), event.getY());
+            }
         }
         return true;
     }

@@ -1,9 +1,9 @@
-package com.lookingdynamic.lookingbusy.lookingbusy.gameplay;
+package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.test.ActivityTestCase;
 
-import com.example.lookingdynamic.lookingbusy.gameplay.GameplayManager;
-import com.example.lookingdynamic.lookingbusy.gameplay.SettingsManager;
+import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
+import com.lookingdynamic.lookingbusy.gameplay.SettingsManager;
 
 /**
  * Created by swu on 9/20/2015.
@@ -123,7 +123,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         GameplayManager gameplay = new GameplayManager(settings,
                 getInstrumentation().getTargetContext().getResources());
 
-        assertEquals("Test Failure: Level Name should be prepended to score", "Lvl 1: 0", gameplay.getDisplayString());
+        assertEquals("Test Failure: Level Name should be prepended to score", "Lvl 1: 0", gameplay.getScoreDisplayString());
     }
 
     public void testGetDisplayStringWithoutLevelName() {
@@ -132,7 +132,7 @@ public class GameplayManagerTest extends ActivityTestCase{
                 getInstrumentation().getTargetContext().getResources());
 
         gameplay.setGameplayMode(1);
-        assertEquals("Test Failure: Did not handle blank levelname", "0", gameplay.getDisplayString());
+        assertEquals("Test Failure: Did not handle blank levelname", "0", gameplay.getScoreDisplayString());
     }
 
     public void testLevelUp() {

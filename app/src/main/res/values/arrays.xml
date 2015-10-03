@@ -6,13 +6,36 @@
     </array>
 
     <array name="gameplay_modes">
-        <item>@array/challanging_mode</item>
-        <item>@array/relaxing_mode</item>
+        <item>@xml/mode_classic</item>
+        <item>@xml/mode_campaign</item>
+        <item>@xml/mode_relaxing</item>
     </array>
 
-    <array name="challanging_mode">
+    <array name="classic_mode">
+        <item>@string/classic_mode</item>
+        <item>@drawable/ic_verified_user_black_24dp</item>
+        <item>5</item>
+        <item>@xml/level1</item>
+        <item>@xml/level2</item>
+        <item>@xml/level3</item>
+        <item>@xml/boss_level1</item>
+        <item>@xml/level4</item>
+        <item>@xml/level5</item>
+        <item>@xml/level6</item>
+        <item>@xml/boss_level2</item>
+        <item>@xml/level7</item>
+        <item>@xml/level8</item>
+        <item>@xml/boss_level3</item>
+        <item>@xml/level9</item>
+        <item>@xml/level10</item>
+        <item>@xml/boss_level4</item>
+        <item>@xml/level11</item>
+    </array>
+
+    <array name="campaign_mode">
         <item>@string/challenging_mode</item>
         <item>@drawable/ic_verified_user_black_24dp</item>
+        <item>0</item>
         <item>@xml/level1</item>
         <item>@xml/level2</item>
         <item>@xml/level3</item>
@@ -33,6 +56,7 @@
     <array name="relaxing_mode">
         <item>@string/relaxing_mode</item>
         <item>@drawable/ic_insert_emoticon_black_24dp</item>
+        <item>0</item>
         <item>@xml/level_relaxing</item>
     </array>
 </resources>

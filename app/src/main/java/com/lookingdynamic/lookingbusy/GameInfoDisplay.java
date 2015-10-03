@@ -7,6 +7,8 @@ import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.Log;
 
+import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
+
 /**
  * Created by swu on 9/27/2015.
  */
@@ -89,45 +91,93 @@ public class GameInfoDisplay {
     }
 
     public void draw(Canvas canvas) {
-
-        canvas.drawText(game.getGameplayManager().getScoreDisplayString(), game.getWidth() / 2, 300, whiteFont);
-        canvas.drawText(game.getGameplayManager().getScoreDisplayString(), game.getWidth() / 2, 300, blackOutline);
-        float height = 300 + blackOutline.descent() - blackOutline.ascent();
-
-        if(game.getGameplayManager().isTimedLevel()) {
-            wasOnTimedLevel = true;
-            canvas.drawText(game.getGameplayManager().getTimeRemainingDisplayString(), game.getWidth() / 2, height, whiteFont);
-            canvas.drawText(game.getGameplayManager().getTimeRemainingDisplayString(), game.getWidth() / 2, height, blackOutline);
-            height = height + blackOutline.descent() - blackOutline.ascent();
-        } else if(wasOnTimedLevel) {
-            game.clearObjects();
-            wasOnTimedLevel = false;
-        }
-        if(game.getGameplayManager().isHighScore()) {
-            canvas.drawText("High Score!!", game.getWidth() / 2, height, whiteFont);
-            canvas.drawText("High Score!!", game.getWidth() / 2, height, blackOutline);
-        }
-
-        if(readyToPause) {
-            canvas.drawBitmap(game.getThemeManager().getPauseSign(),
-                    startXsecondaryLocation,
-                    startYsecondaryLocation,
-                    translucentPainter);
-            int middleOfPauseSign = MARGIN + game.getThemeManager().getPauseSign().getHeight() / 2;
-            canvas.drawLine(MARGIN*2,
-                    middleOfPauseSign,
-                    startXsecondaryLocation - 10,
-                    middleOfPauseSign,
-                    blackLine);
-            canvas.drawLine(MARGIN*2 + 5,
-                    middleOfPauseSign,
-                    startXsecondaryLocation - 15,
-                    middleOfPauseSign,
-                    whiteLine);
+        GameplayManager manager = game.getGameplayManager();
+        if(manager.isGameOver()) {
+            displayGameOverScreen(canvas, manager);
 
         } else {
-            canvas.drawBitmap(game.getThemeManager().getPauseSign(), startXprimaryLocation, startYprimaryLocation, translucentPainter);
+            canvas.drawText(manager.getScoreDisplayString(), game.getWidth() / 2, 300, whiteFont);
+            canvas.drawText(manager.getScoreDisplayString(), game.getWidth() / 2, 300, blackOutline);
+            float height = 300 + blackOutline.descent() - blackOutline.ascent();
+
+            if (manager.isLifeRestrictedMode()) {
+                canvas.drawText(manager.getLivesRemainingString(), game.getWidth() / 2, height, whiteFont);
+                canvas.drawText(manager.getLivesRemainingString(), game.getWidth() / 2, height, blackOutline);
+                height = height + blackOutline.descent() - blackOutline.ascent();
+            }
+
+            if (manager.isTimedLevel()) {
+                wasOnTimedLevel = true;
+                canvas.drawText(manager.getTimeRemainingDisplayString(), game.getWidth() / 2, height, whiteFont);
+                canvas.drawText(manager.getTimeRemainingDisplayString(), game.getWidth() / 2, height, blackOutline);
+                height = height + blackOutline.descent() - blackOutline.ascent();
+            } else if (wasOnTimedLevel) {
+                game.clearObjects();
+                wasOnTimedLevel = false;
+            }
+
+            if (manager.isHighScore()) {
+                canvas.drawText("High Score!!", game.getWidth() / 2, height, whiteFont);
+                canvas.drawText("High Score!!", game.getWidth() / 2, height, blackOutline);
+            }
+
+            if (readyToPause) {
+                canvas.drawBitmap(game.getThemeManager().getPauseSign(),
+                        startXsecondaryLocation,
+                        startYsecondaryLocation,
+                        translucentPainter);
+                int middleOfPauseSign = MARGIN + game.getThemeManager().getPauseSign().getHeight() / 2;
+                canvas.drawLine(MARGIN * 2,
+                        middleOfPauseSign,
+                        startXsecondaryLocation - 10,
+                        middleOfPauseSign,
+                        blackLine);
+                canvas.drawLine(MARGIN * 2 + 5,
+                        middleOfPauseSign,
+                        startXsecondaryLocation - 15,
+                        middleOfPauseSign,
+                        whiteLine);
+
+            } else {
+                canvas.drawBitmap(game.getThemeManager().getPauseSign(),
+                        startXprimaryLocation,
+                        startYprimaryLocation,
+                        translucentPainter);
+            }
         }
+    }
+
+    private void displayGameOverScreen(Canvas canvas, GameplayManager manager) {
+        whiteFont.setAlpha(255);
+        blackOutline.setAlpha(255);
+        canvas.drawText("GAME OVER", game.getWidth() / 2, game.getHeight() / 2, whiteFont);
+        canvas.drawText("GAME OVER", game.getWidth() / 2, game.getHeight() / 2, blackOutline);
+        if (manager.isHighScore()) {
+            whiteFont.setTextSize(75);
+            blackOutline.setTextSize(75);
+            float height = game.getHeight() - (game.getHeight() / 4);
+            canvas.drawText("New High Score:",
+                    game.getWidth() / 2,
+                    height,
+                    whiteFont);
+            canvas.drawText("New High Score:",
+                    game.getWidth() / 2,
+                    height,
+                    blackOutline);
+            height = height + blackOutline.descent() - blackOutline.ascent();
+            whiteFont.setTextSize(100);
+            blackOutline.setTextSize(100);
+            canvas.drawText("" + manager.getNewHighScore(),
+                    game.getWidth() / 2,
+                    height,
+                    whiteFont);
+            canvas.drawText("" + manager.getNewHighScore(),
+                    game.getWidth() / 2,
+                    height,
+                    blackOutline);
+        }
+        whiteFont.setAlpha(200);
+        blackOutline.setAlpha(200);
     }
 
     public void handleOnDown(float x, float y) {

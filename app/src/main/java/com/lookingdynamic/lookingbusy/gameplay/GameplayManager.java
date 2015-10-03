@@ -20,16 +20,18 @@ public class GameplayManager {
     protected int currentLevel;
     protected int pointsToNextLevel;
     protected long levelEndTime;
+    protected int objectsLeftInLevel;
+    protected int livesLeft;
     protected int currentMode;
 
     public GameplayManager(SettingsManager settings, Resources myResources) {
         this.settings = settings;
 
-        TypedArray items = myResources.obtainTypedArray(R.array.gameplay_modes);
-        modes = new GameplayMode[items.length()];
+        TypedArray gameplayModes = myResources.obtainTypedArray(R.array.gameplay_modes);
+        modes = new GameplayMode[gameplayModes.length()];
 
-        for(int i=0;i<items.length();i++){
-            modes[i] = new GameplayMode(myResources, myResources.obtainTypedArray(items.getResourceId(i,-1)));
+        for(int i=0;i<gameplayModes.length();i++){
+            modes[i] = new GameplayMode(myResources, myResources.getXml(gameplayModes.getResourceId(i, -1)));
         }
 
         currentMode = settings.getGameplay();
@@ -39,15 +41,14 @@ public class GameplayManager {
 
         currentHighScore = settings.getHighScore(currentMode);
 
-        score = 0;
         clearCurrentStats();
     }
 
     public void clearCurrentStats() {
         score = 0;
         currentLevel = 0;
-        pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
-        setLevelEndTime(modes[currentMode].getTimeToNextLevel(currentLevel));
+        livesLeft = modes[currentMode].getLivesAllowed();
+        setLevelSettings();
     }
 
     public boolean addToScore(int points){
@@ -66,11 +67,31 @@ public class GameplayManager {
         if(pointsToNextLevel > 0) {
             if (pointsToNextLevel - points <= 0) {
                 levelUp();
+                Log.d(LOGGER, "Levelling up after normal level");
             } else {
                 pointsToNextLevel = pointsToNextLevel - points;
             }
         }
+        if(points < 0 && modes[currentMode].getLivesAllowed() > 0) {
+            livesLeft--;
+        }
         return newHighScoreAchieved;
+    }
+
+    public boolean missedObject(int points){
+
+        boolean stillAlive = true;
+
+        score = score - points;
+
+        if(isLifeRestrictedMode()) {
+            livesLeft--;
+            if (livesLeft <= 0) {
+                stillAlive = false;
+                storeHighScore();
+            }
+        }
+        return stillAlive;
     }
 
     public String getScoreDisplayString(){
@@ -82,14 +103,26 @@ public class GameplayManager {
         return scoreString;
     }
 
+
     public String getTimeRemainingDisplayString() {
         String returnString = null;
-        long millisLeft = (levelEndTime - System.currentTimeMillis()) / 1000;
-        if(millisLeft > 0) {
-            returnString = "Time Left: " + millisLeft;
-        } else {
-            returnString = "Time is up!";
-            levelUp();
+        if(isTimedLevel()) {
+            long millisLeft = (levelEndTime - System.currentTimeMillis()) / 1000;
+            if (millisLeft > 0) {
+                returnString = "Time Left: " + millisLeft;
+            } else {
+                returnString = "Time is up!";
+                Log.d(LOGGER,"Levelling up after loot level");
+                levelUp();
+            }
+        }
+        return returnString;
+    }
+
+    public String getLivesRemainingString() {
+        String returnString = null;
+        if(isLifeRestrictedMode()) {
+            returnString = "Lives Left: " + livesLeft;
         }
         return returnString;
     }
@@ -102,18 +135,18 @@ public class GameplayManager {
         }
     }
 
-    public boolean isTimedLevel() {
-        if(levelEndTime != 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     protected void levelUp(){
+        storeHighScore();
         currentLevel++;
+        setLevelSettings();
+    }
+
+    protected void setLevelSettings() {
         pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
         setLevelEndTime(modes[currentMode].getTimeToNextLevel(currentLevel));
+        objectsLeftInLevel = modes[currentMode].getTotalObjectsToCreate(currentLevel);
     }
+
     private void setLevelEndTime(int timeToNextLevel) {
         if(timeToNextLevel == 0){
             levelEndTime = 0;
@@ -164,7 +197,7 @@ public class GameplayManager {
             newHighScore = 0;
             currentHighScore = settings.getHighScore(currentMode);
             currentLevel = 0;
-
+            setLevelSettings();
         }
     }
 
@@ -172,6 +205,10 @@ public class GameplayManager {
         if(newHighScore > currentHighScore) {
             settings.setHighScore(currentMode, newHighScore);
         }
+    }
+
+    public int getNewHighScore() {
+        return newHighScore;
     }
 
     public String[] getHighScores() {
@@ -186,6 +223,46 @@ public class GameplayManager {
     public void clearAllScores() {
         for(int i=0; i<modes.length; i++) {
             settings.setHighScore(i, 0);
+        }
+        currentHighScore = 0;
+    }
+
+    public boolean shouldMakeObject(int objectCount) {
+        boolean returnValue = true;
+
+        // If this is a boss level
+        if(isBossLevel()) {
+
+            // and there are objects left from the previous level, wait
+            if (objectCount > 0
+                    && modes[currentMode].getTotalObjectsToCreate(currentLevel) == objectsLeftInLevel) {
+                returnValue = false;
+            }
+            // or there are no more objects left, don't make any more
+            else if(objectsLeftInLevel <= 0) {
+                returnValue = false;
+                // Also, If we have popped all of the objects, level up
+                if(objectCount == 0) {
+                    levelUp();
+                    Log.d(LOGGER,"Levelling up after boss level");
+                }
+            }
+            else {
+                returnValue = true;
+                // If this is the first object we are creating for the level, set the points to next level for it
+                if(modes[currentMode].getTotalObjectsToCreate(currentLevel) == objectsLeftInLevel) {
+                    pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
+                }
+            }
+
+        }
+
+        return returnValue;
+    }
+
+    public void makeObject() {
+        if(objectsLeftInLevel > 0) {
+            objectsLeftInLevel--;
         }
     }
 
@@ -273,4 +350,19 @@ public class GameplayManager {
         return modes[currentMode].getLevel(currentLevel).getRandomBotPercentSuperFast();
     }
 
+    public boolean isLifeRestrictedMode() {
+        return modes[currentMode].getLivesAllowed() > 0;
+    }
+
+    public boolean isBossLevel() {
+        return modes[currentMode].getLevel(currentLevel).getTotalObjectsToCreate() > 0;
+    }
+
+    public boolean isTimedLevel() {
+        return modes[currentMode].getLevel(currentLevel).getTimeToNextLevel() > 0;
+    }
+
+    public boolean isGameOver() {
+        return (isLifeRestrictedMode() && livesLeft <= 0);
+    }
 }

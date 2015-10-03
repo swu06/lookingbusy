@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gameMode>
+    <name>Campaign Mode</name>
+    <icon>ic_verified_user_black_24dp</icon>
+    <levelDefinition>level1,level2,level3,loot_level1,level4,level5,level6,loot_level2,level7,level8,loot_level3,level9,level10,loot_level4,level11</levelDefinition>
+</gameMode>

@@ -18,24 +18,29 @@ public class PoppableObjectFactory {
     private static int FAST_SPEED = 8;
     private static int SUPER_FAST_SPEED = 9;
 
-    public static boolean shouldCreateObject(GameplayManager level) {
+    public static boolean shouldCreateObject(GameplayManager level, int currentObjectCount) {
         boolean createObject = false;
         int chanceOfReturningSomething = rand.nextInt(100);
 
-        if (chanceOfReturningSomething < level.getPercentChanceOfCreation()) {
+        if (chanceOfReturningSomething < level.getPercentChanceOfCreation()
+                && level.shouldMakeObject(currentObjectCount)) {
             createObject = true;
         }
 
         return createObject;
     }
 
-    public static PoppableObject generatePoppableObject(GameplayManager gameplay, int width, int height, boolean randomBotActivated) {
+    public static PoppableObject generatePoppableObject(GameplayManager gameplay, int currentObjectCount, int width, int height, boolean randomBotActivated) {
 
         PoppableObject toReturn = null;
 
         // If we aren't going to make a new object, then just exit
-        if (shouldCreateObject(gameplay)) {
+        if (shouldCreateObject(gameplay, currentObjectCount)) {
             toReturn = createObject(gameplay, width, height, randomBotActivated);
+        }
+
+        if(toReturn != null) {
+            gameplay.makeObject();
         }
 
         return toReturn;

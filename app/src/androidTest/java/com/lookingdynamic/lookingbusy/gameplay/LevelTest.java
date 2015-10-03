@@ -1,10 +1,10 @@
-package com.lookingdynamic.lookingbusy.lookingbusy.gameplay;
+package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.content.res.XmlResourceParser;
 import android.test.ActivityTestCase;
 
-import com.example.lookingdynamic.lookingbusy.R;
-import com.example.lookingdynamic.lookingbusy.gameplay.Level;
+import com.lookingdynamic.lookingbusy.R;
+import com.lookingdynamic.lookingbusy.gameplay.Level;
 
 /**
  * Created by swu on 9/14/2015.

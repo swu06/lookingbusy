@@ -1,11 +1,11 @@
-package com.lookingdynamic.lookingbusy.lookingbusy.gameplay;
+package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.test.ActivityTestCase;
 
-import com.example.lookingdynamic.lookingbusy.R;
-import com.example.lookingdynamic.lookingbusy.gameplay.GameTheme;
+import com.lookingdynamic.lookingbusy.R;
+import com.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
  * Created by swu on 9/13/2015.

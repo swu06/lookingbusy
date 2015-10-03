@@ -1,10 +1,9 @@
-package com.lookingdynamic.lookingbusy.lookingbusy.gameplay;
+package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.content.res.Resources;
 import android.test.ActivityTestCase;
 
-import com.example.lookingdynamic.lookingbusy.R;
-import com.example.lookingdynamic.lookingbusy.gameplay.GameplayMode;
+import com.lookingdynamic.lookingbusy.R;
 
 /**
  * Created by swu on 9/15/2015.
@@ -14,7 +13,8 @@ public class GameplayModeTest extends ActivityTestCase {
     public void testCreateGameplayMode() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
 
-        GameplayMode mode = new GameplayMode(myResources, myResources.obtainTypedArray(R.array.relaxing_mode));
+        GameplayMode mode = new GameplayMode(myResources,
+                getInstrumentation().getTargetContext().getResources().getXml(R.xml.mode_relaxing));
 
         assertEquals("Test Failure: Name not properly loaded", "Relaxing Mode", mode.getName());
         assertNotNull("Test Failure: Icon not properly loaded", mode.getIconImageId());
@@ -24,7 +24,8 @@ public class GameplayModeTest extends ActivityTestCase {
     public void testSafeLevel() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
 
-        GameplayMode mode = new GameplayMode(myResources, myResources.obtainTypedArray(R.array.relaxing_mode));
+        GameplayMode mode = new GameplayMode(myResources,
+                getInstrumentation().getTargetContext().getResources().getXml(R.xml.mode_relaxing));
 
         assertEquals("Test Failure: SafeLevel should not adjust viable currentLevel values", 0, mode.safeLevel(0));
         assertEquals("Test Failure: SafeLevel should adjust currentLevel values that are too high", 0, mode.safeLevel(1));
@@ -33,7 +34,8 @@ public class GameplayModeTest extends ActivityTestCase {
     public void testGetLevels() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
 
-        GameplayMode mode = new GameplayMode(myResources, myResources.obtainTypedArray(R.array.challanging_mode));
+        GameplayMode mode = new GameplayMode(myResources,
+                getInstrumentation().getTargetContext().getResources().getXml(R.xml.mode_campaign));
 
         assertTrue("Test Failure: multiple levels should be loaded, but only 1 was found",
                     mode.levels.length > 1);

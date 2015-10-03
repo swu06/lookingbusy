@@ -1,8 +1,8 @@
-package com.lookingdynamic.lookingbusy.lookingbusy.gameplay;
+package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.test.ActivityTestCase;
 
-import com.example.lookingdynamic.lookingbusy.gameplay.LevelObjectSettings;
+import com.lookingdynamic.lookingbusy.gameplay.LevelObjectSettings;
 
 /**
  * Created by swu on 9/14/2015.

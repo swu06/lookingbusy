@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Boss 3</name>
+    <totalObjectsToCreate>50</totalObjectsToCreate>
+    <pointsToNextLevel>2000</pointsToNextLevel>
+    <chanceToCreate>100</chanceToCreate>
+    <ballDefinition>
+        <percentCreated>100</percentCreated>
+        <percentFast>100</percentFast>
+    </ballDefinition>
+</level>

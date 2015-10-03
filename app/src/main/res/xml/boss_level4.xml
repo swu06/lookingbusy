@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level>
+    <name>Boss 4</name>
+    <totalObjectsToCreate>50</totalObjectsToCreate>
+    <pointsToNextLevel>2500</pointsToNextLevel>
+    <chanceToCreate>100</chanceToCreate>
+    <randomBotDefinition>
+        <percentCreated>100</percentCreated>
+        <percentSuperFast>100</percentSuperFast>
+    </randomBotDefinition>
+</level>

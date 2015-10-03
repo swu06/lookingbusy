@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gameMode>
+    <name>Relaxing Mode</name>
+    <icon>ic_insert_emoticon_black_24dp</icon>
+    <levelDefinition>level_relaxing</levelDefinition>
+</gameMode>

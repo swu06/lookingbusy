@@ -17,6 +17,7 @@ public class Level {
     private static final String NAME = "name";
     private static final String POINTS_TO_NEXT_LEVEL = "pointsToNextLevel";
     private static final String TIME_TO_NEXT_LEVEL = "timeToNextLevel";
+    private static final String TOTAL_OBJECTS_TO_CREATE = "totalObjectsToCreate";
     private static final String PERCENT_CHANCE_OF_CREATION = "chanceToCreate";
     private static final String BALL_DEFINITION = "ballDefinition";
     private static final String BALLOON_DEFINITION = "balloonDefinition";
@@ -31,6 +32,7 @@ public class Level {
     protected String name;
     protected int pointsToNextLevel;
     protected int timeToNextLevel;
+    protected int totalObjectsToCreate;
     protected int percentChanceOfCreation;
     protected LevelObjectSettings ballSettings;
     protected LevelObjectSettings balloonSettings;
@@ -57,6 +59,8 @@ public class Level {
                         pointsToNextLevel = Integer.parseInt(levelXml.nextText());
                     } else if(levelXml.getName().equalsIgnoreCase(TIME_TO_NEXT_LEVEL)) {
                         timeToNextLevel = Integer.parseInt(levelXml.nextText());
+                    } else if(levelXml.getName().equalsIgnoreCase(TOTAL_OBJECTS_TO_CREATE)) {
+                        totalObjectsToCreate = Integer.parseInt(levelXml.nextText());
                     } else if(levelXml.getName().equalsIgnoreCase(PERCENT_CHANCE_OF_CREATION)) {
                         percentChanceOfCreation = Integer.parseInt(levelXml.nextText());
                     } else if(levelXml.getName().equalsIgnoreCase(BALL_DEFINITION)) {
@@ -110,6 +114,10 @@ public class Level {
 
     public int getTimeToNextLevel() {
         return timeToNextLevel;
+    }
+
+    public int getTotalObjectsToCreate() {
+        return totalObjectsToCreate;
     }
 
     public int getPercentChanceOfCreation() {

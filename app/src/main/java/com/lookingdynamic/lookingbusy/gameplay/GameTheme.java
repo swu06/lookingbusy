@@ -17,7 +17,6 @@ public class GameTheme {
 
     private static final String LOGGER = GameTheme.class.getSimpleName();
     private static final String DRAWABLE_DEF_TYPE = "drawable";
-    private static final String XML_DEF_TYPE = "xml";
     private static final String DEF_PACKAGE = "com.lookingdynamic.lookingbusy";
     private static final String NAME_TAG = "name";
     private static final String ALPHA_TAG = "alpha";
