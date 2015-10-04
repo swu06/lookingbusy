@@ -403,33 +403,9 @@ public class LookingBusyActivity extends Activity {
 
         correctBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
-//        try {
-//            ei = new ExifInterface(filePath);
-//
-//            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-//                    ExifInterface.ORIENTATION_NORMAL);
-//
-//            int rotationInDegrees = exifToDegrees(orientation);
-//
-//            Matrix matrix = new Matrix();
-//            if (rotationInDegrees != 0f) {
-//                Log.d(LOGGER, "Image is stored rotated.");
-//                matrix.preRotate(rotationInDegrees);
-//            }
-//
-//            correctBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         return correctBitmap;
     }
 
-    private static int exifToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) { return 90; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {  return 180; }
-        else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {  return 270; }
-        return 0;
-    }
 
     public void storeBitmap(Bitmap existingFile) {
         Log.d(LOGGER, "Scaling file ...");

@@ -106,15 +106,13 @@ public class GameplayManager {
 
     public String getTimeRemainingDisplayString() {
         String returnString = null;
-        if(isTimedLevel()) {
-            long millisLeft = (levelEndTime - System.currentTimeMillis()) / 1000;
-            if (millisLeft > 0) {
-                returnString = "Time Left: " + millisLeft;
-            } else {
-                returnString = "Time is up!";
-                Log.d(LOGGER,"Levelling up after loot level");
-                levelUp();
-            }
+        long millisLeft = (levelEndTime - System.currentTimeMillis()) / 1000;
+        if (millisLeft > 0) {
+            returnString = "Time Left: " + millisLeft;
+        } else {
+            returnString = "Time is up!";
+            Log.d(LOGGER,"Levelling up after loot level");
+            levelUp();
         }
         return returnString;
     }

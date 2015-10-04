@@ -43,8 +43,11 @@ public class PoppableObjectFactory {
             toReturn = newGridOfBubbles(theme, width, height);
         }
         else if (!gameplay.isBubbleGrid() && shouldCreateObject(gameplay, currentObjectCount)) {
-            toReturn = new Vector<PoppableObject>();
-            toReturn.add(createObject(gameplay, width, height, randomBotActivated));
+            PoppableObject object = createObject(gameplay, width, height, randomBotActivated);
+            if(object != null) {
+                toReturn = new Vector<PoppableObject>();
+                toReturn.add(object);
+            }
         }
 
         if(toReturn != null) {

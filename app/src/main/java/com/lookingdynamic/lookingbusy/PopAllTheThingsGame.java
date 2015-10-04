@@ -195,6 +195,8 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
             synchronized (activePoppableObjects) {
                 for (PoppableObject poppableObject : activePoppableObjects) {
+                    if(poppableObject == null)Log.d(LOGGER, "poppableObject is null");
+                    if(themes == null) Log.d(LOGGER, "themes is null");
                     poppableObject.draw(themes, canvas, themes.getPainter());
                 }
             }

@@ -193,7 +193,7 @@ public class GameTheme {
         }
 
         if(whichOne >= popped_balloons.length) {
-            whichOne =  whichOne % balloons.length;
+            whichOne = whichOne % popped_balloons.length;
         }
         Bitmap toReturn = popped_balloons[whichOne];
         return toReturn;

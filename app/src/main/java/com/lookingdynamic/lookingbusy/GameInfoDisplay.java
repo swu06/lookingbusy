@@ -46,6 +46,7 @@ public class GameInfoDisplay {
         whiteFont.setColor(Color.WHITE);
         whiteFont.setTypeface(Typeface.DEFAULT_BOLD);
         whiteFont.setAlpha(200);
+        whiteFont.setAntiAlias(true);
 
         blackOutline = new TextPaint();
         blackOutline.setTextSize(100);
@@ -53,8 +54,9 @@ public class GameInfoDisplay {
         blackOutline.setColor(Color.BLACK);
         blackOutline.setTypeface(Typeface.DEFAULT_BOLD);
         blackOutline.setStyle(Paint.Style.STROKE);
-        blackOutline.setStrokeWidth(4);
+        blackOutline.setStrokeWidth(2);
         blackOutline.setAlpha(200);
+        blackOutline.setAntiAlias(true);
 
         whiteLine = new Paint();
         whiteLine.setColor(Color.WHITE);
@@ -141,10 +143,6 @@ public class GameInfoDisplay {
         triangle.setAntiAlias(true);
         triangle.setAlpha(200);
 
-        canvas.drawBitmap(game.getThemeManager().getPauseSign(),
-                startXsecondaryLocation,
-                startYsecondaryLocation,
-                translucentPainter);
         int middleOfPauseSign = MARGIN + game.getThemeManager().getPauseSign().getHeight() / 2;
         canvas.drawLine(MARGIN * 2,
                 middleOfPauseSign,
@@ -167,6 +165,11 @@ public class GameInfoDisplay {
 
         canvas.drawPath(path, blackLine);
         canvas.drawPath(path, triangle);
+
+        canvas.drawBitmap(game.getThemeManager().getPauseSign(),
+                startXsecondaryLocation,
+                startYsecondaryLocation,
+                translucentPainter);
     }
 
     private void displayGameOverScreen(Canvas canvas, GameplayManager manager) {
@@ -203,7 +206,6 @@ public class GameInfoDisplay {
     }
 
     public void handleOnDown(float x, float y) {
-        Log.d(LOGGER, "Handling the Down");
         if(startXprimaryLocation <= x && x <= endXprimaryLocation
                 && startYprimaryLocation <= y && y <= endYprimaryLocation){
             Log.d(LOGGER, "Ready to Pause");
@@ -217,7 +219,6 @@ public class GameInfoDisplay {
      * to pause, so we'll give them the benefit of the doubt
      */
     public void handleOnUp(float x, float y) {
-        Log.d(LOGGER, "Handling the Up");
         if(readyToPause && startXsecondaryLocation - MARGIN <= x
                 && y <= endYsecondaryLocation + MARGIN){
             game.pause();
