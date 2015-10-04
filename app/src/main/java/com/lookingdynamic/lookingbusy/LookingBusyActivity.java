@@ -63,7 +63,7 @@ public class LookingBusyActivity extends Activity {
         super.onCreate(savedInstanceState);
         // Removing the title to save previous screen space
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        firstRun = getSharedPreferences("BOOT_PREF", MODE_PRIVATE).getBoolean("firstRun2", true);
+        firstRun = getSharedPreferences("BOOT_PREF", MODE_PRIVATE).getBoolean("firstRun", true);
 
         if (firstRun){
             Log.d(LOGGER, "This is the first run of the activity");
@@ -269,6 +269,7 @@ public class LookingBusyActivity extends Activity {
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "GamePlay Selected:" + item);
                 modes.setGameplayMode(item);
+                game.clearObjects();
             }
         });
         builder.show();

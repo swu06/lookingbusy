@@ -104,4 +104,8 @@ public class GameplayMode {
     public int getLivesAllowed() {
         return livesAllowed;
     }
+
+    public boolean isBubbleGrid(int currentLevel) {
+        return levels[safeLevel(currentLevel)].isBubbleGrid();
+    }
 }

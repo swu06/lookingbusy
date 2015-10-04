@@ -6,6 +6,7 @@
     <ball>bright_ball</ball>
     <balloons>bright_balloon1,bright_balloon2,bright_balloon3,bright_balloon4</balloons>
     <droplet>bright_droplet</droplet>
+    <bubble>bubble</bubble>
     <popped_ball>bright_popped_ball</popped_ball>
     <popped_balloons>bright_popped_balloon1,bright_popped_balloon2,bright_popped_balloon3,bright_popped_balloon4</popped_balloons>
     <popped_droplet>bright_popped_droplet</popped_droplet>

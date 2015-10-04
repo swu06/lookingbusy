@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
+import android.media.MediaPlayer;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -37,6 +38,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private ThemeManager themes;
     private GameInfoDisplay gameInfo;
     private LookingBusyActivity activity;
+    private MediaPlayer mp;
 
     private boolean gameStopped = false;
     private boolean firstRun = false;
@@ -63,6 +65,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         settings = new SettingsManager(getContext());
         gameplay = new GameplayManager(settings, getResources());
         themes = new ThemeManager(settings, getResources());
+        mp = MediaPlayer.create(activity, R.raw.pop_short);
 
         // create the game loop thread
         thread = new GameThread(this);
@@ -216,7 +219,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
                     PoppableObject poppableObject = activePoppableObjects.get(i);
 
                     if (poppableObject.isPopped()) {
-                        gameplay.addToScore(poppableObject.getScoreValue());
                         poppedPoppableObjects.add(poppableObject);
                         activePoppableObjects.remove(i);
                     } else if (poppableObject.isOffScreen()) {
@@ -227,15 +229,16 @@ public class PopAllTheThingsGame extends SurfaceView implements
                     }
                 }
 
-                PoppableObject toAdd =
-                        PoppableObjectFactory.generatePoppableObject(gameplay,
+                Vector<PoppableObject> toAdd =
+                        PoppableObjectFactory.generatePoppableObject(themes,
+                                gameplay,
                                 activePoppableObjects.size(),
                                 getWidth(),
                                 getHeight(),
                                 themes.getRandomBot() != null);
 
                 if (toAdd != null && !firstRun) {
-                    activePoppableObjects.add(toAdd);
+                    activePoppableObjects.addAll(toAdd);
                 }
             }
         }
@@ -246,27 +249,45 @@ public class PopAllTheThingsGame extends SurfaceView implements
         if(gameplay.isGameOver()) {
             pause();
         } else {
+            boolean objectPopped = false;
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 Log.d(LOGGER, "onUp detected!");
                 gameInfo.handleOnUp(event.getX(), event.getY());
             } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 Log.d(LOGGER, "onDown detected!");
-                boolean objectPopped = false;
                 synchronized (activePoppableObjects) {
                     for (PoppableObject poppableObject : activePoppableObjects) {
                         if (!poppableObject.isPopped() &&
                                 poppableObject.handleTouch(themes, (int) event.getX(), (int) event.getY())) {
+                            gameplay.addToScore(poppableObject.getScoreValue());
                             objectPopped = true;
                             break;
                         }
                     }
                 }
 
-                if (objectPopped) {
-                    thread.wakeIfSleeping();
-                }
-
                 gameInfo.handleOnDown(event.getX(), event.getY());
+            } else if(gameplay.isBubbleGrid()) {
+                synchronized (activePoppableObjects) {
+                    for (PoppableObject poppableObject : activePoppableObjects) {
+                        if (!poppableObject.isPopped() &&
+                                poppableObject.handleTouch(themes, (int) event.getX(), (int) event.getY())) {
+                            gameplay.addToScore(poppableObject.getScoreValue());
+                            objectPopped = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (objectPopped) {
+                try {
+                    if (mp.isPlaying()) {
+                        mp.stop();
+                        mp.release();
+                        mp = MediaPlayer.create(activity, R.raw.pop_short);
+                    } mp.start();
+                } catch(Exception e) { e.printStackTrace(); }
+                thread.wakeIfSleeping();
             }
         }
         return true;

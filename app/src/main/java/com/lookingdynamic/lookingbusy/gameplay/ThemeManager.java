@@ -117,6 +117,10 @@ public class ThemeManager {
         return themes[currentTheme].getDroplet();
     }
 
+    public Bitmap getBubble() {
+        return themes[currentTheme].getBubble();
+    }
+
     public Bitmap getPoppedBall() {
         return themes[currentTheme].getPoppedBall();
     }

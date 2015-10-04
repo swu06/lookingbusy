@@ -355,11 +355,15 @@ public class GameplayManager {
     }
 
     public boolean isBossLevel() {
-        return modes[currentMode].getLevel(currentLevel).getTotalObjectsToCreate() > 0;
+        return modes[currentMode].getTotalObjectsToCreate(currentLevel) > 0;
     }
 
     public boolean isTimedLevel() {
-        return modes[currentMode].getLevel(currentLevel).getTimeToNextLevel() > 0;
+        return modes[currentMode].getTimeToNextLevel(currentLevel) > 0;
+    }
+
+    public boolean isBubbleGrid() {
+        return modes[currentMode].isBubbleGrid(currentLevel);
     }
 
     public boolean isGameOver() {

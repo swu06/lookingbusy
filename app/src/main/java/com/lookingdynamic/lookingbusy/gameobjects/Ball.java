@@ -53,6 +53,24 @@ public class Ball extends PoppableObject {
         offScreen = false;
     }
 
+    /*
+     * The Ball Objects are very hard to pop, so people suspect the game is buggy.
+     * To resolve this, I am added a small fudge factor so they are easier.
+     */
+    @Override
+    public boolean handleTouch(ThemeManager theme, int eventX, int eventY) {
+        int eh = 10;
+        Bitmap bitmapImage = getImage(theme);
+        if (eventX >= xCoordinate - eh
+                && eventX <= (xCoordinate + bitmapImage.getWidth() + eh)
+                && eventY >= yCoordinate - eh
+                && (eventY <= (yCoordinate + bitmapImage.getHeight() + eh))) {
+            popped = true;
+        }
+
+        return popped;
+    }
+
     @Override
     public Bitmap getImage(ThemeManager theme) {
         Bitmap bitmapImage = theme.getBall();

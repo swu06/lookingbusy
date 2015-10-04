@@ -1,17 +1,22 @@
 package com.lookingdynamic.lookingbusy.gameobjects;
 
+import android.graphics.Bitmap;
+import android.util.Log;
+
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayMode;
 import com.lookingdynamic.lookingbusy.gameplay.Level;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 import java.util.Random;
+import java.util.Vector;
 
 /**
  * Created by swu on 9/6/2015.
  */
 public class PoppableObjectFactory {
 
+    private static final String LOGGER = Bubble.class.getSimpleName();
     private static Random rand = new Random();
     private static int SLOW_SPEED = 2;
     private static int MEDIUM_SPEED = 4;
@@ -30,13 +35,16 @@ public class PoppableObjectFactory {
         return createObject;
     }
 
-    public static PoppableObject generatePoppableObject(GameplayManager gameplay, int currentObjectCount, int width, int height, boolean randomBotActivated) {
+    public static Vector<PoppableObject> generatePoppableObject(ThemeManager theme, GameplayManager gameplay, int currentObjectCount, int width, int height, boolean randomBotActivated) {
 
-        PoppableObject toReturn = null;
+        Vector<PoppableObject> toReturn = null;
 
-        // If we aren't going to make a new object, then just exit
-        if (shouldCreateObject(gameplay, currentObjectCount)) {
-            toReturn = createObject(gameplay, width, height, randomBotActivated);
+        if(gameplay.isBubbleGrid() && currentObjectCount == 0) {
+            toReturn = newGridOfBubbles(theme, width, height);
+        }
+        else if (!gameplay.isBubbleGrid() && shouldCreateObject(gameplay, currentObjectCount)) {
+            toReturn = new Vector<PoppableObject>();
+            toReturn.add(createObject(gameplay, width, height, randomBotActivated));
         }
 
         if(toReturn != null) {
@@ -44,6 +52,34 @@ public class PoppableObjectFactory {
         }
 
         return toReturn;
+    }
+
+    private static Vector<PoppableObject> newGridOfBubbles(ThemeManager theme, int screenWidth, int screenHeight) {
+        Bitmap bubbleImage = theme.getBubble();
+        int topMargin = 0;
+        int remainingScreenHeight = screenHeight - topMargin;
+        int imageWidth = bubbleImage.getWidth();
+        int imageHeight = bubbleImage.getHeight();
+
+        int numberOfBubblesWide = screenWidth / imageWidth;
+        int leftBorderWidth = (screenWidth - (numberOfBubblesWide * imageWidth)) / 2;
+
+        int numberOfBubblesHigh = remainingScreenHeight / imageHeight;
+        int topBorderHeight = (remainingScreenHeight - (numberOfBubblesHigh * imageHeight)) / 2;
+
+        Vector<PoppableObject> toReturn = new Vector<PoppableObject>();
+        int yLocation = topMargin + topBorderHeight;
+        for(int y=0; y < numberOfBubblesHigh; y++) {
+            int xLocation = leftBorderWidth;
+            for(int x=0; x < numberOfBubblesWide; x++ ) {
+                toReturn.add(new Bubble(xLocation, yLocation, numberOfBubblesHigh * numberOfBubblesWide));
+                xLocation = xLocation + imageWidth;
+            }
+            yLocation = yLocation + imageHeight;
+        }
+
+        return toReturn;
+
     }
 
     public static PoppableObject createObject(GameplayManager gameplay, int width, int height, boolean randomBotActivated) {

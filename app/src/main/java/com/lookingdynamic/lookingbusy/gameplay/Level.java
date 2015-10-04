@@ -15,6 +15,7 @@ import java.io.IOException;
 public class Level {
 
     private static final String NAME = "name";
+    private static final String BUBBLE_GRID = "bubbleGrid";
     private static final String POINTS_TO_NEXT_LEVEL = "pointsToNextLevel";
     private static final String TIME_TO_NEXT_LEVEL = "timeToNextLevel";
     private static final String TOTAL_OBJECTS_TO_CREATE = "totalObjectsToCreate";
@@ -30,6 +31,7 @@ public class Level {
     private static final String PERCENT_SUPER_FAST = "percentSuperFast";
 
     protected String name;
+    protected boolean bubbleGrid;
     protected int pointsToNextLevel;
     protected int timeToNextLevel;
     protected int totalObjectsToCreate;
@@ -41,6 +43,7 @@ public class Level {
 
     public Level(XmlResourceParser levelXml) {
         name = "";
+        bubbleGrid = false;
         pointsToNextLevel = 0;
         percentChanceOfCreation = 0;
         timeToNextLevel = 0;
@@ -55,6 +58,8 @@ public class Level {
                 if (levelXml.getEventType() == XmlResourceParser.START_TAG) {
                     if(levelXml.getName().equalsIgnoreCase(NAME)) {
                         name = levelXml.nextText();
+                    } else if(levelXml.getName().equalsIgnoreCase(BUBBLE_GRID)) {
+                        bubbleGrid = true;
                     } else if(levelXml.getName().equalsIgnoreCase(POINTS_TO_NEXT_LEVEL)) {
                         pointsToNextLevel = Integer.parseInt(levelXml.nextText());
                     } else if(levelXml.getName().equalsIgnoreCase(TIME_TO_NEXT_LEVEL)) {
@@ -106,6 +111,10 @@ public class Level {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isBubbleGrid() {
+        return bubbleGrid;
     }
 
     public int getPointsToNextLevel() {

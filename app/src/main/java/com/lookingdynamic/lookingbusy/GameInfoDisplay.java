@@ -3,6 +3,7 @@ package com.lookingdynamic.lookingbusy;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Typeface;
 import android.text.TextPaint;
 import android.util.Log;
@@ -57,15 +58,14 @@ public class GameInfoDisplay {
 
         whiteLine = new Paint();
         whiteLine.setColor(Color.WHITE);
-
         whiteLine.setStyle(Paint.Style.FILL_AND_STROKE);
-        whiteLine.setStrokeWidth(10);
+        whiteLine.setStrokeWidth(5);
         whiteLine.setAlpha(200);
 
         blackLine = new Paint();
         blackLine.setColor(Color.BLACK);
         blackLine.setStyle(Paint.Style.STROKE);
-        blackLine.setStrokeWidth(20);
+        blackLine.setStrokeWidth(10);
         blackLine.setAlpha(200);
 
         translucentPainter =  new Paint();
@@ -122,22 +122,7 @@ public class GameInfoDisplay {
             }
 
             if (readyToPause) {
-                canvas.drawBitmap(game.getThemeManager().getPauseSign(),
-                        startXsecondaryLocation,
-                        startYsecondaryLocation,
-                        translucentPainter);
-                int middleOfPauseSign = MARGIN + game.getThemeManager().getPauseSign().getHeight() / 2;
-                canvas.drawLine(MARGIN * 2,
-                        middleOfPauseSign,
-                        startXsecondaryLocation - 10,
-                        middleOfPauseSign,
-                        blackLine);
-                canvas.drawLine(MARGIN * 2 + 5,
-                        middleOfPauseSign,
-                        startXsecondaryLocation - 15,
-                        middleOfPauseSign,
-                        whiteLine);
-
+                drawPauseArrow(canvas);
             } else {
                 canvas.drawBitmap(game.getThemeManager().getPauseSign(),
                         startXprimaryLocation,
@@ -145,6 +130,43 @@ public class GameInfoDisplay {
                         translucentPainter);
             }
         }
+    }
+
+    private void drawPauseArrow(Canvas canvas) {
+
+        Paint triangle = new Paint();
+        triangle.setStrokeWidth(2);
+        triangle.setColor(Color.WHITE);
+        triangle.setStyle(Paint.Style.FILL_AND_STROKE);
+        triangle.setAntiAlias(true);
+        triangle.setAlpha(200);
+
+        canvas.drawBitmap(game.getThemeManager().getPauseSign(),
+                startXsecondaryLocation,
+                startYsecondaryLocation,
+                translucentPainter);
+        int middleOfPauseSign = MARGIN + game.getThemeManager().getPauseSign().getHeight() / 2;
+        canvas.drawLine(MARGIN * 2,
+                middleOfPauseSign,
+                startXsecondaryLocation - 30,
+                middleOfPauseSign,
+                blackLine);
+        canvas.drawLine(MARGIN * 2 + 5,
+                middleOfPauseSign,
+                startXsecondaryLocation - 30,
+                middleOfPauseSign,
+                whiteLine);
+
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        path.moveTo(startXsecondaryLocation - 35, middleOfPauseSign - 15);
+        path.lineTo(startXsecondaryLocation - 5, middleOfPauseSign);
+        path.lineTo(startXsecondaryLocation - 35, middleOfPauseSign + 15);
+        path.lineTo(startXsecondaryLocation - 35, middleOfPauseSign - 15);
+        path.close();
+
+        canvas.drawPath(path, blackLine);
+        canvas.drawPath(path, triangle);
     }
 
     private void displayGameOverScreen(Canvas canvas, GameplayManager manager) {

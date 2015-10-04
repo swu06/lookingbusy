@@ -48,7 +48,9 @@ public class RandomBot extends PoppableObject {
         Bitmap image = getImage(theme);
 
         // Get the random Direction/Velocity
-        if(consecutiveMovesRemaining == 0) {
+        // Don't change directions too much and don't stay still too long
+        if(consecutiveMovesRemaining == 0
+                || (xVelocity == 0 && yVelocity == 0)) {
             xVelocity = (random.nextInt(3) - 1) * speed;
             yVelocity = (random.nextInt(3) - 1) * speed;
             consecutiveMovesRemaining = random.nextInt(50);

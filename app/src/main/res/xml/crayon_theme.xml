@@ -6,6 +6,7 @@
     <ball>crayon_ball</ball>
     <balloons>crayon_balloon1,crayon_balloon2,crayon_balloon3,crayon_balloon4</balloons>
     <droplet>crayon_droplet</droplet>
+    <bubble>bubble</bubble>
     <popped_ball>crayon_popped_ball</popped_ball>
     <popped_balloons>crayon_popped_balloon1</popped_balloons>
     <popped_droplet>crayon_popped_droplet</popped_droplet>
