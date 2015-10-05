@@ -65,7 +65,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         settings = new SettingsManager(getContext());
         gameplay = new GameplayManager(settings, getResources());
         themes = new ThemeManager(settings, getResources());
-        mp = MediaPlayer.create(activity, R.raw.pop_short);
+        mp = MediaPlayer.create(activity, R.raw.pop);
 
         // create the game loop thread
         thread = new GameThread(this);
@@ -286,7 +286,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
                     if (mp.isPlaying()) {
                         mp.stop();
                         mp.release();
-                        mp = MediaPlayer.create(activity, R.raw.pop_short);
+                        mp = MediaPlayer.create(activity, R.raw.pop);
                     } mp.start();
                 } catch(Exception e) { e.printStackTrace(); }
                 thread.wakeIfSleeping();
