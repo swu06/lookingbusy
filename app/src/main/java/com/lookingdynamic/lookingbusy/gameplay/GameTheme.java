@@ -52,74 +52,68 @@ public class GameTheme {
     protected Bitmap popped_droplet = null;
     protected Bitmap pause_sign = null;
 
-
     public GameTheme(Resources otherResources, XmlResourceParser themeXml) {
         this.myResources = otherResources;
         painter = new Paint();
 
         int eventType = -1;
         try {
-            while(eventType != XmlResourceParser.END_DOCUMENT) {
+            while (eventType != XmlResourceParser.END_DOCUMENT) {
                 if (themeXml.getEventType() == XmlResourceParser.START_TAG) {
-                    if(themeXml.getName().equalsIgnoreCase(NAME_TAG)) {
+                    if (themeXml.getName().equalsIgnoreCase(NAME_TAG)) {
                         name = themeXml.nextText();
-                    } else if(themeXml.getName().equalsIgnoreCase(ALPHA_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(ALPHA_TAG)) {
                         painter.setAlpha(Integer.parseInt(themeXml.nextText()));
-                    } else if(themeXml.getName().equalsIgnoreCase(ICON_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(ICON_TAG)) {
                         iconImage = myResources.getIdentifier(themeXml.nextText(),
                                                             DRAWABLE_DEF_TYPE, DEF_PACKAGE);
-                    } else if(themeXml.getName().equalsIgnoreCase(BALL_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(BALL_TAG)) {
                         ballImage = myResources.getIdentifier(themeXml.nextText(),
                                                             DRAWABLE_DEF_TYPE, DEF_PACKAGE);
-                    } else if(themeXml.getName().equalsIgnoreCase(BALLOONS_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(BALLOONS_TAG)) {
                         parseBalloons(themeXml.nextText());
-                    }  else if(themeXml.getName().equalsIgnoreCase(DROPLET_TAG)) {
+                    }  else if (themeXml.getName().equalsIgnoreCase(DROPLET_TAG)) {
                         dropletImage = myResources.getIdentifier(themeXml.nextText(),
                                                             DRAWABLE_DEF_TYPE, DEF_PACKAGE);
-                    }  else if(themeXml.getName().equalsIgnoreCase(BUBBLE_TAG)) {
+                    }  else if (themeXml.getName().equalsIgnoreCase(BUBBLE_TAG)) {
                         bubbleImage = myResources.getIdentifier(themeXml.nextText(),
                                 DRAWABLE_DEF_TYPE, DEF_PACKAGE);
-                    } else if(themeXml.getName().equalsIgnoreCase(POPPED_BALL_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(POPPED_BALL_TAG)) {
                         poppedBallImage = myResources.getIdentifier(themeXml.nextText(),
                                                             DRAWABLE_DEF_TYPE, DEF_PACKAGE);
-                    } else if(themeXml.getName().equalsIgnoreCase(POPPED_BALLOONS_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(POPPED_BALLOONS_TAG)) {
                         parsePoppedBalloons(themeXml.nextText());
-                    } else if(themeXml.getName().equalsIgnoreCase(POPPED_DROPLET_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(POPPED_DROPLET_TAG)) {
                         poppedDropletImage = myResources.getIdentifier(themeXml.nextText(),
                                                             DRAWABLE_DEF_TYPE, DEF_PACKAGE);
-                    } else if(themeXml.getName().equalsIgnoreCase(PAUSE_SIGN_TAG)) {
+                    } else if (themeXml.getName().equalsIgnoreCase(PAUSE_SIGN_TAG)) {
                         pauseSignImage = myResources.getIdentifier(themeXml.nextText(),
                                                             DRAWABLE_DEF_TYPE, DEF_PACKAGE);
                     }
                 }
                 eventType = themeXml.next();
             }
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (XmlPullParserException|IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void parseBalloons(String listString) {
         String[] imageNames = listString.split(",");
         balloonImages = new int[imageNames.length];
-        for(int i=0; i<imageNames.length;i++) {
+        for (int i = 0; i < imageNames.length; i++) {
             balloonImages[i] = myResources.getIdentifier(imageNames[i],
-                    DRAWABLE_DEF_TYPE, DEF_PACKAGE);
+                                                    DRAWABLE_DEF_TYPE, DEF_PACKAGE);
         }
-
     }
 
     private void parsePoppedBalloons(String listString) {
         String[] imageNames = listString.split(",");
         poppedBalloonImages = new int[imageNames.length];
-        for(int i=0; i<imageNames.length;i++) {
+        for (int i = 0; i < imageNames.length; i++) {
             poppedBalloonImages[i] = myResources.getIdentifier(imageNames[i],
-                    DRAWABLE_DEF_TYPE, DEF_PACKAGE);
+                                                    DRAWABLE_DEF_TYPE, DEF_PACKAGE);
         }
-
     }
 
     public String getName() {
@@ -141,80 +135,80 @@ public class GameTheme {
      */
 
     public Bitmap getBall() {
-        if(ball == null) {
+        if (ball == null) {
             ball = BitmapFactory.decodeResource(myResources, ballImage);
         }
         return ball;
     }
 
     public Bitmap getBalloon(int whichOne) {
-        if(balloons == null) {
+        if (balloons == null) {
             loadBalloons();
         }
 
-        if(whichOne >= balloons.length) {
+        if (whichOne >= balloons.length) {
             whichOne =  whichOne % balloons.length;
         }
-        Bitmap toReturn = balloons[whichOne];
-        return toReturn;
+
+        return balloons[whichOne];
     }
 
     private void loadBalloons() {
         balloons = new Bitmap[balloonImages.length];
-        for(int i=0; i<balloonImages.length;i++) {
+        for (int i = 0; i < balloonImages.length; i++) {
             balloons[i] = BitmapFactory.decodeResource(myResources, balloonImages[i]);
         }
     }
 
     public Bitmap getDroplet() {
-        if(droplet == null) {
+        if (droplet == null) {
             droplet = BitmapFactory.decodeResource(myResources, dropletImage);
         }
         return droplet;
     }
 
     public Bitmap getBubble() {
-        if(bubble == null) {
+        if (bubble == null) {
             bubble = BitmapFactory.decodeResource(myResources, bubbleImage);
         }
         return bubble;
     }
 
     public Bitmap getPoppedBall() {
-        if(popped_ball == null) {
+        if (popped_ball == null) {
             popped_ball = BitmapFactory.decodeResource(myResources, poppedBallImage);
         }
         return popped_ball;
     }
 
     public Bitmap getPoppedBalloon(int whichOne) {
-        if(popped_balloons == null) {
+        if (popped_balloons == null) {
             loadPoppedBalloons();
         }
 
-        if(whichOne >= popped_balloons.length) {
+        if (whichOne >= popped_balloons.length) {
             whichOne = whichOne % popped_balloons.length;
         }
-        Bitmap toReturn = popped_balloons[whichOne];
-        return toReturn;
+
+        return popped_balloons[whichOne];
     }
 
     private void loadPoppedBalloons() {
         popped_balloons = new Bitmap[poppedBalloonImages.length];
-        for(int i=0; i<poppedBalloonImages.length;i++) {
+        for (int i = 0; i < poppedBalloonImages.length; i++) {
             popped_balloons[i] = BitmapFactory.decodeResource(myResources, poppedBalloonImages[i]);
         }
     }
 
     public Bitmap getPoppedDroplet() {
-        if(popped_droplet == null) {
+        if (popped_droplet == null) {
             popped_droplet = BitmapFactory.decodeResource(myResources, poppedDropletImage);
         }
         return popped_droplet;
     }
 
     public Bitmap getPauseSign() {
-        if(pause_sign == null) {
+        if (pause_sign == null) {
             pause_sign = BitmapFactory.decodeResource(myResources, pauseSignImage);
         }
         return pause_sign;
@@ -227,20 +221,18 @@ public class GameTheme {
      */
     public void unloadImages() {
         ball = null;
-        for(int i = 0; balloons != null &&i<balloons.length; i++) {
+        for (int i = 0; balloons != null && i < balloons.length; i++) {
             balloons[i] = null;
         }
         balloons = null;
         droplet = null;
         bubble = null;
         popped_ball = null;
-        for(int i = 0; popped_balloons != null && i<popped_balloons.length; i++) {
+        for (int i = 0; popped_balloons != null && i < popped_balloons.length; i++) {
             popped_balloons[i] = null;
         }
         popped_balloons = null;
         popped_droplet = null;
         pause_sign = null;
     }
-
-
 }

@@ -24,10 +24,10 @@ public abstract class PoppableObject {
      * Shared variables:  These objects are set and used by the individual implementations as well
      * as the general methods below
      */
-    protected int xCoordinate;
-    protected int yCoordinate;
-    protected int xVelocity;
-    protected int yVelocity;
+    protected int xCoordinate = 0;
+    protected int yCoordinate = 0;
+    protected int xVelocity = 0;
+    protected int yVelocity = 0;
     protected boolean popped = false;
     protected boolean offScreen = false;
     protected int value = 0;

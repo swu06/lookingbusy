@@ -14,7 +14,6 @@ import android.view.SurfaceView;
 
 import com.lookingdynamic.lookingbusy.gameobjects.PoppableObject;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
-import com.lookingdynamic.lookingbusy.gameobjects.PoppableObjectFactory;
 import com.lookingdynamic.lookingbusy.gameplay.SettingsManager;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
@@ -52,15 +51,15 @@ public class PopAllTheThingsGame extends SurfaceView implements
         this.activity = activity;
         this.firstRun = firstRun;
 
-        setUpGame(firstRun);
+        setUpGame();
         startNewGame();
 
-        if(firstRun) {
+        if (firstRun) {
             activity.showIntroMenu();
         }
     }
 
-    public void setUpGame(boolean firstRun) {
+    public void setUpGame() {
 
         settings = new SettingsManager(getContext());
         gameplay = new GameplayManager(settings, getResources());
@@ -89,8 +88,8 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void clearObjects() {
-        activePoppableObjects = new Vector<PoppableObject>();
-        poppedPoppableObjects = new Vector<PoppableObject>();
+        activePoppableObjects = new Vector<>();
+        poppedPoppableObjects = new Vector<>();
     }
 
     public void resumeFirstRun() {
@@ -116,9 +115,9 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void pause() {
-        if(!thread.isPausedFlagIsSet()) {
+        if (!thread.isPausedFlagIsSet()) {
             thread.onPause();
-            if(gameplay.isGameOver()) {
+            if (gameplay.isGameOver()) {
                 activity.showGameOverMenu();
             } else {
                 activity.showPauseMenu();
@@ -127,7 +126,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void resume() {
-        if(thread.isPausedFlagIsSet()) {
+        if (thread.isPausedFlagIsSet()) {
             thread.onResume();
             setFocusable(true);
         }
@@ -144,7 +143,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     public void surfaceCreated(SurfaceHolder holder) {
         // at this point the surface is created and
         // we can safely start the game loop
-        if(!thread.isRunning()) {
+        if (!thread.isRunning()) {
             thread.updateSurfaceHolder(holder);
             gameInfo = new GameInfoDisplay(this);
             thread.onStart();
@@ -172,7 +171,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
         gameplay.storeHighScore();
         // tell the thread to shut down and wait for it to finish
         // this is a clean shutdown
-        if(thread.isRunning()) {
+        if (thread.isRunning()) {
             thread.onStop();
             boolean retry = true;
             while (retry) {
@@ -195,13 +194,17 @@ public class PopAllTheThingsGame extends SurfaceView implements
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         gameInfo.draw(canvas);
 
-        if(!gameplay.isGameOver()) {
+        if (!gameplay.isGameOver()) {
 
             synchronized (activePoppableObjects) {
                 for (PoppableObject poppableObject : activePoppableObjects) {
-                    if(poppableObject == null)Log.d(LOGGER, "poppableObject is null");
-                    if(themes == null) Log.d(LOGGER, "themes is null");
-                    poppableObject.draw(themes, canvas, themes.getPainter());
+                    if (poppableObject == null) {
+                        Log.d(LOGGER, "poppableObject is null");
+                    } else if (themes == null) {
+                        Log.d(LOGGER, "themes is null");
+                    } else {
+                        poppableObject.draw(themes, canvas, themes.getPainter());
+                    }
                 }
             }
             synchronized (poppedPoppableObjects) {
@@ -213,7 +216,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void update() {
-        if(!gameplay.isGameOver()) {
+        if (!gameplay.isGameOver()) {
             synchronized (poppedPoppableObjects) {
                 //Handle Dead Balloons
                 poppedPoppableObjects.removeAllElements();
@@ -252,7 +255,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(gameplay.isGameOver()) {
+        if (gameplay.isGameOver()) {
             pause();
         } else {
             boolean objectPopped = false;
@@ -273,7 +276,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
                 }
 
                 gameInfo.handleOnDown(event.getX(), event.getY());
-            } else if(gameplay.isBubbleGrid()) {
+            } else if (gameplay.isBubbleGrid()) {
                 synchronized (activePoppableObjects) {
                     for (PoppableObject poppableObject : activePoppableObjects) {
                         if (!poppableObject.isPopped() &&

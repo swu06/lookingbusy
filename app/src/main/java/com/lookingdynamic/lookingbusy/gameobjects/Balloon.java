@@ -17,7 +17,7 @@ public class Balloon extends PoppableObject {
 
     private static final String LOGGER = Balloon.class.getSimpleName();
     public static final int VALUE = 10;
-    private int whichBalloon;
+    protected int whichBalloon;
 
     public Balloon(int xCoordinate, int yCoordinate, int speed, int whichBalloon) {
         this.xCoordinate = xCoordinate;
@@ -28,8 +28,8 @@ public class Balloon extends PoppableObject {
         this.whichBalloon = whichBalloon;
         value = VALUE;
 
-        Log.v(LOGGER, "Balloon Object created at (" + xCoordinate + ", " + yCoordinate
-                + "), using Balloon #" + whichBalloon);
+        Log.v(LOGGER, "Balloon Object created at (" + this.xCoordinate + ", " + this.yCoordinate
+                + "), using Balloon #" + this.whichBalloon);
     }
 
     @Override

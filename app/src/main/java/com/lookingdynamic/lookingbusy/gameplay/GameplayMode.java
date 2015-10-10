@@ -1,10 +1,7 @@
 package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -35,21 +32,21 @@ public class GameplayMode {
 
         int eventType = -1;
         try {
-            while(eventType != XmlResourceParser.END_DOCUMENT) {
+            while (eventType != XmlResourceParser.END_DOCUMENT) {
                 if (modeXml.getEventType() == XmlResourceParser.START_TAG) {
-                    if(modeXml.getName().equalsIgnoreCase(NAME)) {
+                    if (modeXml.getName().equalsIgnoreCase(NAME)) {
                         name = modeXml.nextText();
-                    } else if(modeXml.getName().equalsIgnoreCase(ICON)) {
+                    } else if (modeXml.getName().equalsIgnoreCase(ICON)) {
                         icon = myResources.getIdentifier(modeXml.nextText(),
                                 DRAWABLE_DEF_TYPE, DEF_PACKAGE);
-                    } else if(modeXml.getName().equalsIgnoreCase(LIVES_ALLOWED)) {
+                    } else if (modeXml.getName().equalsIgnoreCase(LIVES_ALLOWED)) {
                         livesAllowed = Integer.parseInt(modeXml.nextText());
-                    } else if(modeXml.getName().equalsIgnoreCase(LEVEL_DEFINITION)) {
+                    } else if (modeXml.getName().equalsIgnoreCase(LEVEL_DEFINITION)) {
                         String levelList = modeXml.nextText();
                         String[] levelsInList = levelList.split(",");
 
                         levels = new Level[levelsInList.length];
-                        for(int i=0; i<levels.length; i++){
+                        for (int i = 0; i < levels.length; i++){
                             levels[i] = new Level(myResources.getXml(
                                                     myResources.getIdentifier(levelsInList[i],
                                                             XML_DEF_TYPE, DEF_PACKAGE)));
@@ -58,9 +55,7 @@ public class GameplayMode {
                 }
                 eventType = modeXml.next();
             }
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (XmlPullParserException|IOException e) {
             e.printStackTrace();
         }
 
@@ -79,26 +74,26 @@ public class GameplayMode {
     }
 
     public int safeLevel(int inputLevel){
-        if(inputLevel >= levels.length) {
+        if (inputLevel >= levels.length) {
             inputLevel = levels.length - 1;
         }
         return inputLevel;
     }
 
     public String getLevelName(int currentLevel) {
-        return levels[safeLevel(currentLevel)].getName();
+        return getLevel(currentLevel).getName();
     }
 
     public int getPointsToNextLevel(int currentLevel) {
-        return levels[safeLevel(currentLevel)].getPointsToNextLevel();
+        return getLevel(currentLevel).getPointsToNextLevel();
     }
 
     public int getTimeToNextLevel(int currentLevel) {
-        return levels[safeLevel(currentLevel)].getTimeToNextLevel();
+        return getLevel(currentLevel).getTimeToNextLevel();
     }
 
     public int getTotalObjectsToCreate(int currentLevel) {
-        return levels[safeLevel(currentLevel)].getTotalObjectsToCreate();
+        return getLevel(currentLevel).getTotalObjectsToCreate();
     }
 
     public int getLivesAllowed() {
@@ -106,6 +101,6 @@ public class GameplayMode {
     }
 
     public boolean isBubbleGrid(int currentLevel) {
-        return levels[safeLevel(currentLevel)].isBubbleGrid();
+        return getLevel(currentLevel).isBubbleGrid();
     }
 }

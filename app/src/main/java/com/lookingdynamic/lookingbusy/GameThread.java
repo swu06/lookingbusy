@@ -12,13 +12,13 @@ public class GameThread extends Thread implements Runnable{
     private static final String LOGGER = GameThread.class.getSimpleName();
     private static final int SLEEP_TIME_MS = 17;
 
-    private SurfaceHolder surfaceHolder;
+    private SurfaceHolder surfaceHolder = null;
     private PopAllTheThingsGame gamePanel;
 
     // flag to hold game state
     private boolean running;
-    private Object pauseLock;
-    private Object sleepLock;
+    private final Object pauseLock;
+    private final Object sleepLock;
     private boolean pausedFlagIsSet;
     private boolean inPausedState;
 
@@ -33,7 +33,7 @@ public class GameThread extends Thread implements Runnable{
     }
 
     public void updateSurfaceHolder(SurfaceHolder surfaceHolder) {
-        if(this.surfaceHolder != null) {
+        if (this.surfaceHolder != null) {
             synchronized (this.surfaceHolder) {
                 this.surfaceHolder = surfaceHolder;
             }
@@ -64,10 +64,10 @@ public class GameThread extends Thread implements Runnable{
             // This are the two commands run to keep the game moving: update and draw
             canvas = null;
             try {
-                if(surfaceHolder != null) {
+                if (surfaceHolder != null) {
                     canvas = surfaceHolder.lockCanvas();
                     synchronized (surfaceHolder) {
-                        if(canvas != null && gamePanel != null) {
+                        if (canvas != null && gamePanel != null) {
                             gamePanel.update();
                         }
                     }
@@ -75,7 +75,7 @@ public class GameThread extends Thread implements Runnable{
 
 
                 checkAndHandlePause();
-                if(surfaceHolder != null) {
+                if (surfaceHolder != null) {
                     synchronized (surfaceHolder) {
                         if (canvas != null && gamePanel != null) {
                             gamePanel.onDraw(canvas);
@@ -100,6 +100,7 @@ public class GameThread extends Thread implements Runnable{
                 try {
                     pauseLock.wait();
                 } catch (InterruptedException e) {
+                    Log.d(LOGGER, "Game pause was interrupted");
                 }
                 inPausedState = false;
                 Log.d(LOGGER, "Game is unpaused");
@@ -112,6 +113,7 @@ public class GameThread extends Thread implements Runnable{
             try {
                 sleepLock.wait(time);
             } catch (InterruptedException e) {
+                Log.d(LOGGER, "Sleep was interrupted");
             }
         }
     }

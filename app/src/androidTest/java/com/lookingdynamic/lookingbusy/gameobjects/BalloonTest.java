@@ -22,15 +22,14 @@ public class BalloonTest extends ActivityTestCase {
     public void testCreateBalloon(){
         Balloon testBalloon = new Balloon(0, 0, 0, 0);
 
-        assertNotNull(testBalloon.getImage(theme));
-        assertTrue(1 < testBalloon.getImage(theme).getWidth());
-        assertTrue(1 < testBalloon.getImage(theme).getHeight());
-        assertEquals(0, testBalloon.xCoordinate);
-        assertEquals(0, testBalloon.yCoordinate);
-        assertEquals(0, testBalloon.yVelocity);
-        assertFalse(testBalloon.popped);
-        assertFalse(testBalloon.offScreen);
-
+        assertNotNull("Test Failure: Balloon object is null", testBalloon);
+        assertNotNull("Test Failure: whichBalloon incorrect on initialization", testBalloon.whichBalloon);
+        assertEquals("Test Failure: xCoordinate incorrect on initialization", 0, testBalloon.xCoordinate);
+        assertEquals("Test Failure: yCoordinate incorrect on initialization", 0, testBalloon.yCoordinate);
+        assertEquals("Test Failure: yVelocity incorrect on initialization", 0, testBalloon.yVelocity);
+        assertEquals("Test Failure: xVelocity incorrect on initialization", 0, testBalloon.xVelocity);
+        assertFalse("Test Failure: popped incorrect on initialization", testBalloon.popped);
+        assertFalse("Test Failure: offScreen incorrect on initialization", testBalloon.offScreen);
     }
 
     public void testMove() {
@@ -40,11 +39,13 @@ public class BalloonTest extends ActivityTestCase {
         int oldYCoordinate = testBalloon.yCoordinate;
         testBalloon.move(theme, 1000, 1000);
 
-        assertEquals(oldXCoordinate, testBalloon.xCoordinate);
-        assertEquals(oldYCoordinate - 1, testBalloon.yCoordinate);
-        assertEquals(-1, testBalloon.yVelocity);
-        assertFalse(testBalloon.popped);
-        assertFalse(testBalloon.offScreen);
+        assertEquals("Test Failure: xCoordinate does not match expected value after move",
+                    oldXCoordinate, testBalloon.xCoordinate);
+        assertEquals("Test Failure: yCoordinate does not match expected value after move",
+                    oldYCoordinate - 1, testBalloon.yCoordinate);
+        assertEquals("Test Failure: yVelocity does not match expected value after move", -1, testBalloon.yVelocity);
+        assertFalse("Test Failure: Balloon should not pop when moved", testBalloon.popped);
+        assertFalse("Test Failure: Balloon should not go offscreen when moved", testBalloon.offScreen);
     }
 
     public void testMoveFallOffTop() {
@@ -53,14 +54,10 @@ public class BalloonTest extends ActivityTestCase {
         Bitmap image = dummyBalloon.getImage(theme);
         Balloon testBalloon = new Balloon(0, -1 * image.getHeight(), -1, 0);
 
-
         testBalloon.move(theme, 1, 1);
 
-        assertEquals(0, testBalloon.xCoordinate);
-        assertEquals((-1 * image.getHeight()) - 1, testBalloon.yCoordinate);
-        assertEquals(-1, testBalloon.yVelocity);
-        assertFalse(testBalloon.popped);
-        assertTrue(testBalloon.offScreen);
+        assertFalse("Test Failure: Balloon should not pop when floating off top", testBalloon.popped);
+        assertTrue("Test Failure: Balloon should show as offscreen when it floats too high", testBalloon.offScreen);
     }
 
     public void testGettingSameImage() {
@@ -69,19 +66,19 @@ public class BalloonTest extends ActivityTestCase {
         Bitmap originalImage = testBalloon.getImage(theme);
         testBalloon.move(theme, 1, 1);
         Bitmap nextImage = testBalloon.getImage(theme);
-        assertEquals("Images should not change for objects", originalImage, nextImage);
+        assertEquals("Test Failure: Images should not change for poppable objects", originalImage, nextImage);
 
         testBalloon.move(theme, 1, 1);
         nextImage = testBalloon.getImage(theme);
-        assertEquals("Images should not change for objects", originalImage, nextImage);
+        assertEquals("Test Failure: Images should not change for poppable objects", originalImage, nextImage);
 
         testBalloon.move(theme, 1, 1);
         nextImage = testBalloon.getImage(theme);
-        assertEquals("Images should not change for objects", originalImage, nextImage);
+        assertEquals("Test Failure: Images should not change for poppable objects", originalImage, nextImage);
 
         testBalloon.move(theme, 1, 1);
         nextImage = testBalloon.getImage(theme);
-        assertEquals("Images should not change for objects", originalImage, nextImage);
+        assertEquals("Test Failure: Images should not change for poppable objects", originalImage, nextImage);
     }
 
     public void testGetScoreValue() {
@@ -93,7 +90,7 @@ public class BalloonTest extends ActivityTestCase {
     public void testGetImage() {
         Balloon testBalloon = new Balloon(1000, 1000, -1, 0);
 
-        assertTrue("Test Failure: Ball Image is not consistent with theme",
+        assertTrue("Test Failure: Balloon Image is not consistent with theme",
                 theme.getBalloon(0).equals(testBalloon.getImage(theme)));
     }
 

@@ -2,7 +2,6 @@ package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.app.Activity;
 import android.content.Context;
-import android.media.audiofx.BassBoost;
 
 /**
  * Created by swu on 9/20/2015.

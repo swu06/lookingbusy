@@ -32,7 +32,6 @@ public class GameInfoDisplay {
     private int endYprimaryLocation;
     private int startXsecondaryLocation;
     private int startYsecondaryLocation;
-    private int endXsecondaryLocation;
     private int endYsecondaryLocation;
 
     private boolean wasOnTimedLevel;
@@ -79,7 +78,6 @@ public class GameInfoDisplay {
 
         startXsecondaryLocation = game.getWidth() - game.getThemeManager().getPauseSign().getWidth() - MARGIN;
         startYsecondaryLocation = MARGIN;
-        endXsecondaryLocation = startXsecondaryLocation + game.getThemeManager().getPauseSign().getWidth();
         endYsecondaryLocation = startYsecondaryLocation + game.getThemeManager().getPauseSign().getHeight();
 
         wasOnTimedLevel = false;
@@ -94,7 +92,7 @@ public class GameInfoDisplay {
 
     public void draw(Canvas canvas) {
         GameplayManager manager = game.getGameplayManager();
-        if(manager.isGameOver()) {
+        if (manager.isGameOver()) {
             displayGameOverScreen(canvas, manager);
 
         } else {
@@ -206,8 +204,8 @@ public class GameInfoDisplay {
     }
 
     public void handleOnDown(float x, float y) {
-        if(startXprimaryLocation <= x && x <= endXprimaryLocation
-                && startYprimaryLocation <= y && y <= endYprimaryLocation){
+        if (startXprimaryLocation <= x && x <= endXprimaryLocation
+                && startYprimaryLocation <= y && y <= endYprimaryLocation) {
             Log.d(LOGGER, "Ready to Pause");
             readyToPause = true;
         }
@@ -219,8 +217,8 @@ public class GameInfoDisplay {
      * to pause, so we'll give them the benefit of the doubt
      */
     public void handleOnUp(float x, float y) {
-        if(readyToPause && startXsecondaryLocation - MARGIN <= x
-                && y <= endYsecondaryLocation + MARGIN){
+        if (readyToPause && startXsecondaryLocation - MARGIN <= x
+                && y <= endYsecondaryLocation + MARGIN) {
             game.pause();
         }
         readyToPause = false;

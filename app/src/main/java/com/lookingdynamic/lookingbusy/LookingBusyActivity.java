@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,12 +23,8 @@ import android.widget.Toast;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
 
 /**
  * Welcome to The Entry Point for this game! The LookingBusyActivity is the main
@@ -65,7 +60,7 @@ public class LookingBusyActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         firstRun = getSharedPreferences("BOOT_PREF", MODE_PRIVATE).getBoolean("firstRun", true);
 
-        if (firstRun){
+        if (firstRun) {
             Log.d(LOGGER, "This is the first run of the activity");
             getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
                     .edit()
@@ -86,7 +81,7 @@ public class LookingBusyActivity extends Activity {
         Log.d(LOGGER, "Resuming...");
         super.onResume();
 
-        if(firstRun) {
+        if (firstRun) {
             Log.d(LOGGER, "This is the first run of the activity");
         } else {
             Log.d(LOGGER, "This activity has run before");
@@ -94,7 +89,7 @@ public class LookingBusyActivity extends Activity {
         }
 
         // Initialize the game as needed, and set it as this activity's content
-        if(game == null || game.isStopped()) {
+        if (game == null || game.isStopped()) {
             game = new PopAllTheThingsGame(this, firstRun);
             firstRun = false;
             setContentView(game);
@@ -121,10 +116,10 @@ public class LookingBusyActivity extends Activity {
     @Override
     public void onBackPressed(){
 
-        if(game.isPaused()) {
+        if (game.isPaused()) {
             game.resume();
             backButtonCount = 0;
-        } else if(backButtonCount >= 1) {
+        } else if (backButtonCount >= 1) {
             game.pause();
             game.getGameplayManager().storeHighScore();
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -147,7 +142,6 @@ public class LookingBusyActivity extends Activity {
         Log.d(LOGGER, "Destroying the activity");
         super.onDestroy();
         game.stop();
-        //game = null;
     }
 
     /*
@@ -360,9 +354,9 @@ public class LookingBusyActivity extends Activity {
 
     public AlertDialog.Builder getDialog(Context myContext) {
         AlertDialog.Builder builder = new AlertDialog.Builder(myContext);
-        if(Build.VERSION.SDK_INT >= 11 && Build.VERSION.SDK_INT < 23) {
+        if (Build.VERSION.SDK_INT >= 11 && Build.VERSION.SDK_INT < 23) {
             builder = new AlertDialog.Builder(myContext, android.R.style.Theme_Holo_Light_Dialog);
-        }  else if(Build.VERSION.SDK_INT >= 23){
+        }  else if (Build.VERSION.SDK_INT >= 23) {
             builder = new AlertDialog.Builder(myContext, android.R.style.Theme_Material_Light_Dialog_Alert);
         }
 
@@ -381,7 +375,7 @@ public class LookingBusyActivity extends Activity {
                 try {
                     Bitmap selectedImage = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
                     storeBitmap(getCorrectBitmap(selectedImage, data.getData()));
-                } catch(Exception e){
+                } catch (Exception e){
                     Log.e(LOGGER, "Cannot load file");
                 }
             }
@@ -389,9 +383,6 @@ public class LookingBusyActivity extends Activity {
     }
 
     public Bitmap getCorrectBitmap(Bitmap bitmap, Uri imageUri) {
-        ExifInterface ei;
-        Bitmap correctBitmap = bitmap;
-
         String[] orientationColumn = {MediaStore.Images.Media.ORIENTATION};
         Cursor cur = getContentResolver().query(imageUri, orientationColumn, null, null, null);
         int orientation = -1;
@@ -401,7 +392,7 @@ public class LookingBusyActivity extends Activity {
         Matrix matrix = new Matrix();
         matrix.postRotate(orientation);
 
-        correctBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        Bitmap correctBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
         return correctBitmap;
     }
@@ -415,7 +406,7 @@ public class LookingBusyActivity extends Activity {
         int outHeight;
         int inWidth = existingFile.getWidth();
         int inHeight = existingFile.getHeight();
-        if(inWidth > inHeight){
+        if (inWidth > inHeight){
             outWidth = maxSize;
             outHeight = (inHeight * maxSize) / inWidth;
         } else {

@@ -7,6 +7,9 @@ import android.util.Log;
 import com.lookingdynamic.lookingbusy.R;
 
 /**
+ * The GameplayManager contains all of the necessary information to control the gameplay. This
+ * include the mode of the gameplay, the levels associated with that mode, and the user's statistics
+ * for the game so far.
  * Created by swu on 9/6/2015.
  */
 public class GameplayManager {
@@ -30,12 +33,14 @@ public class GameplayManager {
         TypedArray gameplayModes = myResources.obtainTypedArray(R.array.gameplay_modes);
         modes = new GameplayMode[gameplayModes.length()];
 
-        for(int i=0;i<gameplayModes.length();i++){
-            modes[i] = new GameplayMode(myResources, myResources.getXml(gameplayModes.getResourceId(i, -1)));
+        for (int i = 0; i < gameplayModes.length(); i++){
+            modes[i] = new GameplayMode(myResources,
+                                        myResources.getXml(gameplayModes.getResourceId(i, -1)));
         }
+        gameplayModes.recycle();
 
         currentMode = settings.getGameplay();
-        if(currentMode >= modes.length) {
+        if (currentMode >= modes.length) {
             currentMode = 0;
         }
 
@@ -53,7 +58,7 @@ public class GameplayManager {
 
     public boolean addToScore(int points){
         boolean newHighScoreAchieved = false;
-        if( currentHighScore > 0                            // There is a High Score to beat
+        if (currentHighScore > 0                            // There is a High Score to beat
                 && newHighScore <= currentHighScore         // We haven't beaten it yet this round
                 && score <= currentHighScore                // Just crossed the score
                 && score + points > currentHighScore) {
@@ -61,10 +66,10 @@ public class GameplayManager {
             Log.d(LOGGER, "New High Score Achieved!");
         }
         score = score + points;
-        if(score > newHighScore) {
+        if (score > newHighScore) {
             newHighScore = score;
         }
-        if(pointsToNextLevel > 0) {
+        if (pointsToNextLevel > 0) {
             if (pointsToNextLevel - points <= 0) {
                 levelUp();
                 Log.d(LOGGER, "Levelling up after normal level");
@@ -72,19 +77,18 @@ public class GameplayManager {
                 pointsToNextLevel = pointsToNextLevel - points;
             }
         }
-        if(points < 0 && modes[currentMode].getLivesAllowed() > 0) {
+        if (points < 0 && modes[currentMode].getLivesAllowed() > 0) {
             livesLeft--;
         }
         return newHighScoreAchieved;
     }
 
     public boolean missedObject(int points){
-
         boolean stillAlive = true;
 
         score = score - points;
 
-        if(isLifeRestrictedMode()) {
+        if (isLifeRestrictedMode()) {
             livesLeft--;
             if (livesLeft <= 0) {
                 stillAlive = false;
@@ -96,7 +100,7 @@ public class GameplayManager {
 
     public String getScoreDisplayString(){
         String scoreString = "";
-        if(modes[currentMode].getLevelName(currentLevel) != "") {
+        if (!modes[currentMode].getLevelName(currentLevel).equals("")) {
             scoreString = scoreString + modes[currentMode].getLevelName(currentLevel) + ": ";
         }
         scoreString = scoreString + score;
@@ -105,7 +109,7 @@ public class GameplayManager {
 
 
     public String getTimeRemainingDisplayString() {
-        String returnString = null;
+        String returnString;
         long millisLeft = (levelEndTime - System.currentTimeMillis()) / 1000;
         if (millisLeft > 0) {
             returnString = "Time Left: " + millisLeft;
@@ -119,18 +123,14 @@ public class GameplayManager {
 
     public String getLivesRemainingString() {
         String returnString = null;
-        if(isLifeRestrictedMode()) {
+        if (isLifeRestrictedMode()) {
             returnString = "Lives Left: " + livesLeft;
         }
         return returnString;
     }
 
     public boolean isHighScore() {
-        if(newHighScore > currentHighScore) {
-            return true;
-        } else {
-            return false;
-        }
+        return (newHighScore > currentHighScore);
     }
 
     protected void levelUp(){
@@ -146,13 +146,12 @@ public class GameplayManager {
     }
 
     private void setLevelEndTime(int timeToNextLevel) {
-        if(timeToNextLevel == 0){
+        if (timeToNextLevel == 0) {
             levelEndTime = 0;
         } else {
             levelEndTime = System.currentTimeMillis() + (timeToNextLevel * 1000);
         }
     }
-
 
     public int getLevel() {
         return currentLevel;
@@ -162,9 +161,13 @@ public class GameplayManager {
         return modes[currentMode].getLevel(currentLevel);
     }
 
+    public GameplayMode getCurrentMode() {
+        return modes[currentMode];
+    }
+
     public String[] getLabels() {
         String[] labels = new String[modes.length];
-        for(int i=0;i < modes.length; i++) {
+        for (int i = 0; i < modes.length; i++) {
             labels[i] = modes[i].getName();
         }
         return labels;
@@ -172,7 +175,7 @@ public class GameplayManager {
 
     public Integer[] getIconImageIDs() {
         Integer[] icons = new Integer[modes.length];
-        for(int i=0;i < modes.length; i++) {
+        for (int i = 0; i < modes.length; i++) {
             icons[i] = modes[i].getIconImageId();
         }
         return icons;
@@ -183,7 +186,7 @@ public class GameplayManager {
     }
 
     public int getCurrentIconID() {
-        return modes[currentMode].getIconImageId();
+        return getCurrentMode().getIconImageId();
     }
 
     public void setGameplayMode(int mode) {
@@ -200,7 +203,7 @@ public class GameplayManager {
     }
 
     public void storeHighScore() {
-        if(newHighScore > currentHighScore) {
+        if (newHighScore > currentHighScore) {
             settings.setHighScore(currentMode, newHighScore);
         }
     }
@@ -211,7 +214,7 @@ public class GameplayManager {
 
     public String[] getHighScores() {
         String[] scoreLabels = new String[modes.length];
-        for(int i=0; i<modes.length; i++) {
+        for(int i = 0; i < modes.length; i++) {
             scoreLabels[i] = modes[i].getName() + ": " + settings.getHighScore(i);
         }
 
@@ -219,7 +222,7 @@ public class GameplayManager {
     }
 
     public void clearAllScores() {
-        for(int i=0; i<modes.length; i++) {
+        for (int i = 0; i < modes.length; i++) {
             settings.setHighScore(i, 0);
         }
         currentHighScore = 0;
@@ -229,27 +232,28 @@ public class GameplayManager {
         boolean returnValue = true;
 
         // If this is a boss level
-        if(isBossLevel()) {
+        if (isBossLevel()) {
 
             // and there are objects left from the previous level, wait
             if (objectCount > 0
-                    && modes[currentMode].getTotalObjectsToCreate(currentLevel) == objectsLeftInLevel) {
+                    && getCurrentMode().getTotalObjectsToCreate(currentLevel) == objectsLeftInLevel) {
                 returnValue = false;
             }
             // or there are no more objects left, don't make any more
-            else if(objectsLeftInLevel <= 0) {
+            else if (objectsLeftInLevel <= 0) {
                 returnValue = false;
                 // Also, If we have popped all of the objects, level up
-                if(objectCount == 0) {
+                if (objectCount == 0) {
                     levelUp();
                     Log.d(LOGGER,"Levelling up after boss level");
                 }
             }
             else {
                 returnValue = true;
-                // If this is the first object we are creating for the level, set the points to next level for it
-                if(modes[currentMode].getTotalObjectsToCreate(currentLevel) == objectsLeftInLevel) {
-                    pointsToNextLevel = modes[currentMode].getPointsToNextLevel(currentLevel);
+                // If this is the first object we are creating for the level, set the points to
+                // the next level for it
+                if (getCurrentMode().getTotalObjectsToCreate(currentLevel) == objectsLeftInLevel) {
+                    pointsToNextLevel = getCurrentMode().getPointsToNextLevel(currentLevel);
                 }
             }
 
@@ -259,109 +263,109 @@ public class GameplayManager {
     }
 
     public void makeObject() {
-        if(objectsLeftInLevel > 0) {
+        if (objectsLeftInLevel > 0) {
             objectsLeftInLevel--;
         }
     }
 
     public int getPercentChanceOfCreation() {
-        return modes[currentMode].getLevel(currentLevel).getPercentChanceOfCreation();
+        return getCurrentLevel().getPercentChanceOfCreation();
     }
 
     public int getBallPercentCreated() {
-        return modes[currentMode].getLevel(currentLevel).getBallPercentCreated();
+        return getCurrentLevel().getBallPercentCreated();
     }
 
     public int getBallPercentSlow(){
-        return modes[currentMode].getLevel(currentLevel).getBallPercentSlow();
+        return getCurrentLevel().getBallPercentSlow();
     }
 
     public int getBallPercentMedium(){
-        return modes[currentMode].getLevel(currentLevel).getBallPercentMedium();
+        return getCurrentLevel().getBallPercentMedium();
     }
 
     public int getBallPercentFast(){
-        return modes[currentMode].getLevel(currentLevel).getBallPercentMedium();
+        return getCurrentLevel().getBallPercentMedium();
     }
 
     public int getBallPercentSuperFast(){
-        return modes[currentMode].getLevel(currentLevel).getBallPercentSuperFast();
+        return getCurrentLevel().getBallPercentSuperFast();
     }
 
     public int getBalloonPercentCreated() {
-        return modes[currentMode].getLevel(currentLevel).getBalloonPercentCreated();
+        return getCurrentLevel().getBalloonPercentCreated();
     }
 
     public int getBalloonPercentSlow(){
-        return modes[currentMode].getLevel(currentLevel).getBalloonPercentSlow();
+        return getCurrentLevel().getBalloonPercentSlow();
     }
 
     public int getBalloonPercentMedium(){
-        return modes[currentMode].getLevel(currentLevel).getBalloonPercentMedium();
+        return getCurrentLevel().getBalloonPercentMedium();
     }
 
     public int getBalloonPercentFast(){
-        return modes[currentMode].getLevel(currentLevel).getBalloonPercentFast();
+        return getCurrentLevel().getBalloonPercentFast();
     }
 
     public int getBalloonPercentSuperFast(){
-        return modes[currentMode].getLevel(currentLevel).getBalloonPercentSuperFast();
+        return getCurrentLevel().getBalloonPercentSuperFast();
     }
 
     public int getDropletPercentCreated() {
-        return modes[currentMode].getLevel(currentLevel).getDropletPercentCreated();
+        return getCurrentLevel().getDropletPercentCreated();
     }
 
     public int getDropletPercentSlow(){
-        return modes[currentMode].getLevel(currentLevel).getDropletPercentSlow();
+        return getCurrentLevel().getDropletPercentSlow();
     }
 
     public int getDropletPercentMedium(){
-        return modes[currentMode].getLevel(currentLevel).getDropletPercentMedium();
+        return getCurrentLevel().getDropletPercentMedium();
     }
 
     public int getDropletPercentFast(){
-        return modes[currentMode].getLevel(currentLevel).getDropletPercentFast();
+        return getCurrentLevel().getDropletPercentFast();
     }
 
     public int getDropletPercentSuperFast(){
-        return modes[currentMode].getLevel(currentLevel).getDropletPercentSuperFast();
+        return getCurrentLevel().getDropletPercentSuperFast();
     }
 
     public int getRandomBotPercentCreated() {
-        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentCreated();
+        return getCurrentLevel().getRandomBotPercentCreated();
     }
 
     public int getRandomBotPercentSlow(){
-        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentSlow();
+        return getCurrentLevel().getRandomBotPercentSlow();
     }
 
     public int getRandomBotPercentMedium(){
-        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentMedium();
+        return getCurrentLevel().getRandomBotPercentMedium();
     }
 
     public int getRandomBotPercentFast(){
-        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentFast();
+        return getCurrentLevel().getRandomBotPercentFast();
     }
 
     public int getRandomBotPercentSuperFast(){
-        return modes[currentMode].getLevel(currentLevel).getRandomBotPercentSuperFast();
+        return getCurrentLevel().getRandomBotPercentSuperFast();
     }
 
     public boolean isLifeRestrictedMode() {
-        return modes[currentMode].getLivesAllowed() > 0;
+        return getCurrentMode().getLivesAllowed() > 0;
     }
 
     public boolean isBossLevel() {
-        return modes[currentMode].getTotalObjectsToCreate(currentLevel) > 0;
+        return getCurrentMode().getTotalObjectsToCreate(currentLevel) > 0;
     }
 
     public boolean isTimedLevel() {
-        return modes[currentMode].getTimeToNextLevel(currentLevel) > 0;
+        return getCurrentMode().getTimeToNextLevel(currentLevel) > 0;
     }
 
     public boolean isBubbleGrid() {
-        return modes[currentMode].isBubbleGrid(currentLevel);
+        return getCurrentMode().isBubbleGrid(currentLevel);
     }
 
     public boolean isGameOver() {

@@ -18,16 +18,16 @@ public class Bubble extends PoppableObject {
 
     private static final String LOGGER = Bubble.class.getSimpleName();
     public static final int VALUE = 1;
-    private final int timeToStayPopped;
-    private int poppedCountsRemaining;
-    private boolean temporarilyPopped;
+    protected boolean temporarilyPopped;
+    protected int poppedCountsRemaining;
+    protected final int timeToStayPopped;
 
     public Bubble(int xCoordinate, int yCoordinate, int objectsOnScreen) {
         this.xCoordinate = xCoordinate;
         this.yCoordinate = yCoordinate;
+        offScreen = false;
         popped = false;
         temporarilyPopped = false;
-        offScreen = false;
         poppedCountsRemaining = 0;
         timeToStayPopped = 3 * objectsOnScreen; // Scales for large and small screens
 
@@ -99,7 +99,7 @@ public class Bubble extends PoppableObject {
     @Override
     public int getScoreValue() {
         int score = 0;
-        if (temporarilyPopped) {
+        if (!temporarilyPopped) {
             score = VALUE;
         }
 

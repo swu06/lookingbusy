@@ -1,6 +1,8 @@
 package com.lookingdynamic.lookingbusy.gameplay;
 
 /**
+ * This class holds information for each Level Object so it can be accessed together
+ * for each object type (ie, Ball, Droplet, etc)
  * Created by swu on 9/14/2015.
  */
 public class LevelObjectSettings {

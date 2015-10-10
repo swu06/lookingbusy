@@ -80,7 +80,10 @@ public class Ball extends PoppableObject {
         return bitmapImage;
     }
 
-    // Balls bounce off walls
+    /*
+     *  Balls move side to side. They bounce off walls, but they fall off of the bottom and top of
+     *  the screen.
+     */
     public void move(ThemeManager theme, int viewWidth, int viewHeight) {
         Bitmap image = getImage(theme);
 

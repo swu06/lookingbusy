@@ -21,12 +21,13 @@ public class BallTest extends ActivityTestCase {
     public void testCreateBall(){
         Ball testBall = new Ball(0, 0, Ball.TOP_LEFT_START, 0);
 
-        assertEquals(0, testBall.xCoordinate);
-        assertEquals(0, testBall.yCoordinate);
-        assertEquals(0, testBall.xVelocity);
-        assertEquals(0, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertFalse(testBall.offScreen);
+        assertNotNull("Test Failure: Ball object is null", testBall);
+        assertEquals("Test Failure: xCoordinate incorrect on initialization", 0, testBall.xCoordinate);
+        assertEquals("Test Failure: yCoordinate incorrect on initialization", 0, testBall.yCoordinate);
+        assertEquals("Test Failure: xVelocity incorrect on initialization", 0, testBall.xVelocity);
+        assertEquals("Test Failure: yVelocity incorrect on initialization", 0, testBall.yVelocity);
+        assertFalse("Test Failure: Ball should not be popped on initialization", testBall.popped);
+        assertFalse("Test Failure: Ball should not be offscreen on initialization", testBall.offScreen);
     }
 
     public void testMoveTopLeft() {
@@ -34,12 +35,12 @@ public class BallTest extends ActivityTestCase {
 
         testBall.move(theme, 1000, 1000);
 
-        assertEquals(2, testBall.xCoordinate);
-        assertEquals(1, testBall.yCoordinate);
-        assertEquals(2, testBall.xVelocity);
-        assertEquals(1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertFalse(testBall.offScreen);
+        assertEquals("Test Failure: xCoordinate does not match expected value after move", 2, testBall.xCoordinate);
+        assertEquals("Test Failure: yCoordinate does not match expected value after move", 1, testBall.yCoordinate);
+        assertEquals("Test Failure: xVelocity does not match expected value after move", 2, testBall.xVelocity);
+        assertEquals("Test Failure: yVelocity does not match expected value after move", 1, testBall.yVelocity);
+        assertFalse("Test Failure: Ball should not pop when it moves", testBall.popped);
+        assertFalse("Test Failure: Ball should not go offscreen when it moves", testBall.offScreen);
     }
 
     public void testMoveTopRight() {
@@ -48,12 +49,12 @@ public class BallTest extends ActivityTestCase {
         int imageWidth = testBall.getImage(theme).getWidth();
         testBall.move(theme, 1000, 1000);
 
-        assertEquals(1000 - imageWidth, testBall.xCoordinate);
-        assertEquals(1, testBall.yCoordinate);
-        assertEquals(-2, testBall.xVelocity);
-        assertEquals(1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertFalse(testBall.offScreen);
+        assertEquals("Test Failure: xCoordinate does not match expected value after move", 1000 - imageWidth, testBall.xCoordinate);
+        assertEquals("Test Failure: yCoordinate does not match expected value after move", 1, testBall.yCoordinate);
+        assertEquals("Test Failure: xVelocity does not match expected value after move", -2, testBall.xVelocity);
+        assertEquals("Test Failure: yVelocity does not match expected value after move", 1, testBall.yVelocity);
+        assertFalse("Test Failure: Ball should not pop when it moves", testBall.popped);
+        assertFalse("Test Failure: Ball should not go offscreen when it moves", testBall.offScreen);
     }
 
     public void testMoveBottomRight() {
@@ -62,12 +63,12 @@ public class BallTest extends ActivityTestCase {
 
         testBall.move(theme, 1000, 1000);
 
-        assertEquals(1000 - imageWidth, testBall.xCoordinate);
-        assertEquals(999, testBall.yCoordinate);
-        assertEquals(-2, testBall.xVelocity);
-        assertEquals(-1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertFalse(testBall.offScreen);
+        assertEquals("Test Failure: xCoordinate does not match expected value after move", 1000 - imageWidth, testBall.xCoordinate);
+        assertEquals("Test Failure: yCoordinate does not match expected value after move", 999, testBall.yCoordinate);
+        assertEquals("Test Failure: xVelocity does not match expected value after move", -2, testBall.xVelocity);
+        assertEquals("Test Failure: yVelocity does not match expected value after move", -1, testBall.yVelocity);
+        assertFalse("Test Failure: Ball should not pop when it moves", testBall.popped);
+        assertFalse("Test Failure: Ball should not go offscreen when it moves", testBall.offScreen);
     }
 
     public void testMoveBottomLeft() {
@@ -75,12 +76,12 @@ public class BallTest extends ActivityTestCase {
 
         testBall.move(theme, 1000, 1000);
 
-        assertEquals(2, testBall.xCoordinate);
-        assertEquals(999, testBall.yCoordinate);
-        assertEquals(2, testBall.xVelocity);
-        assertEquals(-1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertFalse(testBall.offScreen);
+        assertEquals("Test Failure: xCoordinate does not match expected value after move", 2, testBall.xCoordinate);
+        assertEquals("Test Failure: yCoordinate does not match expected value after move", 999, testBall.yCoordinate);
+        assertEquals("Test Failure: xVelocity does not match expected value after move", 2, testBall.xVelocity);
+        assertEquals("Test Failure: yVelocity does not match expected value after move", -1, testBall.yVelocity);
+        assertFalse("Test Failure: Ball should not pop when it moves", testBall.popped);
+        assertFalse("Test Failure: Ball should not go offscreen when it moves", testBall.offScreen);
     }
 
     public void testMoveBounceOffLeft() {
@@ -91,12 +92,16 @@ public class BallTest extends ActivityTestCase {
 
         testBall.move(theme, 1000, 1000);
 
-        assertEquals(0, testBall.xCoordinate);
-        assertEquals(1, testBall.yCoordinate);
-        assertEquals(1, testBall.xVelocity);
-        assertEquals(1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertFalse(testBall.offScreen);
+        assertEquals("Test Failure: xCoordinate not in line with a bounce off the wall",
+                0, testBall.xCoordinate);
+        assertEquals("Test Failure: yCoordinate not in line with a bounce off the wall",
+                1, testBall.yCoordinate);
+        assertEquals("Test Failure: xVelocity not in line with a bounce off the wall",
+                1, testBall.xVelocity);
+        assertEquals("Test Failure: yVelocity not in line with a bounce off the wall",
+                1, testBall.yVelocity);
+        assertFalse("Test Failure: Ball should not pop when it bounces off a wall", testBall.popped);
+        assertFalse("Test Failure: Ball should not go offscreen when it bounces off a wall", testBall.offScreen);
     }
 
     public void testMoveBounceOffRight() {
@@ -112,12 +117,16 @@ public class BallTest extends ActivityTestCase {
 
         testBall.move(theme, wallLocation, imageHeight + 2);
 
-        assertEquals(wallLocation - imageWidth, testBall.xCoordinate);
-        assertEquals(1, testBall.yCoordinate);
-        assertEquals(-1, testBall.xVelocity);
-        assertEquals(1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertFalse(testBall.offScreen);
+        assertEquals("Test Failure: xCoordinate not in line with a bounce off the wall",
+                        wallLocation - imageWidth, testBall.xCoordinate);
+        assertEquals("Test Failure: yCoordinate not in line with a bounce off the wall",
+                        1, testBall.yCoordinate);
+        assertEquals("Test Failure: xVelocity not in line with a bounce off the wall",
+                        -1, testBall.xVelocity);
+        assertEquals("Test Failure: yVelocity not in line with a bounce off the wall",
+                        1, testBall.yVelocity);
+        assertFalse("Test Failure: Ball should not pop when it bounces off a wall", testBall.popped);
+        assertFalse("Test Failure: Ball should not go offscreen when it bounces off a wall", testBall.offScreen);
     }
 
     public void testMoveFallOffTop() {
@@ -131,12 +140,8 @@ public class BallTest extends ActivityTestCase {
 
         testBall.move(theme, imageWidth + 4, imageHeight + 4);
 
-        assertEquals(2, testBall.xCoordinate);
-        assertEquals(0 - imageHeight - 1, testBall.yCoordinate);
-        assertEquals(2, testBall.xVelocity);
-        assertEquals(-1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertTrue(testBall.offScreen);
+        assertFalse("Test Failure: Ball should not pop when it falls offscreen", testBall.popped);
+        assertTrue("Test Failure: Ball is not being set to offscreen correctly", testBall.offScreen);
     }
 
     public void testMoveFallOffBottom() {
@@ -147,30 +152,26 @@ public class BallTest extends ActivityTestCase {
 
         testBall.move(theme, imageWidth + 4, 100);
 
-        assertEquals(2, testBall.xCoordinate);
-        assertEquals(101, testBall.yCoordinate);
-        assertEquals(2, testBall.xVelocity);
-        assertEquals(1, testBall.yVelocity);
-        assertFalse(testBall.popped);
-        assertTrue(testBall.offScreen);
+        assertFalse("Test Failure: Ball should not pop when it falls offscreen", testBall.popped);
+        assertTrue("Test Failure: Ball is not being set to offscreen correctly", testBall.offScreen);
     }
 
     public void testIsOffScreen() {
         Ball testBall = new Ball(0, 100, 1, 1);
 
         testBall.offScreen = true;
-        assertTrue(testBall.isOffScreen());
+        assertTrue("Test Failure: Offscreen Accessor is not in sync in variable", testBall.isOffScreen());
         testBall.offScreen = false;
-        assertFalse(testBall.isOffScreen());
+        assertFalse("Test Failure: Offscreen Accessor is not in sync in variable", testBall.isOffScreen());
     }
 
     public void testIsPopped() {
         Ball testBall = new Ball(0, 100, 1, 1);
 
         testBall.popped = true;
-        assertTrue(testBall.isPopped());
+        assertTrue("Test Failure: Popped Accessor is not in sync in variable", testBall.isPopped());
         testBall.popped = false;
-        assertFalse(testBall.isPopped());
+        assertFalse("Test Failure: Popped Accessor is not in sync in variable", testBall.isPopped());
     }
 
     public void testHandleTouchTopLeft() {
@@ -178,7 +179,7 @@ public class BallTest extends ActivityTestCase {
 
         testBall.handleTouch(theme, 0, 0);
 
-        assertTrue(testBall.popped);
+        assertTrue("Test Failure: Ball does not pop when touched", testBall.popped);
     }
 
     public void testHandleTouchWithBuffer() {
@@ -186,7 +187,7 @@ public class BallTest extends ActivityTestCase {
 
         testBall.handleTouch(theme, 0, 0);
 
-        assertTrue(testBall.popped);
+        assertTrue("Test Failure: Ball does not pop when touched", testBall.popped);
     }
 
     public void testHandleTouchTopRight() {
@@ -196,7 +197,7 @@ public class BallTest extends ActivityTestCase {
 
         testBall.handleTouch(theme, imageWidth, 0);
 
-        assertTrue(testBall.popped);
+        assertTrue("Test Failure: Ball does not pop when touched", testBall.popped);
     }
 
     public void testHandleTouchBottomLeft() {
@@ -206,7 +207,7 @@ public class BallTest extends ActivityTestCase {
 
         testBall.handleTouch(theme, 0, imageHeight);
 
-        assertTrue(testBall.popped);
+        assertTrue("Test Failure: Ball does not pop when touched", testBall.popped);
     }
 
     public void testHandleTouchBottomRight() {
@@ -217,7 +218,7 @@ public class BallTest extends ActivityTestCase {
 
         testBall.handleTouch(theme, imageWidth, imageHeight);
 
-        assertTrue(testBall.popped);
+        assertTrue("Test Failure: Ball does not pop when touched", testBall.popped);
     }
 
     public void testGetImage() {
