@@ -19,8 +19,9 @@ public class ThemeManager {
     private SettingsManager settings;
     private GameTheme themes[];
     private int currentTheme;
-    private Bitmap randomBot = null;
-    private Bitmap randomBotPopped = null;
+    private Bitmap defaultRandomBotImage;
+    private Bitmap randomBot;
+    private Bitmap randomBotPopped;
 
 
     public ThemeManager(SettingsManager settings, Resources myResources) {
@@ -34,6 +35,9 @@ public class ThemeManager {
                     myResources.getXml(availableThemesArray.getResourceId(i,-1)));
         }
 
+        defaultRandomBotImage = BitmapFactory.decodeResource(myResources, R.mipmap.ic_launcher);
+        randomBot = BitmapFactory.decodeResource(myResources, R.mipmap.ic_launcher);
+        randomBotPopped = BitmapFactory.decodeResource(myResources, R.drawable.ic_action_notification_adb);
         tryToLoadFromSettings();
     }
 
@@ -102,7 +106,7 @@ public class ThemeManager {
     }
 
     public Bitmap getRandomBotPopped() {
-        return themes[currentTheme].getPoppedBalloon(0);
+        return randomBotPopped;
     }
 
     public Bitmap getBall() {
@@ -139,5 +143,9 @@ public class ThemeManager {
 
     public Paint getPainter() {
         return themes[currentTheme].getPainter();
+    }
+
+    public void clearRandomBotImage() {
+        randomBot = defaultRandomBotImage;
     }
 }

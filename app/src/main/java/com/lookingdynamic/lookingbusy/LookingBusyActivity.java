@@ -212,8 +212,8 @@ public class LookingBusyActivity extends Activity {
         String[] pausedMenuLabels = new String[] {"Themes", "GamePlay", "Picture For RandomBot", "High Scores"};
         Integer[] pausedMenuIcons = new Integer[] {game.getThemeManager().getCurrentIconID(),
                 game.getGameplayManager().getCurrentIconID(),
-                R.drawable.ic_camera_alt_black_24dp,
-                R.drawable.ic_star_black_24dp};
+                R.drawable.ic_action_action_android,
+                R.drawable.ic_action_action_grade};
 
         ListAdapter adapter = new ArrayAdapterWithIcons(this, android.R.layout.select_dialog_item, pausedMenuLabels, pausedMenuIcons);
 
@@ -321,7 +321,7 @@ public class LookingBusyActivity extends Activity {
     public void showRandomBotMenu() {
 
         String[] pictureOptions = new String[] {"Take a Picture", "Choose Picture from Gallery"};
-        Integer[] pictureIcons = new Integer[] {R.drawable.ic_camera_alt_black_24dp, R.drawable.ic_image_black_24dp};
+        Integer[] pictureIcons = new Integer[] {R.drawable.ic_action_image_photo_camera, R.drawable.ic_action_editor_insert_photo};
 
         ListAdapter adapter = new ArrayAdapterWithIcons(this, android.R.layout.select_dialog_item, pictureOptions, pictureIcons);
 
@@ -331,7 +331,7 @@ public class LookingBusyActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "RandomBogImage will be cleared");
-                game.setRandomBotImage(null, null);
+                game.clearRandomBotImage();
             }
         });
         builder.setNeutralButton("Close", null);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <gameMode>
     <name>Classic Mode</name>
-    <icon>ic_verified_user_black_24dp</icon>
+    <icon>ic_action_hardware_gamepad</icon>
     <livesAllowed>5</livesAllowed>
     <levelDefinition>level1,level2,level3,boss_level1,level4,level5,level6,boss_level2,level7,level8,boss_level3,level9,level10,boss_level4,level11</levelDefinition>
 </gameMode>

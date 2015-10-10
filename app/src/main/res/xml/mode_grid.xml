@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <gameMode>
     <name>Bubble Grid</name>
-    <icon>ic_insert_emoticon_black_24dp</icon>
+    <icon>ic_action_editor_border_clear</icon>
     <levelDefinition>level_grid</levelDefinition>
 </gameMode>

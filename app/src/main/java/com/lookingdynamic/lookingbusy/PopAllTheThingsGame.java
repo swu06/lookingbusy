@@ -111,6 +111,10 @@ public class PopAllTheThingsGame extends SurfaceView implements
         themes.setRandomBotImage(image);
     }
 
+    public void clearRandomBotImage() {
+        themes.clearRandomBotImage();
+    }
+
     public void pause() {
         if(!thread.isPausedFlagIsSet()) {
             thread.onPause();
