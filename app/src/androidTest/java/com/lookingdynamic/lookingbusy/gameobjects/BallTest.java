@@ -2,9 +2,6 @@ package com.lookingdynamic.lookingbusy.gameobjects;
 
 import android.test.ActivityTestCase;
 
-import com.lookingdynamic.lookingbusy.R;
-import com.lookingdynamic.lookingbusy.gameobjects.Ball;
-import com.lookingdynamic.lookingbusy.gameplay.GameTheme;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 /**
@@ -167,7 +164,7 @@ public class BallTest extends ActivityTestCase {
         assertFalse(testBall.isOffScreen());
     }
 
-    public void testPopped() {
+    public void testIsPopped() {
         Ball testBall = new Ball(0, 100, 1, 1);
 
         testBall.popped = true;
@@ -178,6 +175,14 @@ public class BallTest extends ActivityTestCase {
 
     public void testHandleTouchTopLeft() {
         Ball testBall = new Ball(0, 0, 0, 0);
+
+        testBall.handleTouch(theme, 0, 0);
+
+        assertTrue(testBall.popped);
+    }
+
+    public void testHandleTouchWithBuffer() {
+        Ball testBall = new Ball(10, 10, 0, 0);
 
         testBall.handleTouch(theme, 0, 0);
 
@@ -215,4 +220,25 @@ public class BallTest extends ActivityTestCase {
         assertTrue(testBall.popped);
     }
 
+    public void testGetImage() {
+        Ball testBall = new Ball(0, 0, 0, 0);
+
+        assertTrue("Test Failure: Ball Image is not consistent with theme",
+                theme.getBall().equals(testBall.getImage(theme)));
+    }
+
+    public void testGetImageWhenPopped() {
+        Ball testBall = new Ball(0, 0, 0, 0);
+
+        testBall.popped = true;
+
+        assertTrue("Test Failure: Popped Image is not consistent with theme",
+                theme.getPoppedBall().equals(testBall.getImage(theme)));
+    }
+
+    public void testGetScoreValue() {
+        Ball testBall = new Ball(0, 0, 0, 0);
+
+        assertEquals("Test Failure: Points not based on constant", Ball.VALUE, testBall.getScoreValue());
+    }
 }

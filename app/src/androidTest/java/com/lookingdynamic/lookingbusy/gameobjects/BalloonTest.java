@@ -1,18 +1,10 @@
 package com.lookingdynamic.lookingbusy.gameobjects;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.test.ActivityTestCase;
-import android.util.Log;
 
-import com.lookingdynamic.lookingbusy.R;
-import com.lookingdynamic.lookingbusy.gameobjects.Balloon;
-import com.lookingdynamic.lookingbusy.gameplay.GameTheme;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
-import java.io.File;
-import java.io.FileOutputStream;
 
 /**
  *
@@ -42,7 +34,7 @@ public class BalloonTest extends ActivityTestCase {
     }
 
     public void testMove() {
-        Balloon testBalloon = new Balloon(1000, 1000, -1, 0);
+        Balloon testBalloon = new Balloon(600, 600, -1, 0);
 
         int oldXCoordinate = testBalloon.xCoordinate;
         int oldYCoordinate = testBalloon.yCoordinate;
@@ -90,5 +82,27 @@ public class BalloonTest extends ActivityTestCase {
         testBalloon.move(theme, 1, 1);
         nextImage = testBalloon.getImage(theme);
         assertEquals("Images should not change for objects", originalImage, nextImage);
+    }
+
+    public void testGetScoreValue() {
+        Balloon testBalloon = new Balloon(1000, 1000, -1, 0);
+
+        assertEquals("Test Failure: Points not based on constant", Balloon.VALUE, testBalloon.getScoreValue());
+    }
+
+    public void testGetImage() {
+        Balloon testBalloon = new Balloon(1000, 1000, -1, 0);
+
+        assertTrue("Test Failure: Ball Image is not consistent with theme",
+                theme.getBalloon(0).equals(testBalloon.getImage(theme)));
+    }
+
+    public void testGetImageWhenPopped() {
+        Balloon testBalloon = new Balloon(1000, 1000, -1, 0);
+
+        testBalloon.popped = true;
+
+        assertTrue("Test Failure: Popped Image is not consistent with theme",
+                theme.getPoppedBalloon(0).equals(testBalloon.getImage(theme)));
     }
 }

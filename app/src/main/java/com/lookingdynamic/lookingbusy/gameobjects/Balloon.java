@@ -1,8 +1,9 @@
 package com.lookingdynamic.lookingbusy.gameobjects;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
-import com.lookingdynamic.lookingbusy.gameplay.GameTheme;
+
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 /**
@@ -25,33 +26,42 @@ public class Balloon extends PoppableObject {
         popped = false;
         offScreen = false;
         this.whichBalloon = whichBalloon;
+        value = VALUE;
+
+        Log.v(LOGGER, "Balloon Object created at (" + xCoordinate + ", " + yCoordinate
+                + "), using Balloon #" + whichBalloon);
     }
 
     @Override
     public Bitmap getImage(ThemeManager theme) {
         Bitmap bitmapImage = theme.getBalloon(whichBalloon);
-        if(popped == true) {
+        if (popped) {
             bitmapImage = theme.getPoppedBalloon(whichBalloon);
         }
 
         return bitmapImage;
     }
 
-    // Balloons only move vertically
+    /*
+     * Balloons only move vertically, so their logic is the simplest.  The only catch
+     * is that they are initially created "offscreen", so their first move is a shift
+     * of the image up enough that they are now visible.
+     */
     public void move(ThemeManager theme, int viewWidth, int viewHeight) {
-        yCoordinate = yCoordinate + yVelocity;
         int imageHeight = getImage(theme).getHeight();
-        if (yCoordinate + imageHeight <= 0) {
-            offScreen = true;
-        }
+
+        yCoordinate = yCoordinate + yVelocity;
 
         // Shift up the balloons that start off the screen when they first move
-        if(yCoordinate > viewHeight - imageHeight) {
+        if (yCoordinate > viewHeight - imageHeight) {
             yCoordinate = viewHeight - imageHeight;
         }
-    }
 
-    public int getScoreValue() {
-        return VALUE;
+        // Check to see if the object has floated off the screen
+        if (yCoordinate + imageHeight <= 0) {
+            offScreen = true;
+            Log.v(LOGGER, "Balloon floated offscreen at (" + xCoordinate + ", " + yCoordinate +")");
+        }
+
     }
 }

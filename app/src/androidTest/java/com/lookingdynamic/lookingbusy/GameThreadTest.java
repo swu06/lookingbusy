@@ -65,7 +65,8 @@ public class GameThreadTest extends ActivityTestCase {
         GameThread myThread = new GameThread(null);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.onStart();
-        assertEquals(Thread.State.RUNNABLE, myThread.getState());
+        assertTrue((Thread.State.RUNNABLE == myThread.getState())
+                || (Thread.State.WAITING == myThread.getState()));
         myThread.onPause();
         try {
             myThread.join(100);

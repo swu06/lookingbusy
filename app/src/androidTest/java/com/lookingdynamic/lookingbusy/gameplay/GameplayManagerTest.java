@@ -131,7 +131,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         GameplayManager gameplay = new GameplayManager(settings,
                 getInstrumentation().getTargetContext().getResources());
 
-        gameplay.setGameplayMode(1);
+        gameplay.setGameplayMode(3);
         assertEquals("Test Failure: Did not handle blank levelname", "0", gameplay.getScoreDisplayString());
     }
 
@@ -140,7 +140,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         GameplayManager gameplay = new GameplayManager(settings,
                 getInstrumentation().getTargetContext().getResources());
 
-        gameplay.setGameplayMode(1);
+        gameplay.setGameplayMode(3);
         gameplay.pointsToNextLevel = 1;
         gameplay.levelUp();
         assertEquals("Test Failure: Did not increment currentLevel", 1, gameplay.getLevel());
@@ -199,7 +199,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         settings.setHighScore(1, 200);
 
         String[] scores = gameplay.getHighScores();
-        assertEquals("Test Failure: There should be scores for each mode", 2, scores.length);
+        assertEquals("Test Failure: There should be scores for each mode", 4, scores.length);
         assertTrue("Test Failure: HighScore should be saved", scores[0].endsWith(" 0"));
         assertTrue("Test Failure: HighScore should be saved", scores[1].endsWith(" 200"));
     }
@@ -214,7 +214,7 @@ public class GameplayManagerTest extends ActivityTestCase{
 
         gameplay.clearAllScores();
         String[] scores = gameplay.getHighScores();
-        assertEquals("Test Failure: There should be cleared scores for each mode", 2, scores.length);
+        assertEquals("Test Failure: There should be cleared scores for each mode", 4, scores.length);
         assertTrue("Test Failure: HighScore should be cleared", scores[0].endsWith(" 0"));
         assertTrue("Test Failure: HighScore should be cleared", scores[1].endsWith(" 0"));
     }
