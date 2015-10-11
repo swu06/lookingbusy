@@ -11,6 +11,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 
 /**
+ * This class contains the images that make up a particular theme.  These images are used by the
+ * poppable objects and other UI items.
  * Created by swu on 9/10/2015.
  */
 public class GameTheme {
@@ -131,7 +133,7 @@ public class GameTheme {
     /*
      * Bitmap Access Methods use Lazy Loading to reduce the amount of memory
      * in use when this theme is inactive.  Note that the icon is never loaded
-     * as a bitmap image. Instead, the menu adaptop only loads it when needed.
+     * as a bitmap image. Instead, the menu adaptor only loads it when needed.
      */
 
     public Bitmap getBall() {

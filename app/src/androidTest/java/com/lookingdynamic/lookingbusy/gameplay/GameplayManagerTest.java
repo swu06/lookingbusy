@@ -3,6 +3,7 @@ package com.lookingdynamic.lookingbusy.gameplay;
 import android.test.ActivityTestCase;
 
 /**
+ *
  * Created by swu on 9/20/2015.
  */
 public class GameplayManagerTest extends ActivityTestCase{
@@ -36,8 +37,8 @@ public class GameplayManagerTest extends ActivityTestCase{
         GameplayManager gameplay = new GameplayManager(settings,
                 getInstrumentation().getTargetContext().getResources());
 
-        assertNotNull("Test Failure: SettingsStorageManager failed to initiatlize", gameplay.settings);
-        assertNotNull("Test Failure: GamplayModes failed to initiatlize", gameplay.modes);
+        assertNotNull("Test Failure: SettingsStorageManager failed to initialize", gameplay.settings);
+        assertNotNull("Test Failure: GamplayModes failed to initialize", gameplay.modes);
         assertEquals("Test Failure: currentHighScore should start at 0", 0, gameplay.currentHighScore);
         assertEquals("Test Failure: score should start at 0", 0, gameplay.score);
         assertEquals("Test Failure: newHighScore should start at 0", 0, gameplay.newHighScore);

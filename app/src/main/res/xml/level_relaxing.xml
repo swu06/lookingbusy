@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
-    <name></name>
     <chanceToCreate>4</chanceToCreate>
     <balloonDefinition>
         <percentCreated>35</percentCreated>

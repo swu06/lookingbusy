@@ -22,4 +22,5 @@
     <string name="classic_mode">Classic Mode</string>
     <string name="challenging_mode">Challenging Mode</string>
     <string name="relaxing_mode">Relaxing Mode</string>
+    <string name="high_score">High Score!!</string>
 </resources>

@@ -63,9 +63,7 @@ public class LookingBusyActivity extends Activity {
         if (firstRun) {
             Log.d(LOGGER, "This is the first run of the activity");
             getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
-                    .edit()
-                    .putBoolean("firstRun", false)
-                    .commit();
+                    .edit().putBoolean("firstRun", false).commit();
         }
     }
 
@@ -127,7 +125,8 @@ public class LookingBusyActivity extends Activity {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         } else {
-            Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Press the back button once again to close the application.",
+                    Toast.LENGTH_SHORT).show();
             backButtonCount++;
         }
     }
@@ -159,7 +158,7 @@ public class LookingBusyActivity extends Activity {
     /*
      * There are some cases when our pause/pause-menu can
      * be secretly closed.  This reveals that secret to
-     * the game as an "unpause" or resume event.
+     * the game as an "un-pause" or resume event.
      */
     @Override
     public void onOptionsMenuClosed(Menu menu) {
@@ -203,13 +202,19 @@ public class LookingBusyActivity extends Activity {
 
     public void showPauseMenu() {
 
-        String[] pausedMenuLabels = new String[] {"Themes", "GamePlay", "Picture For RandomBot", "High Scores"};
-        Integer[] pausedMenuIcons = new Integer[] {game.getThemeManager().getCurrentIconID(),
+        String[] pausedMenuLabels = new String[] {"Themes",
+                                                "GamePlay",
+                                                "Picture For RandomBot",
+                                                "High Scores"};
+        Integer[] pausedMenuIcons = new Integer[] {game.getThemeManager().getCurrentThemeIconID(),
                 game.getGameplayManager().getCurrentIconID(),
                 R.drawable.ic_action_action_android,
                 R.drawable.ic_action_action_grade};
 
-        ListAdapter adapter = new ArrayAdapterWithIcons(this, android.R.layout.select_dialog_item, pausedMenuLabels, pausedMenuIcons);
+        ListAdapter adapter = new ArrayAdapterWithIcons(this,
+                android.R.layout.select_dialog_item,
+                pausedMenuLabels,
+                pausedMenuIcons);
 
         AlertDialog.Builder builder = getDialog(this);
         builder.setTitle("Pause Menu");
@@ -253,7 +258,10 @@ public class LookingBusyActivity extends Activity {
         String[] gameplayMenuLabels = modes.getLabels();
         Integer[] gameplayMenuIcons = modes.getIconImageIDs();
 
-        ListAdapter adapter = new ArrayAdapterWithIcons(this, android.R.layout.select_dialog_singlechoice, gameplayMenuLabels, gameplayMenuIcons);
+        ListAdapter adapter = new ArrayAdapterWithIcons(this,
+                android.R.layout.select_dialog_singlechoice,
+                gameplayMenuLabels,
+                gameplayMenuIcons);
 
         AlertDialog.Builder builder = getDialog(this);
         builder.setTitle("Game Play Options");
@@ -272,15 +280,18 @@ public class LookingBusyActivity extends Activity {
 
     public void showThemeMenu() {
         final ThemeManager themes = game.getThemeManager();
-        String[] themeMenuLabels = themes.getLabels();
-        Integer[] themeMenuIcons = themes.getIconImageIDs();
+        String[] themeMenuLabels = themes.getAvailableThemeLabels();
+        Integer[] themeMenuIcons = themes.getAvailableThemeIconImageIDs();
 
-        ListAdapter adapter = new ArrayAdapterWithIcons(this, android.R.layout.select_dialog_singlechoice, themeMenuLabels, themeMenuIcons);
+        ListAdapter adapter = new ArrayAdapterWithIcons(this,
+                android.R.layout.select_dialog_singlechoice,
+                themeMenuLabels,
+                themeMenuIcons);
 
         AlertDialog.Builder builder = getDialog(this);
         builder.setTitle("Themes Options");
         builder.setPositiveButton("OK", null);
-        builder.setSingleChoiceItems(adapter, themes.getCurrentID(), new DialogInterface.OnClickListener() {
+        builder.setSingleChoiceItems(adapter, themes.getCurrentThemeID(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "Theme Selected: " + item);
@@ -295,7 +306,10 @@ public class LookingBusyActivity extends Activity {
         String[] scoreLabels = game.getGameplayManager().getHighScores();
         Integer[] gameplayMenuIcons = game.getGameplayManager().getIconImageIDs();
 
-        ListAdapter adapter = new ArrayAdapterWithIcons(this, android.R.layout.select_dialog_item, scoreLabels, gameplayMenuIcons);
+        ListAdapter adapter = new ArrayAdapterWithIcons(this,
+                android.R.layout.select_dialog_item,
+                scoreLabels,
+                gameplayMenuIcons);
 
         AlertDialog.Builder builder = getDialog(this);
         builder.setTitle("High Scores");
@@ -315,9 +329,13 @@ public class LookingBusyActivity extends Activity {
     public void showRandomBotMenu() {
 
         String[] pictureOptions = new String[] {"Take a Picture", "Choose Picture from Gallery"};
-        Integer[] pictureIcons = new Integer[] {R.drawable.ic_action_image_photo_camera, R.drawable.ic_action_editor_insert_photo};
+        Integer[] pictureIcons = new Integer[] {R.drawable.ic_action_image_photo_camera,
+                                                R.drawable.ic_action_editor_insert_photo};
 
-        ListAdapter adapter = new ArrayAdapterWithIcons(this, android.R.layout.select_dialog_item, pictureOptions, pictureIcons);
+        ListAdapter adapter = new ArrayAdapterWithIcons(this,
+                android.R.layout.select_dialog_item,
+                pictureOptions,
+                pictureIcons);
 
         AlertDialog.Builder builder = getDialog(this);
         builder.setTitle("Picture for RandomBot");
@@ -355,9 +373,11 @@ public class LookingBusyActivity extends Activity {
     public AlertDialog.Builder getDialog(Context myContext) {
         AlertDialog.Builder builder = new AlertDialog.Builder(myContext);
         if (Build.VERSION.SDK_INT >= 11 && Build.VERSION.SDK_INT < 23) {
-            builder = new AlertDialog.Builder(myContext, android.R.style.Theme_Holo_Light_Dialog);
+            builder = new AlertDialog.Builder(myContext,
+                    android.R.style.Theme_Holo_Light_Dialog);
         }  else if (Build.VERSION.SDK_INT >= 23) {
-            builder = new AlertDialog.Builder(myContext, android.R.style.Theme_Material_Light_Dialog_Alert);
+            builder = new AlertDialog.Builder(myContext,
+                    android.R.style.Theme_Material_Light_Dialog_Alert);
         }
 
         return builder;
@@ -373,7 +393,8 @@ public class LookingBusyActivity extends Activity {
             } else if (requestCode == FILE_RESULT) {
                 Log.d(LOGGER, "Gallery has returned a file.");
                 try {
-                    Bitmap selectedImage = BitmapFactory.decodeStream(getContentResolver().openInputStream(data.getData()));
+                    Bitmap selectedImage = BitmapFactory.decodeStream(
+                            getContentResolver().openInputStream(data.getData()));
                     storeBitmap(getCorrectBitmap(selectedImage, data.getData()));
                 } catch (Exception e){
                     Log.e(LOGGER, "Cannot load file");
@@ -389,12 +410,19 @@ public class LookingBusyActivity extends Activity {
         if (cur != null && cur.moveToFirst()) {
             orientation = cur.getInt(cur.getColumnIndex(orientationColumn[0]));
         }
+
+        try {
+            if(cur != null) {
+                cur.close();
+            }
+        } catch(java.lang.NullPointerException e) {
+            Log.w(LOGGER, "Cursor became null before it was closed.  This may cause issues");
+        }
+
         Matrix matrix = new Matrix();
         matrix.postRotate(orientation);
 
-        Bitmap correctBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-        return correctBitmap;
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
 
@@ -415,8 +443,9 @@ public class LookingBusyActivity extends Activity {
         }
         Bitmap scaledFile = Bitmap.createScaledBitmap(existingFile, outWidth, outHeight, false);
 
-        File destination = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                                "LookingBusy"+ System.currentTimeMillis() + ".png");
+        File destination = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES),
+                "LookingBusy"+ System.currentTimeMillis() + ".png");
         FileOutputStream fOut;
         try {
             fOut = new FileOutputStream(destination);

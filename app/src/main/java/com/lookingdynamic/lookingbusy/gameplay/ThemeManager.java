@@ -10,18 +10,22 @@ import android.util.Log;
 import com.lookingdynamic.lookingbusy.R;
 
 /**
+ * This class loads the themes that are currently available and provides accessors to that
+ * information.  It also keeps track of the currently selected theme including storing that
+ * information to the device settings when it changes. Finally, it also holds the information for
+ * the randomBot object since that is not related to any particular theme.
+ *
  * Created by swu on 9/20/2015.
  */
 public class ThemeManager {
 
     private static final String LOGGER = ThemeManager.class.getSimpleName();
-    private SettingsStorageManager settings;
-    private GameTheme themes[];
-    private int currentTheme;
-    private Bitmap defaultRandomBotImage;
-    private Bitmap randomBot;
-    private Bitmap randomBotPopped;
-
+    protected SettingsStorageManager settings;
+    protected GameTheme themes[];
+    protected int currentTheme;
+    protected Bitmap defaultRandomBotImage;
+    protected Bitmap randomBot;
+    protected Bitmap poppedRandomBot;
 
     public ThemeManager(SettingsStorageManager settings, Resources myResources) {
         this.settings = settings;
@@ -37,11 +41,18 @@ public class ThemeManager {
 
         defaultRandomBotImage = BitmapFactory.decodeResource(myResources, R.mipmap.ic_launcher);
         randomBot = BitmapFactory.decodeResource(myResources, R.mipmap.ic_launcher);
-        randomBotPopped = BitmapFactory.decodeResource(myResources, R.drawable.ic_action_notification_adb);
+        poppedRandomBot = BitmapFactory.decodeResource(myResources, R.drawable.ic_action_notification_adb);
+
         tryToLoadFromSettings();
+
+        Log.v(LOGGER, "All (" + themes.length + ") themes loaded.");
     }
 
-    public void tryToLoadFromSettings() {
+    /*
+     * This method attempts to load the current theme and RandomBot theme information from the
+     * device settings.  If unsuccessful, these settings will use the defaults.
+     */
+    private void tryToLoadFromSettings() {
         if (settings != null) {
             String randomBotImagePath = settings.getRandomBotLocation();
             if (randomBotImagePath != null) {
@@ -61,7 +72,7 @@ public class ThemeManager {
         }
     }
 
-    public String[] getLabels() {
+    public String[] getAvailableThemeLabels() {
         String[] labels = new String[themes.length];
         for (int i = 0; i < themes.length; i++) {
             labels[i] = themes[i].getName();
@@ -69,7 +80,7 @@ public class ThemeManager {
         return labels;
     }
 
-    public Integer[] getIconImageIDs() {
+    public Integer[] getAvailableThemeIconImageIDs() {
         Integer[] icons = new Integer[themes.length];
         for (int i = 0; i < themes.length; i++) {
             icons[i] = themes[i].getIconImageId();
@@ -77,7 +88,7 @@ public class ThemeManager {
         return icons;
     }
 
-    public int getCurrentID() {
+    public int getCurrentThemeID() {
         return currentTheme;
     }
 
@@ -85,13 +96,14 @@ public class ThemeManager {
         return themes[currentTheme];
     }
 
-    public int getCurrentIconID() {
+    public int getCurrentThemeIconID() {
         return getCurrentTheme().getIconImageId();
     }
 
     /*
      * This method switches between themes.  Whenever a new theme is selected, the old theme
-     * should be cleaned up to save memory
+     * should be cleaned up to save memory.  As the images from the new theme are used, they will
+     * be loaded into memory.
      */
     public void setTheme(int theme) {
         if (theme >= 0 && theme < themes.length && theme != currentTheme)  {
@@ -101,10 +113,17 @@ public class ThemeManager {
                 settings.setTheme(currentTheme);
             }
         }
+        Log.v(LOGGER, "Current theme set to item " + currentTheme);
     }
 
     public void setRandomBotImage(Bitmap randomBot) {
         this.randomBot = randomBot;
+        Log.v(LOGGER, "RandomBotImage has been set.");
+    }
+
+    public void clearRandomBotImage() {
+        randomBot = defaultRandomBotImage;
+        Log.v(LOGGER, "RandomBotImage has been reset to the default.");
     }
 
     public Bitmap getRandomBot() {
@@ -112,7 +131,7 @@ public class ThemeManager {
     }
 
     public Bitmap getPoppedRandomBot() {
-        return randomBotPopped;
+        return poppedRandomBot;
     }
 
     public Bitmap getBall() {
@@ -149,9 +168,5 @@ public class ThemeManager {
 
     public Paint getPainter() {
         return getCurrentTheme().getPainter();
-    }
-
-    public void clearRandomBotImage() {
-        randomBot = defaultRandomBotImage;
     }
 }

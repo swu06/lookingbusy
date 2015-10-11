@@ -140,12 +140,12 @@ public class GameThemeTest extends ActivityTestCase {
         theme.getPauseSign();
         theme.unloadImages();
 
-        assertNull("Test Failure: ball Image was not dereferenced", theme.ball);
-        assertNull("Test Failure: balloon Image was not dereferenced", theme.balloons);
-        assertNull("Test Failure: droplet Image was not dereferenced", theme.droplet);
-        assertNull("Test Failure: popped_ball Image was not dereferenced", theme.popped_ball);
-        assertNull("Test Failure: popped_balloon Image was not dereferenced", theme.popped_balloons);
-        assertNull("Test Failure: popped_droplet Image was not dereferenced", theme.popped_droplet);
-        assertNull("Test Failure: pause_sign Image was not dereferenced", theme.pause_sign);
+        assertNull("Test Failure: ball Image was not de-referenced", theme.ball);
+        assertNull("Test Failure: balloon Image was not de-referenced", theme.balloons);
+        assertNull("Test Failure: droplet Image was not de-referenced", theme.droplet);
+        assertNull("Test Failure: popped_ball Image was not de-referenced", theme.popped_ball);
+        assertNull("Test Failure: popped_balloon Image was not de-referenced", theme.popped_balloons);
+        assertNull("Test Failure: popped_droplet Image was not de-referenced", theme.popped_droplet);
+        assertNull("Test Failure: pause_sign Image was not de-referenced", theme.pause_sign);
     }
 }

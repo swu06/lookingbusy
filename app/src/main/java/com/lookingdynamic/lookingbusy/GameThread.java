@@ -5,6 +5,9 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 
 /**
+ * This class handles the thread for this game.  Several actions (like draw and update) are
+ * asynchronous, so this ensures that everything plays nice together.
+ *
  * Created by swu on 9/5/2015.
  */
 public class GameThread extends Thread implements Runnable{
@@ -103,7 +106,7 @@ public class GameThread extends Thread implements Runnable{
                     Log.d(LOGGER, "Game pause was interrupted");
                 }
                 inPausedState = false;
-                Log.d(LOGGER, "Game is unpaused");
+                Log.d(LOGGER, "Game is un-paused");
             }
         }
     }
@@ -136,7 +139,7 @@ public class GameThread extends Thread implements Runnable{
             pausedFlagIsSet = false;
             pauseLock.notifyAll();
         }
-        Log.d(LOGGER, "Game is unpausing");
+        Log.d(LOGGER, "Game is un-pausing");
     }
 
     public void onStart() {

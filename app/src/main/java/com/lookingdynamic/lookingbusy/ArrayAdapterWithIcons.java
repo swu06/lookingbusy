@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * This class handles the menu labels and icons to create the expected view for the game.
  * Created by swu on 9/10/2015.
  */
 public class ArrayAdapterWithIcons extends ArrayAdapter<String> {
@@ -23,6 +24,11 @@ public class ArrayAdapterWithIcons extends ArrayAdapter<String> {
         this.images = Arrays.asList(images);
     }
 
+    /*
+     * This method handles adding an icon to each of the textView objects that make up a menu.
+     * There are two different methods used for this depending on the SDK version for backwards
+     * compatibility
+     */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);

@@ -1,11 +1,9 @@
 package com.lookingdynamic.lookingbusy;
 
-import android.app.Activity;
 import android.test.ActivityTestCase;
 
-import com.lookingdynamic.lookingbusy.GameThread;
-
 /**
+ *
  * Created by swu on 9/9/2015.
  */
 public class GameThreadTest extends ActivityTestCase {
@@ -28,7 +26,7 @@ public class GameThreadTest extends ActivityTestCase {
             myThread.join();
         } catch(Exception e){
         }
-        assertEquals("Test Failed: Thead should be TERMINATED when run is complete",
+        assertEquals("Test Failed: Thread should be TERMINATED when run is complete",
                     Thread.State.TERMINATED, myThread.getState());
         assertFalse("Test Failed: Thread should not be alive after termination",
                 myThread.isAlive());
@@ -55,7 +53,7 @@ public class GameThreadTest extends ActivityTestCase {
         } catch(InterruptedException e){
             // Thread needs time to detect stop
         }
-        assertEquals("Test Failed: Thead should be TERMINATED when run is complete",
+        assertEquals("Test Failed: Thread should be TERMINATED when run is complete",
                 Thread.State.TERMINATED, myThread.getState());
         assertFalse("Test Failed: Thread should not be alive after termination",
                 myThread.isAlive());

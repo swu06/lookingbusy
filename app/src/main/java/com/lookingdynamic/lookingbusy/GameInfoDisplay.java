@@ -11,6 +11,8 @@ import android.util.Log;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
 
 /**
+ * This class handles displaying all of the necessary game info behind the poppable objects.
+ *
  * Created by swu on 9/27/2015.
  */
 public class GameInfoDisplay {
@@ -40,7 +42,7 @@ public class GameInfoDisplay {
         this.game = game;
         readyToPause = false;
         whiteFont = new TextPaint();
-        whiteFont.setTextSize(100);
+        whiteFont.setTextSize(75);
         whiteFont.setTextAlign(Paint.Align.CENTER);
         whiteFont.setColor(Color.WHITE);
         whiteFont.setTypeface(Typeface.DEFAULT_BOLD);
@@ -48,7 +50,7 @@ public class GameInfoDisplay {
         whiteFont.setAntiAlias(true);
 
         blackOutline = new TextPaint();
-        blackOutline.setTextSize(100);
+        blackOutline.setTextSize(75);
         blackOutline.setTextAlign(Paint.Align.CENTER);
         blackOutline.setColor(Color.BLACK);
         blackOutline.setTypeface(Typeface.DEFAULT_BOLD);
@@ -82,12 +84,12 @@ public class GameInfoDisplay {
 
         wasOnTimedLevel = false;
 
-        Log.d(LOGGER, "SecondaryLocation = "+ startXsecondaryLocation);
+        Log.v(LOGGER, "SecondaryLocation for the Pause Sign calculated as "+ startXsecondaryLocation);
 
     }
 
-    public void setAlpha(int alpha) {
-        translucentPainter.setAlpha(alpha);
+    public void resetAlpha() {
+        translucentPainter.setAlpha(200);
     }
 
     public void draw(Canvas canvas) {
@@ -176,8 +178,8 @@ public class GameInfoDisplay {
         canvas.drawText("GAME OVER", game.getWidth() / 2, game.getHeight() / 2, whiteFont);
         canvas.drawText("GAME OVER", game.getWidth() / 2, game.getHeight() / 2, blackOutline);
         if (manager.isHighScore()) {
-            whiteFont.setTextSize(75);
-            blackOutline.setTextSize(75);
+            whiteFont.setTextSize(50);
+            blackOutline.setTextSize(50);
             float height = game.getHeight() - (game.getHeight() / 4);
             canvas.drawText("New High Score:",
                     game.getWidth() / 2,
@@ -188,8 +190,8 @@ public class GameInfoDisplay {
                     height,
                     blackOutline);
             height = height + blackOutline.descent() - blackOutline.ascent();
-            whiteFont.setTextSize(100);
-            blackOutline.setTextSize(100);
+            whiteFont.setTextSize(75);
+            blackOutline.setTextSize(75);
             canvas.drawText("" + manager.getNewHighScore(),
                     game.getWidth() / 2,
                     height,
@@ -206,7 +208,7 @@ public class GameInfoDisplay {
     public void handleOnDown(float x, float y) {
         if (startXprimaryLocation <= x && x <= endXprimaryLocation
                 && startYprimaryLocation <= y && y <= endYprimaryLocation) {
-            Log.d(LOGGER, "Ready to Pause");
+            Log.v(LOGGER, "Ready to Pause");
             readyToPause = true;
         }
     }

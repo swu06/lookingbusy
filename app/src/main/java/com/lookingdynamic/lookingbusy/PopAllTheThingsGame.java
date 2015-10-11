@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.media.MediaPlayer;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -93,7 +94,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     public void resumeFirstRun() {
-        gameInfo.setAlpha(200);
+        gameInfo.resetAlpha();
         firstRun = false;
     }
 
@@ -254,7 +255,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         if (gameplay.isGameOver()) {
             pause();
         } else {
