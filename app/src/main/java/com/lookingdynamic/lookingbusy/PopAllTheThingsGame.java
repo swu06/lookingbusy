@@ -57,6 +57,8 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
         if (firstRun) {
             activity.showIntroMenu();
+        } else {
+            gameInfo.resetAlpha();
         }
     }
 
