@@ -15,7 +15,7 @@ import com.lookingdynamic.lookingbusy.R;
 public class ThemeManager {
 
     private static final String LOGGER = ThemeManager.class.getSimpleName();
-    private SettingsManager settings;
+    private SettingsStorageManager settings;
     private GameTheme themes[];
     private int currentTheme;
     private Bitmap defaultRandomBotImage;
@@ -23,7 +23,7 @@ public class ThemeManager {
     private Bitmap randomBotPopped;
 
 
-    public ThemeManager(SettingsManager settings, Resources myResources) {
+    public ThemeManager(SettingsStorageManager settings, Resources myResources) {
         this.settings = settings;
         TypedArray availableThemesArray = myResources.obtainTypedArray(R.array.available_game_themes);
 

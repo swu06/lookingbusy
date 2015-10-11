@@ -15,7 +15,7 @@ import com.lookingdynamic.lookingbusy.R;
 public class GameplayManager {
     private static final String LOGGER = GameplayManager.class.getSimpleName();
 
-    protected SettingsManager settings;
+    protected SettingsStorageManager settings;
     protected GameplayMode[] modes;
     protected int currentHighScore;
     protected int score;
@@ -27,7 +27,7 @@ public class GameplayManager {
     protected int livesLeft;
     protected int currentMode;
 
-    public GameplayManager(SettingsManager settings, Resources myResources) {
+    public GameplayManager(SettingsStorageManager settings, Resources myResources) {
         this.settings = settings;
 
         TypedArray gameplayModes = myResources.obtainTypedArray(R.array.gameplay_modes);

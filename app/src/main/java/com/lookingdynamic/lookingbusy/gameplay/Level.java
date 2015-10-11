@@ -1,16 +1,23 @@
 package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.content.res.XmlResourceParser;
+import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
 /**
+ * This class loads the information for each level from the xml resource and holds it in memory.
+ * There are no setters for this class because these items should not be edited by the game.  If
+ * there is an special circumstance or additional logic that cannot be handled within the level, it
+ * should be handled by the GameplayManager class.
+ *
  * Created by swu on 9/10/2015.
  */
 public class Level {
 
+    private static final String LOGGER = Level.class.getSimpleName();
     private static final String NAME = "name";
     private static final String BUBBLE_GRID = "bubbleGrid";
     private static final String POINTS_TO_NEXT_LEVEL = "pointsToNextLevel";
@@ -53,27 +60,7 @@ public class Level {
         try {
             while (eventType != XmlResourceParser.END_DOCUMENT) {
                 if (levelXml.getEventType() == XmlResourceParser.START_TAG) {
-                    if (levelXml.getName().equalsIgnoreCase(NAME)) {
-                        name = levelXml.nextText();
-                    } else if (levelXml.getName().equalsIgnoreCase(BUBBLE_GRID)) {
-                        bubbleGrid = true;
-                    } else if (levelXml.getName().equalsIgnoreCase(POINTS_TO_NEXT_LEVEL)) {
-                        pointsToNextLevel = Integer.parseInt(levelXml.nextText());
-                    } else if (levelXml.getName().equalsIgnoreCase(TIME_TO_NEXT_LEVEL)) {
-                        timeToNextLevel = Integer.parseInt(levelXml.nextText());
-                    } else if (levelXml.getName().equalsIgnoreCase(TOTAL_OBJECTS_TO_CREATE)) {
-                        totalObjectsToCreate = Integer.parseInt(levelXml.nextText());
-                    } else if (levelXml.getName().equalsIgnoreCase(PERCENT_CHANCE_OF_CREATION)) {
-                        percentChanceOfCreation = Integer.parseInt(levelXml.nextText());
-                    } else if (levelXml.getName().equalsIgnoreCase(BALL_DEFINITION)) {
-                        loadObjectSettings(ballSettings, levelXml, BALL_DEFINITION);
-                    } else if (levelXml.getName().equalsIgnoreCase(BALLOON_DEFINITION)) {
-                        loadObjectSettings(balloonSettings, levelXml, BALLOON_DEFINITION);
-                    } else if (levelXml.getName().equalsIgnoreCase(DROPLET_DEFINITION)) {
-                        loadObjectSettings(dropletSettings, levelXml, DROPLET_DEFINITION);
-                    } else if (levelXml.getName().equalsIgnoreCase(RANDOM_BOT_DEFINITION)) {
-                        loadObjectSettings(randomBotSettings, levelXml, RANDOM_BOT_DEFINITION);
-                    }
+                    loadElements(levelXml);
                 }
                 eventType = levelXml.next();
             }
@@ -81,6 +68,42 @@ public class Level {
             e.printStackTrace();
         }
 
+        Log.v(LOGGER, "Level Loaded: " + name);
+    }
+
+    private void loadElements(XmlResourceParser levelXml)
+                        throws IOException, XmlPullParserException {
+        if (levelXml.getName().equalsIgnoreCase(NAME)) {
+            name = levelXml.nextText();
+
+        } else if (levelXml.getName().equalsIgnoreCase(BUBBLE_GRID)) {
+            bubbleGrid = true;
+
+        } else if (levelXml.getName().equalsIgnoreCase(POINTS_TO_NEXT_LEVEL)) {
+            pointsToNextLevel = Integer.parseInt(levelXml.nextText());
+
+        } else if (levelXml.getName().equalsIgnoreCase(TIME_TO_NEXT_LEVEL)) {
+            timeToNextLevel = Integer.parseInt(levelXml.nextText());
+
+        } else if (levelXml.getName().equalsIgnoreCase(TOTAL_OBJECTS_TO_CREATE)) {
+            totalObjectsToCreate = Integer.parseInt(levelXml.nextText());
+
+        } else if (levelXml.getName().equalsIgnoreCase(PERCENT_CHANCE_OF_CREATION)) {
+            percentChanceOfCreation = Integer.parseInt(levelXml.nextText());
+
+        } else if (levelXml.getName().equalsIgnoreCase(BALL_DEFINITION)) {
+            loadObjectSettings(ballSettings, levelXml, BALL_DEFINITION);
+
+        } else if (levelXml.getName().equalsIgnoreCase(BALLOON_DEFINITION)) {
+            loadObjectSettings(balloonSettings, levelXml, BALLOON_DEFINITION);
+
+        } else if (levelXml.getName().equalsIgnoreCase(DROPLET_DEFINITION)) {
+            loadObjectSettings(dropletSettings, levelXml, DROPLET_DEFINITION);
+
+        } else if (levelXml.getName().equalsIgnoreCase(RANDOM_BOT_DEFINITION)) {
+            loadObjectSettings(randomBotSettings, levelXml, RANDOM_BOT_DEFINITION);
+
+        }
     }
 
     private void loadObjectSettings(LevelObjectSettings settingsObject,
@@ -91,14 +114,19 @@ public class Level {
                 || !levelXml.getName().equalsIgnoreCase(nameTag)) {
             if (levelXml.getName().equalsIgnoreCase(PERCENT_CREATED)) {
                 settingsObject.setPercentCreated(Integer.parseInt(levelXml.nextText()));
+
             } else if (levelXml.getName().equalsIgnoreCase(PERCENT_FAST)) {
                 settingsObject.setPercentFast(Integer.parseInt(levelXml.nextText()));
+
             } else if (levelXml.getName().equalsIgnoreCase(PERCENT_MEDIUM)) {
                 settingsObject.setPercentMedium(Integer.parseInt(levelXml.nextText()));
+
             } else if (levelXml.getName().equalsIgnoreCase(PERCENT_SLOW)) {
                 settingsObject.setPercentSlow(Integer.parseInt(levelXml.nextText()));
+
             } else if (levelXml.getName().equalsIgnoreCase(PERCENT_SUPER_FAST)) {
                 settingsObject.setPercentSuperFast(Integer.parseInt(levelXml.nextText()));
+
             }
             eventType = levelXml.next();
         }

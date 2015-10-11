@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 
 /**
+ * This class manages getting and setting the current settings from the device storage.  This
+ * includes the user preferences and game statistics like score.
+ *
  * Created by swu on 9/20/2015.
  */
-public class SettingsManager {
+public class SettingsStorageManager {
     public static final String CURRENT_THEME_KEY = "currentThemeKey";
     public static final String CURRENT_GAMEPLAY_KEY = "currentGameplayKey";
     public static final String CURRENT_HIGHSCORE_KEY = "currentHighScoreKey";
@@ -14,30 +17,28 @@ public class SettingsManager {
 
     private Context myContext;
 
-    public SettingsManager(Context myContext) {
+    public SettingsStorageManager(Context myContext) {
         this.myContext = myContext;
     }
 
-    private int getIntValueOrDefault(String key) {
-        return myContext.getSharedPreferences("BOOT_PREF", Activity.MODE_PRIVATE).getInt(key, 0);
+    protected int getIntValueOrDefault(String key) {
+        return myContext.getSharedPreferences("BOOT_PREF",
+                                    Activity.MODE_PRIVATE).getInt(key, 0);
     }
 
-    private void setIntValue(String key, int value) {
-        myContext.getSharedPreferences("BOOT_PREF", Activity.MODE_PRIVATE)
-                .edit()
-                .putInt(key, value)
-                .commit();
+    protected void setIntValue(String key, int value) {
+        myContext.getSharedPreferences("BOOT_PREF",
+                                    Activity.MODE_PRIVATE).edit().putInt(key, value).commit();
     }
 
-    private String getStringValueOrDefault(String key) {
-        return myContext.getSharedPreferences("BOOT_PREF", Activity.MODE_PRIVATE).getString(key, null);
+    protected String getStringValueOrDefault(String key) {
+        return myContext.getSharedPreferences("BOOT_PREF",
+                                    Activity.MODE_PRIVATE).getString(key, null);
     }
 
-    private void setStringValue(String key, String value) {
-        myContext.getSharedPreferences("BOOT_PREF", Activity.MODE_PRIVATE)
-                .edit()
-                .putString(key, value)
-                .commit();
+    protected void setStringValue(String key, String value) {
+        myContext.getSharedPreferences("BOOT_PREF",
+                                    Activity.MODE_PRIVATE).edit().putString(key, value).commit();
     }
 
     public int getTheme() {

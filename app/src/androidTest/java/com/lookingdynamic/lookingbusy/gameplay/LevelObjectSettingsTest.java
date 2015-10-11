@@ -2,9 +2,9 @@ package com.lookingdynamic.lookingbusy.gameplay;
 
 import android.test.ActivityTestCase;
 
-import com.lookingdynamic.lookingbusy.gameplay.LevelObjectSettings;
-
 /**
+ * Unit Tests complete as of 10/11/2015
+ *
  * Created by swu on 9/14/2015.
  */
 public class LevelObjectSettingsTest extends ActivityTestCase{

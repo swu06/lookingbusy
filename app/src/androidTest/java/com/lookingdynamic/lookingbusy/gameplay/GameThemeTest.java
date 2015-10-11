@@ -5,9 +5,9 @@ import android.content.res.TypedArray;
 import android.test.ActivityTestCase;
 
 import com.lookingdynamic.lookingbusy.R;
-import com.lookingdynamic.lookingbusy.gameplay.GameTheme;
 
 /**
+ *
  * Created by swu on 9/13/2015.
  */
 public class GameThemeTest extends ActivityTestCase {

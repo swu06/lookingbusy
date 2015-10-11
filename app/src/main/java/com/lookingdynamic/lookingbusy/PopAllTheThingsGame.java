@@ -14,7 +14,7 @@ import android.view.SurfaceView;
 
 import com.lookingdynamic.lookingbusy.gameobjects.PoppableObject;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
-import com.lookingdynamic.lookingbusy.gameplay.SettingsManager;
+import com.lookingdynamic.lookingbusy.gameplay.SettingsStorageManager;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
 
 import java.util.Vector;
@@ -32,7 +32,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
     private GameThread thread;
     private Vector<PoppableObject> activePoppableObjects;
     private Vector<PoppableObject> poppedPoppableObjects;
-    private SettingsManager settings;
+    private SettingsStorageManager settings;
     private GameplayManager gameplay;
     private ThemeManager themes;
     private GameInfoDisplay gameInfo;
@@ -61,7 +61,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     public void setUpGame() {
 
-        settings = new SettingsManager(getContext());
+        settings = new SettingsStorageManager(getContext());
         gameplay = new GameplayManager(settings, getResources());
         themes = new ThemeManager(settings, getResources());
         mp = MediaPlayer.create(activity, R.raw.pop);

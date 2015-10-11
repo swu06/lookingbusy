@@ -1,12 +1,11 @@
 package com.lookingdynamic.lookingbusy.gameplay;
 
-import android.content.res.XmlResourceParser;
 import android.test.ActivityTestCase;
 
 import com.lookingdynamic.lookingbusy.R;
-import com.lookingdynamic.lookingbusy.gameplay.Level;
 
 /**
+ * Unit tests complete as of 10/11/2015
  * Created by swu on 9/14/2015.
  */
 public class LevelTest extends ActivityTestCase{
@@ -35,6 +34,11 @@ public class LevelTest extends ActivityTestCase{
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getDropletPercentMedium());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getDropletPercentFast());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getDropletPercentSuperFast());
+        assertEquals("Test Failure: Level 1 Value has changed", 10, lvl.getRandomBotPercentCreated());
+        assertEquals("Test Failure: Level 1 Value has changed", 50, lvl.getRandomBotPercentSlow());
+        assertEquals("Test Failure: Level 1 Value has changed", 50, lvl.getRandomBotPercentMedium());
+        assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getRandomBotPercentFast());
+        assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getRandomBotPercentSuperFast());
     }
 
     public void testCreateLevelObjectMoreValues() {
