@@ -94,7 +94,7 @@ public class BubbleTest extends ActivityTestCase {
     }
 
     public void testGetScoreValue() {
-        Bubble testBubble = new Bubble(0, 0, 1);
+        PoppableObject testBubble = new Bubble(0, 0, 1);
 
         assertEquals("Test Failure: Points not based on constant", Bubble.VALUE, testBubble.getScoreValue());
     }
@@ -103,8 +103,17 @@ public class BubbleTest extends ActivityTestCase {
         Bubble testBubble = new Bubble(0, 0, 1);
 
         testBubble.temporarilyPopped = true;
+        testBubble.handleTouch(theme, 0, 0);
 
         assertEquals("Test Failure: Bubbles have no score value when popped", 0, testBubble.getScoreValue());
+    }
+
+    public void testGetScoreValueAfterTemporarilyPopped() {
+        Bubble testBubble = new Bubble(0, 0, 1);
+
+        testBubble.handleTouch(theme, 0, 0);
+
+        assertEquals("Test Failure: Bubbles have no score value when popped", Bubble.VALUE, testBubble.getScoreValue());
     }
 
     public void testGetImage() {

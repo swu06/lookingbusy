@@ -27,6 +27,7 @@ public class Bubble extends PoppableObject {
         this.yCoordinate = yCoordinate;
         offScreen = false;
         popped = false;
+        value = VALUE;
         temporarilyPopped = false;
         poppedCountsRemaining = 0;
         timeToStayPopped = 3 * objectsOnScreen; // Scales for large and small screens
@@ -72,8 +73,11 @@ public class Bubble extends PoppableObject {
 
     /*
      * Bubbles don't truly pop, so they are always "touchable". This touch only affects the object
-     * when they are truly unpopped.  The in-between "temporarilypopped" state should not be
+     * when they are truly unpopped.  The in-between "temporarily popped" state should not be
      * affected.  This is different from most other objects, so an override is needed.
+     *
+     * This also means that users can rack up a huge score if they keep touching the bubble's
+     * location, so we set the value to nothing except just after the bubble is touched.
      */
     @Override
     public boolean handleTouch(ThemeManager theme, int eventX, int eventY) {
@@ -84,25 +88,13 @@ public class Bubble extends PoppableObject {
                 temporarilyPopped = true;
                 poppedCountsRemaining = timeToStayPopped;
                 popped = false;
+                value = VALUE;
                 Log.v(LOGGER, "Bubble Popped at (" + xCoordinate + ", " + yCoordinate +")");
             }
+        } else {
+            value = 0;
         }
 
         return justPopped;
-    }
-
-    /*
-     * Since bubble objects are never really popped, they exist in an unpopped and temporarily
-     * popped states.  They only has a score value when they are unpopped.  This is different from
-     * how the other poppable objects behave, so we have to override the default method.
-     */
-    @Override
-    public int getScoreValue() {
-        int score = 0;
-        if (!temporarilyPopped) {
-            score = VALUE;
-        }
-
-        return score;
     }
 }

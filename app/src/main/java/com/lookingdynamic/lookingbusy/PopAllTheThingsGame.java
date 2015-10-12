@@ -57,8 +57,6 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
         if (firstRun) {
             activity.showIntroMenu();
-        } else {
-            gameInfo.resetAlpha();
         }
     }
 
@@ -140,6 +138,9 @@ public class PopAllTheThingsGame extends SurfaceView implements
                                int height) {
         thread.updateSurfaceHolder(holder);
         gameInfo = new GameInfoDisplay(this);
+        if (!firstRun) {
+            gameInfo.resetAlpha();
+        }
     }
 
     @Override
@@ -263,10 +264,10 @@ public class PopAllTheThingsGame extends SurfaceView implements
         } else {
             boolean objectPopped = false;
             if (event.getAction() == MotionEvent.ACTION_UP) {
-                Log.d(LOGGER, "onUp detected!");
+                Log.v(LOGGER, "onUp detected!");
                 gameInfo.handleOnUp(event.getX(), event.getY());
             } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                Log.d(LOGGER, "onDown detected!");
+                Log.v(LOGGER, "onDown detected!");
                 synchronized (activePoppableObjects) {
                     for (PoppableObject poppableObject : activePoppableObjects) {
                         if (!poppableObject.isPopped() &&

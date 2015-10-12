@@ -42,7 +42,7 @@ public class GameInfoDisplay {
         this.game = game;
         readyToPause = false;
         whiteFont = new TextPaint();
-        whiteFont.setTextSize(75);
+        whiteFont.setTextSize(150);
         whiteFont.setTextAlign(Paint.Align.CENTER);
         whiteFont.setColor(Color.WHITE);
         whiteFont.setTypeface(Typeface.DEFAULT_BOLD);
@@ -50,7 +50,7 @@ public class GameInfoDisplay {
         whiteFont.setAntiAlias(true);
 
         blackOutline = new TextPaint();
-        blackOutline.setTextSize(75);
+        blackOutline.setTextSize(150);
         blackOutline.setTextAlign(Paint.Align.CENTER);
         blackOutline.setColor(Color.BLACK);
         blackOutline.setTypeface(Typeface.DEFAULT_BOLD);
@@ -98,20 +98,28 @@ public class GameInfoDisplay {
             displayGameOverScreen(canvas, manager);
 
         } else {
-            canvas.drawText(manager.getScoreDisplayString(), game.getWidth() / 2, 300, whiteFont);
-            canvas.drawText(manager.getScoreDisplayString(), game.getWidth() / 2, 300, blackOutline);
-            float height = 300 + blackOutline.descent() - blackOutline.ascent();
+            float width = canvas.getWidth();
+            float height = canvas.getHeight();
+            String scoreDisplay = manager.getScoreDisplayString();
+            resizeTextIfNeeded(scoreDisplay, width - 50);
+            canvas.drawText(scoreDisplay, width / 2, height / 4, whiteFont);
+            canvas.drawText(scoreDisplay, width / 2, height / 4, blackOutline);
+            height = height / 4 + blackOutline.descent() - blackOutline.ascent();
 
             if (manager.isLifeRestrictedMode()) {
-                canvas.drawText(manager.getLivesRemainingString(), game.getWidth() / 2, height, whiteFont);
-                canvas.drawText(manager.getLivesRemainingString(), game.getWidth() / 2, height, blackOutline);
+                String livesString = manager.getLivesRemainingString();
+                resizeTextIfNeeded(livesString, width - 50);
+                canvas.drawText(livesString, width / 2, height, whiteFont);
+                canvas.drawText(livesString, width / 2, height, blackOutline);
                 height = height + blackOutline.descent() - blackOutline.ascent();
             }
 
             if (manager.isTimedLevel()) {
                 wasOnTimedLevel = true;
-                canvas.drawText(manager.getTimeRemainingDisplayString(), game.getWidth() / 2, height, whiteFont);
-                canvas.drawText(manager.getTimeRemainingDisplayString(), game.getWidth() / 2, height, blackOutline);
+                String timeString = manager.getTimeRemainingDisplayString();
+                resizeTextIfNeeded(timeString, width - 50);
+                canvas.drawText(timeString, width / 2, height, whiteFont);
+                canvas.drawText(timeString, width / 2, height, blackOutline);
                 height = height + blackOutline.descent() - blackOutline.ascent();
             } else if (wasOnTimedLevel) {
                 game.clearObjects();
@@ -119,8 +127,11 @@ public class GameInfoDisplay {
             }
 
             if (manager.isHighScore()) {
-                canvas.drawText("High Score!!", game.getWidth() / 2, height, whiteFont);
-                canvas.drawText("High Score!!", game.getWidth() / 2, height, blackOutline);
+                String highScoreString = "High Score!!";
+                resizeTextIfNeeded(highScoreString, width - 50);
+
+                canvas.drawText(highScoreString, width / 2, height, whiteFont);
+                canvas.drawText(highScoreString, width / 2, height, blackOutline);
             }
 
             if (readyToPause) {
@@ -175,31 +186,25 @@ public class GameInfoDisplay {
     private void displayGameOverScreen(Canvas canvas, GameplayManager manager) {
         whiteFont.setAlpha(255);
         blackOutline.setAlpha(255);
-        canvas.drawText("GAME OVER", game.getWidth() / 2, game.getHeight() / 2, whiteFont);
-        canvas.drawText("GAME OVER", game.getWidth() / 2, game.getHeight() / 2, blackOutline);
+        int width = canvas.getWidth();
+        String gameOverString = "GAME OVER";
+        resizeTextIfNeeded(gameOverString, width - 50);
+
+        canvas.drawText(gameOverString, width / 2, game.getHeight() / 2, whiteFont);
+        canvas.drawText(gameOverString, width / 2, game.getHeight() / 2, blackOutline);
         if (manager.isHighScore()) {
-            whiteFont.setTextSize(50);
-            blackOutline.setTextSize(50);
             float height = game.getHeight() - (game.getHeight() / 4);
-            canvas.drawText("New High Score:",
-                    game.getWidth() / 2,
-                    height,
-                    whiteFont);
-            canvas.drawText("New High Score:",
-                    game.getWidth() / 2,
-                    height,
-                    blackOutline);
+
+            String newScore = "New High Score:";
+            resizeTextIfNeeded(newScore, width - 50);
+            canvas.drawText(newScore, width / 2, height, whiteFont);
+            canvas.drawText(newScore, width / 2, height, blackOutline);
             height = height + blackOutline.descent() - blackOutline.ascent();
-            whiteFont.setTextSize(75);
-            blackOutline.setTextSize(75);
-            canvas.drawText("" + manager.getNewHighScore(),
-                    game.getWidth() / 2,
-                    height,
-                    whiteFont);
-            canvas.drawText("" + manager.getNewHighScore(),
-                    game.getWidth() / 2,
-                    height,
-                    blackOutline);
+
+            String score = "" + manager.getNewHighScore();
+            resizeTextIfNeeded(score, width - 50);
+            canvas.drawText(score, width / 2, height, whiteFont);
+            canvas.drawText(score, width / 2, height, blackOutline);
         }
         whiteFont.setAlpha(200);
         blackOutline.setAlpha(200);
@@ -224,5 +229,15 @@ public class GameInfoDisplay {
             game.pause();
         }
         readyToPause = false;
+    }
+
+    private void resizeTextIfNeeded(String str, float maxWidth) {
+        float size = whiteFont.getTextSize();
+
+        while (whiteFont.measureText(str) > maxWidth) {
+            size--;
+            whiteFont.setTextSize(size);
+            blackOutline.setTextSize(size);
+        }
     }
 }
