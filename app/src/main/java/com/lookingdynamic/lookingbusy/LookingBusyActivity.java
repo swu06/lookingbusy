@@ -41,7 +41,6 @@ public class LookingBusyActivity extends Activity {
     // Called when the activity is first created.
     private static final String LOGGER = LookingBusyActivity.class.getSimpleName();
     private PopAllTheThingsGame game = null;
-    private int backButtonCount = 0;
     private boolean firstRun;
 
     public static final int CAMERA_RESULT = 0;
@@ -114,21 +113,12 @@ public class LookingBusyActivity extends Activity {
     @Override
     public void onBackPressed(){
 
-        if (game.isPaused()) {
-            game.resume();
-            backButtonCount = 0;
-        } else if (backButtonCount >= 1) {
+        if (!game.isPaused()) {
             game.pause();
-            game.getGameplayManager().storeHighScore();
-            Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_HOME);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "Press the back button once again to close the application.",
-                    Toast.LENGTH_SHORT).show();
-            backButtonCount++;
+        } else if (game.isPaused()) {
+            game.resume();
         }
+
     }
 
     /*
@@ -202,12 +192,12 @@ public class LookingBusyActivity extends Activity {
 
     public void showPauseMenu() {
 
-        String[] pausedMenuLabels = new String[] {"Themes",
-                                                "GamePlay",
+        String[] pausedMenuLabels = new String[] {"GamePlay",
+                                                "Themes",
                                                 "Picture For RandomBot",
                                                 "High Scores"};
-        Integer[] pausedMenuIcons = new Integer[] {game.getThemeManager().getCurrentThemeIconID(),
-                game.getGameplayManager().getCurrentIconID(),
+        Integer[] pausedMenuIcons = new Integer[] {game.getGameplayManager().getCurrentIconID(), game.getThemeManager().getCurrentThemeIconID(),
+                game.getThemeManager().getCurrentThemeIconID(),
                 R.drawable.ic_action_action_android,
                 R.drawable.ic_action_action_grade};
 
@@ -236,9 +226,9 @@ public class LookingBusyActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 if (item == 0) {
-                    showThemeMenu();
+                    showGameplayMenu();
                 } else if (item == 1) {
-                    showGamePlayMenu();
+                    showThemeMenu();
                 } else if (item == 2) {
                     showRandomBotMenu();
                 } else if (item == 3) {
@@ -248,12 +238,21 @@ public class LookingBusyActivity extends Activity {
 
             }
         });
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+                game.resume();
+
+            }
+        });
         builder.show();
 
 
     }
 
-    public void showGamePlayMenu() {
+    public void showGameplayMenu() {
         final GameplayManager modes = game.getGameplayManager();
         String[] gameplayMenuLabels = modes.getLabels();
         Integer[] gameplayMenuIcons = modes.getIconImageIDs();
@@ -264,14 +263,14 @@ public class LookingBusyActivity extends Activity {
                 gameplayMenuIcons);
 
         AlertDialog.Builder builder = getDialog(this);
-        builder.setTitle("Game Play Options");
+        builder.setTitle("Gameplay Options");
         builder.setPositiveButton("OK", null);
         builder.setSingleChoiceItems(adapter, modes.getCurrentID(), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                Log.d(LOGGER, "GamePlay Selected:" + item);
+                Log.d(LOGGER, "Gameplay Selected:" + item);
                 modes.setGameplayMode(item);
-                game.clearObjects();
+                game.startNewGame();
             }
         });
         builder.show();

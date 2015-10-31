@@ -117,7 +117,7 @@ public class PoppableObjectFactory {
         PoppableObject toReturn = null;
         int randomType = rand.nextInt(100);
         int randomSpeed = rand.nextInt(100);
-        int randomWidth = rand.nextInt(width - 100) + 50;
+        int randomWidth = rand.nextInt(width - 200) + 100;
         int oneInFour = rand.nextInt(4);
 
         if(randomType < gameplay.getBalloonPercentCreated()) {

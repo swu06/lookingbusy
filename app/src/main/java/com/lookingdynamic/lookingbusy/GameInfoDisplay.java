@@ -11,7 +11,8 @@ import android.util.Log;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
 
 /**
- * This class handles displaying all of the necessary game info behind the poppable objects.
+ * This class handles displaying all of the necessary game info that gets displayed behind the
+ * game.
  *
  * Created by swu on 9/27/2015.
  */

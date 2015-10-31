@@ -117,6 +117,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     public void pause() {
         if (!thread.isPausedFlagIsSet()) {
+            gameplay.storeHighScore();
             thread.onPause();
             if (gameplay.isGameOver()) {
                 activity.showGameOverMenu();

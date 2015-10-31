@@ -39,9 +39,9 @@ public class ThemeManager {
         }
         availableThemesArray.recycle();
 
-        defaultRandomBotImage = BitmapFactory.decodeResource(myResources, R.mipmap.ic_launcher);
-        randomBot = BitmapFactory.decodeResource(myResources, R.mipmap.ic_launcher);
-        poppedRandomBot = BitmapFactory.decodeResource(myResources, R.drawable.ic_action_notification_adb);
+        defaultRandomBotImage = BitmapFactory.decodeResource(myResources, R.drawable.randombot);
+        randomBot = BitmapFactory.decodeResource(myResources, R.drawable.randombot);
+        poppedRandomBot = BitmapFactory.decodeResource(myResources, R.drawable.randombot_popped);
 
         tryToLoadFromSettings();
 
@@ -123,6 +123,7 @@ public class ThemeManager {
 
     public void clearRandomBotImage() {
         randomBot = defaultRandomBotImage;
+        settings.setRandomBotLocation(null);
         Log.v(LOGGER, "RandomBotImage has been reset to the default.");
     }
 
