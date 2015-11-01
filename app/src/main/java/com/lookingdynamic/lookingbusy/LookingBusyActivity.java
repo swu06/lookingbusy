@@ -20,8 +20,12 @@ import android.view.Window;
 import android.widget.ListAdapter;
 import android.widget.Toast;
 
+import com.android.vending.billing.util.IabHelper;
+import com.android.vending.billing.util.IabResult;
+import com.android.vending.billing.util.Purchase;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
+import com.lookingdynamic.lookingbusy.purchasing.AppProperties;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,11 +41,16 @@ import java.io.FileOutputStream;
  * Created by swu on 9/5/2015.
  */
 
-public class LookingBusyActivity extends Activity {
+public class LookingBusyActivity extends Activity
+                                implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
     // Called when the activity is first created.
     private static final String LOGGER = LookingBusyActivity.class.getSimpleName();
     private PopAllTheThingsGame game = null;
     private boolean firstRun;
+
+    private IabHelper billingHelper;
+    private static final String RANDOM_BOT_SKU = "randomBotSKU";
+    private boolean randomBotPurchased;
 
     public static final int CAMERA_RESULT = 0;
     public static final int FILE_RESULT = 1;
@@ -58,12 +67,61 @@ public class LookingBusyActivity extends Activity {
         // Removing the title to save previous screen space
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         firstRun = getSharedPreferences("BOOT_PREF", MODE_PRIVATE).getBoolean("firstRun", true);
+        randomBotPurchased = getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
+                                .getBoolean("randomBotPurchased", false);
 
         if (firstRun) {
             Log.d(LOGGER, "This is the first run of the activity");
             getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
                     .edit().putBoolean("firstRun", false).commit();
         }
+
+        setupInAppBilling();
+    }
+
+    private void setupInAppBilling() {
+
+        billingHelper = new IabHelper(this, AppProperties.BASE_64_KEY);
+        billingHelper.startSetup(this);
+    }
+
+    @Override
+    public void onIabSetupFinished(IabResult result) {
+        if (result.isSuccess()) {
+            Log.d(LOGGER, "In-app Billing set up" + result);
+        } else {
+            Log.e(LOGGER, "Problem setting up In-app Billing: " + result);
+            Toast.makeText(this, "In-App Purchases not available currently", Toast.LENGTH_LONG)
+                    .show();
+        }
+    }
+
+    @Override
+    public void onIabPurchaseFinished(IabResult result, Purchase info) {
+        if (result.isFailure()) {
+            Log.e(LOGGER, "Purchase failed: " + result);
+            Toast.makeText(this, "In-App Purchase Failed or was cancelled", Toast.LENGTH_LONG)
+                    .show();
+        } else if (RANDOM_BOT_SKU.equals(info.getSku())) {
+            Log.d(LOGGER, "Purchase of RandomBot succeeded.");
+            // DEBUG XXX
+            // We consume the item straight away so we can test multiple purchases
+            billingHelper.consumeAsync(info, null);
+            Toast.makeText(this, "In-App Purchase Of RandomBot Succeeded!", Toast.LENGTH_LONG)
+                    .show();
+//            randomBotPurchased = true;
+//            getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
+//                    .edit().putBoolean("randomBotPurchased", true).commit();
+            // END DEBUG
+
+        }
+    }
+
+    protected void purchaseItem(String sku) {
+        Toast.makeText(this, "In-App Purchasing Coming Soon- play for free for now", Toast.LENGTH_LONG)
+                .show();
+        //billingHelper.launchPurchaseFlow(this, sku, 123, this);
+        randomBotPurchased = true;
     }
 
     /*
@@ -115,7 +173,7 @@ public class LookingBusyActivity extends Activity {
 
         if (!game.isPaused()) {
             game.pause();
-        } else if (game.isPaused()) {
+        } else {
             game.resume();
         }
 
@@ -131,6 +189,10 @@ public class LookingBusyActivity extends Activity {
         Log.d(LOGGER, "Destroying the activity");
         super.onDestroy();
         game.stop();
+        if (billingHelper != null) {
+            billingHelper.dispose();
+        }
+        billingHelper = null;
     }
 
     /*
@@ -177,7 +239,7 @@ public class LookingBusyActivity extends Activity {
     public void showGameOverMenu() {
         Log.d(LOGGER, "Displaying Game Over Menu");
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = getDialog(this);
         builder.setTitle("Game Over!");
         builder.setMessage("Better luck next time.  Click below to start a new game!");
         builder.setPositiveButton("Let's Play Again!", new DialogInterface.OnClickListener() {
@@ -192,14 +254,24 @@ public class LookingBusyActivity extends Activity {
 
     public void showPauseMenu() {
 
-        String[] pausedMenuLabels = new String[] {"GamePlay",
-                                                "Themes",
-                                                "Picture For RandomBot",
-                                                "High Scores"};
-        Integer[] pausedMenuIcons = new Integer[] {game.getGameplayManager().getCurrentIconID(), game.getThemeManager().getCurrentThemeIconID(),
-                game.getThemeManager().getCurrentThemeIconID(),
-                R.drawable.ic_action_action_android,
-                R.drawable.ic_action_action_grade};
+        String[] pausedMenuLabels = new String[4];
+        Integer[] pausedMenuIcons = new Integer[4];
+
+        pausedMenuLabels[0] = "GamePlay";
+        pausedMenuIcons[0] = game.getGameplayManager().getCurrentIconID();
+
+        pausedMenuLabels[1] = "Themes";
+        pausedMenuIcons[1] = game.getThemeManager().getCurrentThemeIconID();
+
+        if(randomBotPurchased) {
+            pausedMenuLabels[2] = "Picture For RandomBot";
+        } else {
+            pausedMenuLabels[2] = "Purchase RandomBot";
+        }
+        pausedMenuIcons[2] = R.drawable.ic_action_action_android;
+
+        pausedMenuLabels[3] = "High Scores";
+        pausedMenuIcons[3] = R.drawable.ic_action_action_grade;
 
         ListAdapter adapter = new ArrayAdapterWithIcons(this,
                 android.R.layout.select_dialog_item,
@@ -230,7 +302,11 @@ public class LookingBusyActivity extends Activity {
                 } else if (item == 1) {
                     showThemeMenu();
                 } else if (item == 2) {
-                    showRandomBotMenu();
+                    if (randomBotPurchased) {
+                        showRandomBotMenu();
+                    } else {
+                        showRandomBotPurchaseMenu();
+                    }
                 } else if (item == 3) {
                     showHighScoreMenu();
                 }
@@ -301,30 +377,6 @@ public class LookingBusyActivity extends Activity {
 
     }
 
-    public void showHighScoreMenu() {
-        String[] scoreLabels = game.getGameplayManager().getHighScores();
-        Integer[] gameplayMenuIcons = game.getGameplayManager().getIconImageIDs();
-
-        ListAdapter adapter = new ArrayAdapterWithIcons(this,
-                android.R.layout.select_dialog_item,
-                scoreLabels,
-                gameplayMenuIcons);
-
-        AlertDialog.Builder builder = getDialog(this);
-        builder.setTitle("High Scores");
-        builder.setPositiveButton("OK", null);
-        builder.setNegativeButton("Clear High Scores", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                Log.d(LOGGER, "High Scores will be cleared");
-                game.getGameplayManager().clearAllScores();
-            }
-        });
-        builder.setAdapter(adapter, null);
-        builder.show();
-
-    }
-
     public void showRandomBotMenu() {
 
         String[] pictureOptions = new String[] {"Take a Picture", "Choose Picture from Gallery"};
@@ -365,6 +417,52 @@ public class LookingBusyActivity extends Activity {
 
             }
         });
+        builder.show();
+
+    }
+
+    public void showRandomBotPurchaseMenu() {
+        Log.d(LOGGER, "Displaying RandomBotPurchase Menu");
+
+        AlertDialog.Builder builder = getDialog(this);
+        builder.setTitle("Purchase RandomBot");
+        builder.setMessage("RandomBot is an awesome item that is crazy fun to pop!  " +
+                "It is worth more points than the other items and you get to pick the image." +
+                "\n\nYou could pop a picture of a tree, your boss, your boss in a tree- really the " +
+                "options are as endless as the court case you would have if you pinned your boss " +
+                "in a tree.\n\nInstead of going to jail and losing your job, just click the " +
+                "\"Take My Money\" button below to begin this new amazing journey in your life.");
+        builder.setNegativeButton("No: I hate fun.", null);
+        builder.setPositiveButton("Yes: Take My Money!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.d(LOGGER, "Purchasing RandomBot");
+                purchaseItem(RANDOM_BOT_SKU);
+            }
+        });
+        builder.show();
+    }
+
+    public void showHighScoreMenu() {
+        String[] scoreLabels = game.getGameplayManager().getHighScores();
+        Integer[] gameplayMenuIcons = game.getGameplayManager().getIconImageIDs();
+
+        ListAdapter adapter = new ArrayAdapterWithIcons(this,
+                android.R.layout.select_dialog_item,
+                scoreLabels,
+                gameplayMenuIcons);
+
+        AlertDialog.Builder builder = getDialog(this);
+        builder.setTitle("High Scores");
+        builder.setPositiveButton("OK", null);
+        builder.setNegativeButton("Clear High Scores", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.d(LOGGER, "High Scores will be cleared");
+                game.getGameplayManager().clearAllScores();
+            }
+        });
+        builder.setAdapter(adapter, null);
         builder.show();
 
     }

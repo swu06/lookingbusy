@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical" >
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/gameplay_type" />
+
+  <Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:onClick="onPurchaseItemClick"
+    android:text="@string/gameplay_type" />
+
+  <ImageView
+    android:id="@+id/main_passport_image"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/gameplay_type"
+    android:src="@drawable/bright_ball"
+    android:visibility="gone" />
+
+</LinearLayout>
