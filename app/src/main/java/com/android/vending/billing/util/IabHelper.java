@@ -247,8 +247,11 @@ public class IabHelper {
                 }
             }
         };
-        boolean attempt = mContext.bindService(new Intent("com.android.vending.billing.InAppBillingService.BIND"),
-                mServiceConn, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent("com.android.vending.billing.InAppBillingService.BIND");
+        // This is the key line that fixed everything for me
+        intent.setPackage("com.android.vending");
+
+        boolean attempt = mContext.bindService(intent, mServiceConn, Context.BIND_AUTO_CREATE);
 
         if (!attempt) {
             Log.e(mDebugTag, "Failed to bind to Service with name com.android.vending.billing.InAppBillingService.BIND");
