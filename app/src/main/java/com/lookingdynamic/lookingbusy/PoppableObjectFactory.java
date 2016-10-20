@@ -25,10 +25,6 @@ public class PoppableObjectFactory {
 
     private static final String LOGGER = Bubble.class.getSimpleName();
     private static Random rand = new Random();
-    private static final int SLOW_SPEED = 2;
-    private static final int MEDIUM_SPEED = 4;
-    private static final int FAST_SPEED = 8;
-    private static final int SUPER_FAST_SPEED = 9;
 
     /*
      * This is the entry point of this class. It takes in a set of objects that will help it
@@ -114,72 +110,100 @@ public class PoppableObjectFactory {
      * to determine which object to create as well as the settings for each object.
      */
     private static PoppableObject createObject(GameplayManager gameplay, int width, int height, boolean randomBotActivated) {
-        PoppableObject toReturn = null;
         int randomType = rand.nextInt(100);
         int randomSpeed = rand.nextInt(100);
-        int randomWidth = rand.nextInt(width - 100);
+        int randomWidth = rand.nextInt(width - 200);
         int oneInFour = rand.nextInt(4);
 
-        if(randomType < gameplay.getBalloonPercentCreated()) {
-            int speed;
-            if(randomSpeed < gameplay.getBalloonPercentSlow()) {
-                speed = SLOW_SPEED;
-            } else if(randomSpeed < gameplay.getBalloonPercentSlow() + gameplay.getBalloonPercentMedium()) {
-                speed = MEDIUM_SPEED;
-            } else if(randomSpeed < gameplay.getBalloonPercentSlow() + gameplay.getBalloonPercentMedium()
-                                    + gameplay.getBalloonPercentFast()) {
-                speed = FAST_SPEED;
-            } else {
-                speed = SUPER_FAST_SPEED;
-            }
-            toReturn = new Balloon(randomWidth, height, -1 * speed, oneInFour);
+        int speed;
+        PoppableObject toReturn;
 
-        } else if(randomType < gameplay.getBalloonPercentCreated() + gameplay.getDropletPercentCreated()){
-            int speed;
-            if(randomSpeed < gameplay.getDropletPercentSlow()) {
-                speed = SLOW_SPEED;
-            } else if(randomSpeed < gameplay.getDropletPercentSlow() + gameplay.getDropletPercentMedium()) {
-                speed = MEDIUM_SPEED;
-            } else if(randomSpeed < gameplay.getDropletPercentSlow() + gameplay.getDropletPercentMedium()
-                    + gameplay.getDropletPercentFast()) {
-                speed = FAST_SPEED;
+        if (randomType < gameplay.getBalloonPercentCreated()) {
+
+            if (randomSpeed < gameplay.getBalloonPercentSlow()) {
+                speed = getSlowSpeed(height);
+            } else if (randomSpeed < gameplay.getBalloonPercentSlow() + gameplay.getBalloonPercentMedium()) {
+                speed = getMediumSpeed(height);
+            } else if (randomSpeed < gameplay.getBalloonPercentSlow() + gameplay.getBalloonPercentMedium()
+                    + gameplay.getBalloonPercentFast()) {
+                speed = getFastSpeed(height);
             } else {
-                speed = SUPER_FAST_SPEED;
+                speed = getSuperFastSpeed(height);
+            }
+
+            toReturn = new Balloon(randomWidth, height, -1 * speed, oneInFour);
+        } else if (randomType < gameplay.getBalloonPercentCreated() + gameplay.getDropletPercentCreated()) {
+            if (randomSpeed < gameplay.getDropletPercentSlow()) {
+                speed = getSlowSpeed(height);
+            } else if (randomSpeed < gameplay.getDropletPercentSlow() + gameplay.getDropletPercentMedium()) {
+                speed = getMediumSpeed(height);
+            } else if (randomSpeed < gameplay.getDropletPercentSlow() + gameplay.getDropletPercentMedium()
+                    + gameplay.getDropletPercentFast()) {
+                speed = getFastSpeed(height);
+            } else {
+                speed = getSuperFastSpeed(height);
             }
             toReturn = new Droplet(randomWidth, speed);
-        } else if(randomType < gameplay.getBalloonPercentCreated()
+        } else if (randomType < gameplay.getBalloonPercentCreated()
                                 + gameplay.getDropletPercentCreated()
                                 + gameplay.getBallPercentCreated()){
-            int speed;
-            if(randomSpeed < gameplay.getBallPercentSlow()) {
-                speed = SLOW_SPEED;
-            } else if(randomSpeed < gameplay.getBallPercentSlow() + gameplay.getBallPercentMedium()) {
-                speed = MEDIUM_SPEED;
-            } else if(randomSpeed < gameplay.getBallPercentSlow() + gameplay.getBallPercentMedium()
+            if (randomSpeed < gameplay.getBallPercentSlow()) {
+                speed = getSlowSpeed(height);
+            } else if (randomSpeed < gameplay.getBallPercentSlow() + gameplay.getBallPercentMedium()) {
+                speed = getMediumSpeed(height);
+            } else if (randomSpeed < gameplay.getBallPercentSlow() + gameplay.getBallPercentMedium()
                     + gameplay.getBallPercentFast()) {
-                speed = FAST_SPEED;
+                speed = getFastSpeed(height);
             } else {
-                speed = SUPER_FAST_SPEED;
+                speed = getSuperFastSpeed(height);
             }
 
             toReturn = new Ball(width, height, oneInFour, speed);
-        } else if(randomBotActivated){
-            int speed;
-            if(randomSpeed < gameplay.getRandomBotPercentSlow()) {
-                speed = SLOW_SPEED;
-            } else if(randomSpeed < gameplay.getRandomBotPercentSlow() + gameplay.getRandomBotPercentMedium()) {
-                speed = MEDIUM_SPEED;
-            } else if(randomSpeed < gameplay.getRandomBotPercentSlow() + gameplay.getRandomBotPercentMedium()
+        } else if (randomBotActivated){
+            if (randomSpeed < gameplay.getRandomBotPercentSlow()) {
+                speed = getSlowSpeed(height);
+            } else if (randomSpeed < gameplay.getRandomBotPercentSlow() + gameplay.getRandomBotPercentMedium()) {
+                speed = getMediumSpeed(height);
+            } else if (randomSpeed < gameplay.getRandomBotPercentSlow() + gameplay.getRandomBotPercentMedium()
                     + gameplay.getRandomBotPercentFast()) {
-                speed = FAST_SPEED;
+                speed = getFastSpeed(height);
             } else {
-                speed = SUPER_FAST_SPEED;
+                speed = getSuperFastSpeed(height);
             }
 
             toReturn = new RandomBot(width, height, speed);
+        } else {
+            // Default to a Balloon if RandomBot is not active  (but use the speed from the RandomBot)
+            if (randomSpeed < gameplay.getRandomBotPercentSlow()) {
+                speed = getSlowSpeed(height);
+            } else if (randomSpeed < gameplay.getRandomBotPercentSlow() + gameplay.getRandomBotPercentMedium()) {
+                speed = getMediumSpeed(height);
+            } else if (randomSpeed < gameplay.getRandomBotPercentSlow() + gameplay.getRandomBotPercentMedium()
+                    + gameplay.getRandomBotPercentFast()) {
+                speed = getFastSpeed(height);
+            } else {
+                speed = getSuperFastSpeed(height);
+            }
+
+            toReturn = new Balloon(randomWidth, height, -1 * speed, oneInFour);
         }
 
         return toReturn;
     }
 
+    private static int getSlowSpeed(int height) {
+        return (int) (height * 0.003);
+    }
+
+    private static int getMediumSpeed(int height) {
+        return (int) (height * 0.006);
+    }
+
+    private static int getFastSpeed(int height) {
+        return (int) (height * 0.009);
+    }
+
+    private static int getSuperFastSpeed(int height) {
+        return (int) (height * 0.011);
+    }
 }

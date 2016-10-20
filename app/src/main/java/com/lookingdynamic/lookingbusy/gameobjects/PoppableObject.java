@@ -59,6 +59,7 @@ public abstract class PoppableObject {
 
     public boolean handleTouch(ThemeManager theme, int eventX, int eventY) {
         Bitmap bitmapImage = getImage(theme);
+
         if ( eventX >= xCoordinate && eventX <= (xCoordinate + bitmapImage.getWidth())
                 && eventY >= yCoordinate && (eventY <= (yCoordinate + bitmapImage.getHeight())) ) {
             popped = true;

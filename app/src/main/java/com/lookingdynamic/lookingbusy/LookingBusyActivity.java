@@ -12,7 +12,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
@@ -22,6 +21,7 @@ import android.widget.Toast;
 
 import com.android.vending.billing.util.IabHelper;
 import com.android.vending.billing.util.IabResult;
+import com.android.vending.billing.util.Inventory;
 import com.android.vending.billing.util.Purchase;
 import com.lookingdynamic.lookingbusy.gameplay.GameplayManager;
 import com.lookingdynamic.lookingbusy.gameplay.ThemeManager;
@@ -29,6 +29,8 @@ import com.lookingdynamic.lookingbusy.purchasing.AppProperties;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Welcome to The Entry Point for this game! The LookingBusyActivity is the main
@@ -42,18 +44,27 @@ import java.io.FileOutputStream;
  */
 
 public class LookingBusyActivity extends Activity
-                                implements IabHelper.OnIabSetupFinishedListener, IabHelper.OnIabPurchaseFinishedListener {
+                                implements IabHelper.OnIabSetupFinishedListener,
+                                            IabHelper.OnIabPurchaseFinishedListener,
+                                            IabHelper.QueryInventoryFinishedListener {
     // Called when the activity is first created.
     private static final String LOGGER = LookingBusyActivity.class.getSimpleName();
     private PopAllTheThingsGame game = null;
+
+    private static final String FIRST_RUN_KEY = "firstRun";
     private boolean firstRun;
 
     private IabHelper billingHelper;
-    private static final String RANDOM_BOT_SKU = "randomBotSKU";
+    private boolean billingHelperReady;
+    private static final String RANDOM_BOT_SKU = "OBSCURED_FOR_PUBLIC_REPO";
+    private static final String RANDOM_BOT_KEY = "OBSCURED_FOR_PUBLIC_REPO";
+    // DEBUG
+    // private static final String TEST_SKU = "com.example.product";
     private boolean randomBotPurchased;
 
     public static final int CAMERA_RESULT = 0;
     public static final int FILE_RESULT = 1;
+    public static final int BILLING_RESULT = 2;
 
     /*
      * This method is for a brand new activity
@@ -66,21 +77,21 @@ public class LookingBusyActivity extends Activity
         super.onCreate(savedInstanceState);
         // Removing the title to save previous screen space
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        firstRun = getSharedPreferences("BOOT_PREF", MODE_PRIVATE).getBoolean("firstRun", true);
+        firstRun = getSharedPreferences("BOOT_PREF", MODE_PRIVATE).getBoolean(FIRST_RUN_KEY, true);
         randomBotPurchased = getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
-                                .getBoolean("randomBotPurchased", false);
+                                .getBoolean(RANDOM_BOT_KEY, false);
 
         if (firstRun) {
             Log.d(LOGGER, "This is the first run of the activity");
             getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
-                    .edit().putBoolean("firstRun", false).commit();
+                    .edit().putBoolean(FIRST_RUN_KEY, false).commit();
         }
 
+        billingHelperReady = false;
         setupInAppBilling();
     }
 
     private void setupInAppBilling() {
-
         billingHelper = new IabHelper(this, AppProperties.BASE_64_KEY);
         billingHelper.startSetup(this);
     }
@@ -88,40 +99,81 @@ public class LookingBusyActivity extends Activity
     @Override
     public void onIabSetupFinished(IabResult result) {
         if (result.isSuccess()) {
-            Log.d(LOGGER, "In-app Billing set up" + result);
+            Log.d(LOGGER, "In-app Billing set up: " + result);
+            billingHelperReady = true;
+            checkForPurchases();
+
         } else {
             Log.e(LOGGER, "Problem setting up In-app Billing: " + result);
-            Toast.makeText(this, "In-App Purchases not available currently", Toast.LENGTH_LONG)
-                    .show();
+        }
+    }
+
+    private void checkForPurchases() {
+        if(billingHelperReady) {
+            List<String> skus = new ArrayList<>();
+            skus.add(RANDOM_BOT_SKU);
+            billingHelper.queryInventoryAsync(false, skus, this);
         }
     }
 
     @Override
-    public void onIabPurchaseFinished(IabResult result, Purchase info) {
-        if (result.isFailure()) {
-            Log.e(LOGGER, "Purchase failed: " + result);
-            Toast.makeText(this, "In-App Purchase Failed or was cancelled", Toast.LENGTH_LONG)
-                    .show();
-        } else if (RANDOM_BOT_SKU.equals(info.getSku())) {
-            Log.d(LOGGER, "Purchase of RandomBot succeeded.");
-            // DEBUG XXX
-            // We consume the item straight away so we can test multiple purchases
-            billingHelper.consumeAsync(info, null);
-            Toast.makeText(this, "In-App Purchase Of RandomBot Succeeded!", Toast.LENGTH_LONG)
-                    .show();
-//            randomBotPurchased = true;
-//            getSharedPreferences("BOOT_PREF", MODE_PRIVATE)
-//                    .edit().putBoolean("randomBotPurchased", true).commit();
-            // END DEBUG
+    public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+        if (result.isSuccess()) {
+            Log.d(LOGGER, "In app purchases query complete" + result);
+
+            boolean randomBotPurchaseCheck = inv.hasPurchase(RANDOM_BOT_SKU);
+
+            if (randomBotPurchaseCheck && !randomBotPurchased) {
+                Log.d(LOGGER, "RandomBot Purchase Imported");
+                purchaseRandomBot();
+            } else if (!randomBotPurchaseCheck && randomBotPurchased) {
+                Log.d(LOGGER, "RandomBot Refund Imported");
+                refundRandomBot();
+            }
+
+            final ThemeManager themes = game.getThemeManager();
+            themes.importPurchases(inv);
+        } else {
+            Log.e(LOGGER, "In app purchases could not be verified.");
 
         }
     }
 
-    protected void purchaseItem(String sku) {
-        Toast.makeText(this, "In-App Purchasing Coming Soon- play for free for now", Toast.LENGTH_LONG)
-                .show();
-        //billingHelper.launchPurchaseFlow(this, sku, 123, this);
+    public void purchaseRandomBot() {
         randomBotPurchased = true;
+        getSharedPreferences("BOOT_PREF", MODE_PRIVATE).edit().putBoolean(RANDOM_BOT_KEY, true).commit();
+        if (game != null) {
+            game.purchaseRandomBot();
+        }
+    }
+
+    public void refundRandomBot() {
+        randomBotPurchased = false;
+        getSharedPreferences("BOOT_PREF", MODE_PRIVATE).edit().putBoolean(RANDOM_BOT_KEY, false).commit();
+    }
+
+    @Override
+    public void onIabPurchaseFinished(IabResult result, Purchase info) {
+        ThemeManager themes = game.getThemeManager();
+        if (result.isFailure()) {
+            Log.e(LOGGER, "Purchase failed: " + result);
+            Toast.makeText(this, "In-App Purchase Failed or was cancelled.", Toast.LENGTH_LONG)
+                    .show();
+        } else if (RANDOM_BOT_SKU.equals(info.getSku())) {
+            Log.d(LOGGER, "Purchase of RandomBot succeeded.");
+            purchaseRandomBot();
+        } else if (themes.purchaseTheme(info.getSku())){
+            Log.d(LOGGER, "Theme Purchased");
+        }
+    }
+
+    protected void purchaseItem(String sku) {
+        if(billingHelperReady) {
+            billingHelper.launchPurchaseFlow(this, sku, BILLING_RESULT, this);
+        } else {
+            Toast.makeText(this, "In-app Purchasing is currently unavailable, please reconnect and try again",
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     /*
@@ -145,7 +197,7 @@ public class LookingBusyActivity extends Activity
 
         // Initialize the game as needed, and set it as this activity's content
         if (game == null || game.isStopped()) {
-            game = new PopAllTheThingsGame(this, firstRun);
+            game = new PopAllTheThingsGame(this, firstRun, randomBotPurchased);
             firstRun = false;
             setContentView(game);
         }
@@ -246,7 +298,7 @@ public class LookingBusyActivity extends Activity
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "Starting New Game");
-                game.startNewGame();
+                game.startNewGame(true);
             }
         });
         builder.show();
@@ -254,8 +306,8 @@ public class LookingBusyActivity extends Activity
 
     public void showPauseMenu() {
 
-        String[] pausedMenuLabels = new String[4];
-        Integer[] pausedMenuIcons = new Integer[4];
+        String[] pausedMenuLabels = new String[7];
+        Integer[] pausedMenuIcons = new Integer[7];
 
         pausedMenuLabels[0] = "GamePlay";
         pausedMenuIcons[0] = game.getGameplayManager().getCurrentIconID();
@@ -270,8 +322,27 @@ public class LookingBusyActivity extends Activity
         }
         pausedMenuIcons[2] = R.drawable.ic_action_action_android;
 
-        pausedMenuLabels[3] = "High Scores";
-        pausedMenuIcons[3] = R.drawable.ic_action_action_grade;
+        if(game.isMute()) {
+            pausedMenuLabels[3] = "Sound: Off";
+            pausedMenuIcons[3] = R.drawable.ic_action_av_volume_off;
+        } else {
+            pausedMenuLabels[3] = "Sound: On";
+            pausedMenuIcons[3] = R.drawable.ic_action_av_volume_up;
+        }
+
+        if(game.isBlackBackground()) {
+            pausedMenuLabels[4] = "Background: Black";
+            pausedMenuIcons[4] = R.drawable.ic_action_action_favorite;
+        } else {
+            pausedMenuLabels[4] = "Background: Clear";
+            pausedMenuIcons[4] = R.drawable.ic_action_action_favorite_outline;
+        }
+
+        pausedMenuLabels[5] = "High Scores";
+        pausedMenuIcons[5] = R.drawable.ic_action_action_grade;
+
+        pausedMenuLabels[6] = "Credits";
+        pausedMenuIcons[6] = R.drawable.ic_action_image_palette;
 
         ListAdapter adapter = new ArrayAdapterWithIcons(this,
                 android.R.layout.select_dialog_item,
@@ -284,7 +355,7 @@ public class LookingBusyActivity extends Activity
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "Restart Button Clicked: Starting a new game");
-                game.startNewGame();
+                game.startNewGame(true);
             }
         });
         builder.setNegativeButton("Continue Game", new DialogInterface.OnClickListener() {
@@ -308,7 +379,18 @@ public class LookingBusyActivity extends Activity
                         showRandomBotPurchaseMenu();
                     }
                 } else if (item == 3) {
+                    game.swapMute();
+                    dialog.dismiss();
+                    game.resume();
+                } else if (item == 4) {
+                    game.swapBlackBackground();
+                    dialog.dismiss();
+                    game.resume();
+                } else if (item == 5) {
                     showHighScoreMenu();
+                } else if (item == 6) {
+                    showCreditScreen();
+                    dialog.dismiss();
                 }
                 Log.d(LOGGER, "MenuClick Detected!, item# " + item);
 
@@ -346,7 +428,7 @@ public class LookingBusyActivity extends Activity
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "Gameplay Selected:" + item);
                 modes.setGameplayMode(item);
-                game.startNewGame();
+                game.startNewGame(false);
             }
         });
         builder.show();
@@ -370,7 +452,12 @@ public class LookingBusyActivity extends Activity
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 Log.d(LOGGER, "Theme Selected: " + item);
-                themes.setTheme(item);
+                if(themes.isAvailable(item)) {
+                    themes.setTheme(item);
+                } else {
+                    purchaseItem(themes.getSkuForTheme(item));
+                }
+
             }
         });
         builder.show();
@@ -419,6 +506,24 @@ public class LookingBusyActivity extends Activity
         });
         builder.show();
 
+    }
+
+    public void showCreditScreen() {
+        Log.d(LOGGER, "Displaying Credit Screen");
+
+        AlertDialog.Builder builder = getDialog(this);
+        builder.setTitle("Credits");
+        builder.setMessage("Amazing Game Pieces: Colin Kirk\n\n" +
+                "Astonishing Sound Effects: Frank Wu, MD, PhD\n\n" +
+                "Almost Everything Else: Sarah Wu");
+        builder.setPositiveButton("High-Fives To All!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                Log.d(LOGGER, "Purchasing RandomBot");
+                game.resume();
+            }
+        });
+        builder.show();
     }
 
     public void showRandomBotPurchaseMenu() {
@@ -482,22 +587,23 @@ public class LookingBusyActivity extends Activity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == CAMERA_RESULT) {
-                Log.d(LOGGER, "Camera has returned a file.");
-                storeBitmap((Bitmap) data.getExtras().get("data"));
-            } else if (requestCode == FILE_RESULT) {
-                Log.d(LOGGER, "Gallery has returned a file.");
-                try {
-                    Bitmap selectedImage = BitmapFactory.decodeStream(
-                            getContentResolver().openInputStream(data.getData()));
-                    storeBitmap(getCorrectBitmap(selectedImage, data.getData()));
-                } catch (Exception e){
-                    Log.e(LOGGER, "Cannot load file");
-                }
+        if (resultCode == RESULT_OK && requestCode == CAMERA_RESULT) {
+            Log.d(LOGGER, "Camera has returned a file.");
+            storeBitmap((Bitmap) data.getExtras().get("data"));
+        } else if (resultCode == RESULT_OK && requestCode == FILE_RESULT) {
+            Log.d(LOGGER, "Gallery has returned a file.");
+            try {
+                Bitmap selectedImage = BitmapFactory.decodeStream(
+                        getContentResolver().openInputStream(data.getData()));
+                storeBitmap(getCorrectBitmap(selectedImage, data.getData()));
+            } catch (Exception e){
+                Log.e(LOGGER, "Cannot load file");
             }
+        } else if (billingHelper != null && requestCode == BILLING_RESULT) {
+            billingHelper.handleActivityResult(requestCode, resultCode, data);
         }
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 
     public Bitmap getCorrectBitmap(Bitmap bitmap, Uri imageUri) {
@@ -526,12 +632,12 @@ public class LookingBusyActivity extends Activity
     public void storeBitmap(Bitmap existingFile) {
         Log.d(LOGGER, "Scaling file ...");
 
-        final int maxSize = 200;
+        final int maxSize = game.getWidth() / 3;
         int outWidth;
         int outHeight;
         int inWidth = existingFile.getWidth();
         int inHeight = existingFile.getHeight();
-        if (inWidth > inHeight){
+        if (inWidth > inHeight) {
             outWidth = maxSize;
             outHeight = (inHeight * maxSize) / inWidth;
         } else {
@@ -540,9 +646,8 @@ public class LookingBusyActivity extends Activity
         }
         Bitmap scaledFile = Bitmap.createScaledBitmap(existingFile, outWidth, outHeight, false);
 
-        File destination = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES),
-                "LookingBusy"+ System.currentTimeMillis() + ".png");
+        File destination = new File(getFilesDir(),
+                "RandomBotImage.png");
         FileOutputStream fOut;
         try {
             fOut = new FileOutputStream(destination);

@@ -36,8 +36,8 @@ public class GameThreadTest extends ActivityTestCase {
         GameThread myThread = new GameThread(null);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.onStart();
-        assertEquals("Test Failed: Thread should be RUNNABLE immediately after starting",
-                    Thread.State.RUNNABLE, myThread.getState());
+        assertFalse("Test Failed: Thread should not be NEW immediately after starting",
+                Thread.State.NEW == myThread.getState());
         assertTrue("Test Failed: Thread should not die on a real startup",
                     myThread.isAlive());
     }
@@ -46,7 +46,8 @@ public class GameThreadTest extends ActivityTestCase {
         GameThread myThread = new GameThread(null);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.onStart();
-        assertEquals(Thread.State.RUNNABLE, myThread.getState());
+        assertFalse(Thread.State.NEW == myThread.getState());
+        assertFalse(Thread.State.TERMINATED == myThread.getState());
         myThread.onStop();
         try {
             myThread.join(20);
@@ -79,7 +80,6 @@ public class GameThreadTest extends ActivityTestCase {
         GameThread myThread = new GameThread(null);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.onStart();
-        assertEquals(Thread.State.RUNNABLE, myThread.getState());
 
         myThread.onPause();
         assertTrue("Test Failed: Pause Flag did not set",
@@ -108,7 +108,6 @@ public class GameThreadTest extends ActivityTestCase {
         GameThread myThread = new GameThread(null);
         assertEquals(Thread.State.NEW, myThread.getState());
         myThread.onStart();
-        assertEquals(Thread.State.RUNNABLE, myThread.getState());
 
         myThread.onPause();
         try {

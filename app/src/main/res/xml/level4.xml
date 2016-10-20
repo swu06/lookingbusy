@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
-    <name>Lvl 4</name>
+    <name>Level 4</name>
     <pointsToNextLevel>750</pointsToNextLevel>
     <chanceToCreate>5</chanceToCreate>
     <balloonDefinition>

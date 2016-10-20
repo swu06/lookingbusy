@@ -17,7 +17,7 @@ public class Balloon extends PoppableObject {
 
     private static final String LOGGER = Balloon.class.getSimpleName();
     public static final int VALUE = 10;
-    protected int whichBalloon;
+    protected static int whichBalloon;
 
     public Balloon(int xCoordinate, int yCoordinate, int speed, int whichBalloon) {
         this.xCoordinate = xCoordinate;
@@ -40,6 +40,7 @@ public class Balloon extends PoppableObject {
         }
 
         return bitmapImage;
+
     }
 
     /*
@@ -64,4 +65,15 @@ public class Balloon extends PoppableObject {
         }
 
     }
+
+    public static void main(String[] args) {
+        Balloon myBalloon = new Balloon(0,0,0,0);
+    }
 }
+
+
+
+
+
+
+

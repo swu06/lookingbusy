@@ -41,7 +41,7 @@ public class GameplayModeTest extends ActivityTestCase {
         GameplayMode mode = new GameplayMode(myResources,
                 getInstrumentation().getTargetContext().getResources().getXml(R.xml.mode_campaign));
 
-        assertEquals("Test Failure: Level Name incorrect", "Lvl 1", mode.getLevelName(0));
+        assertEquals("Test Failure: Level Name incorrect", "Level 1", mode.getLevelName(0));
     }
 
     public void testGetPointsToNextLevel() {

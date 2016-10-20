@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
-    <name>Lvl 1</name>
+    <name>Level 1</name>
     <pointsToNextLevel>250</pointsToNextLevel>
-    <chanceToCreate>3</chanceToCreate>
+    <chanceToCreate>4</chanceToCreate>
     <balloonDefinition>
         <percentCreated>90</percentCreated>
-        <percentSlow>100</percentSlow>
+        <percentSlow>10</percentSlow>
     </balloonDefinition>
     <randomBotDefinition>
         <percentCreated>10</percentCreated>

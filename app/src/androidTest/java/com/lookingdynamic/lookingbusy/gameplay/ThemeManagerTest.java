@@ -119,7 +119,7 @@ public class ThemeManagerTest extends ActivityTestCase{
     public void testGetPoppedRandomBot() {
         Resources myResources = getInstrumentation().getTargetContext().getResources();
         ThemeManager themes = new ThemeManager(null, myResources);
-        Bitmap poppedImage = BitmapFactory.decodeResource(myResources, R.drawable.ic_action_notification_adb);
+        Bitmap poppedImage = BitmapFactory.decodeResource(myResources, R.drawable.randombot_popped);
 
         assertEquals("Test Failure: RandomBot Image did not set properly",
                 poppedImage.getWidth(), themes.getPoppedRandomBot().getWidth());
@@ -133,46 +133,46 @@ public class ThemeManagerTest extends ActivityTestCase{
         themes.setTheme(0);
 
         assertEquals("Test Failure: Crayon Theme crayon_ball has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_ball).getWidth(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_ball).getWidth(),
                 themes.getBall().getWidth());
         assertEquals("Test Failure: Crayon Theme crayon_ball has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_ball).getHeight(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_ball).getHeight(),
                 themes.getBall().getHeight());
         assertEquals("Test Failure: Crayon Theme crayon_balloon has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_balloon1).getWidth(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_balloon1).getWidth(),
                 themes.getBalloon(0).getWidth());
         assertEquals("Test Failure: Crayon Theme crayon_balloon has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_balloon1).getHeight(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_balloon1).getHeight(),
                 themes.getBalloon(0).getHeight());
         assertEquals("Test Failure: Crayon Theme crayon_droplet has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_droplet).getWidth(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_droplet).getWidth(),
                 themes.getDroplet().getWidth());
         assertEquals("Test Failure: Crayon Theme crayon_droplet has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_droplet).getHeight(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_droplet).getHeight(),
                 themes.getDroplet().getHeight());
         assertEquals("Test Failure: Crayon Theme crayon_droplet has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.bubble).getWidth(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_bubble).getWidth(),
                 themes.getBubble().getWidth());
         assertEquals("Test Failure: Crayon Theme crayon_droplet has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.bubble).getHeight(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_bubble).getHeight(),
                 themes.getBubble().getHeight());
         assertEquals("Test Failure: Crayon Theme crayon_popped_ball has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_popped_ball).getWidth(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_popped_ball).getWidth(),
                 themes.getPoppedBall().getWidth());
         assertEquals("Test Failure: Crayon Theme crayon_popped_ball has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_popped_ball).getHeight(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_popped_ball).getHeight(),
                 themes.getPoppedBall().getHeight());
         assertEquals("Test Failure: Crayon Theme crayon_popped_balloon has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_popped_balloon1).getWidth(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_popped_balloon1).getWidth(),
                 themes.getPoppedBalloon(0).getWidth());
         assertEquals("Test Failure: Crayon Theme crayon_popped_balloon has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_popped_balloon1).getHeight(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_popped_balloon1).getHeight(),
                 themes.getPoppedBalloon(0).getHeight());
         assertEquals("Test Failure: Crayon Theme crayon_popped_droplet has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_popped_droplet).getWidth(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_popped_droplet).getWidth(),
                 themes.getPoppedDroplet().getWidth());
         assertEquals("Test Failure: Crayon Theme crayon_popped_droplet has changed",
-                BitmapFactory.decodeResource(myResources, R.drawable.crayon_popped_droplet).getHeight(),
+                BitmapFactory.decodeResource(myResources, R.drawable.bright_popped_droplet).getHeight(),
                 themes.getPoppedDroplet().getHeight());
         assertEquals("Test Failure: Crayon Theme crayon_pause has changed",
                 BitmapFactory.decodeResource(myResources, R.drawable.pause).getWidth(),

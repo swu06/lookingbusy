@@ -16,11 +16,11 @@ public class LevelTest extends ActivityTestCase{
 
         assertNotNull("Test Failure: Should create a non-null Level", lvl);
 
-        assertEquals("Test Failure: Level 1 Value has changed", "Lvl 1", lvl.getName());
+        assertEquals("Test Failure: Level 1 Value has changed", "Level 1", lvl.getName());
         assertEquals("Test Failure: Level 1 Value has changed", 250, lvl.getPointsToNextLevel());
-        assertEquals("Test Failure: Level 1 Value has changed", 3, lvl.getPercentChanceOfCreation());
+        assertEquals("Test Failure: Level 1 Value has changed", 4, lvl.getPercentChanceOfCreation());
         assertEquals("Test Failure: Level 1 Value has changed", 90, lvl.getBalloonPercentCreated());
-        assertEquals("Test Failure: Level 1 Value has changed", 100, lvl.getBalloonPercentSlow());
+        assertEquals("Test Failure: Level 1 Value has changed", 10, lvl.getBalloonPercentSlow());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getBalloonPercentMedium());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getBalloonPercentFast());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getBalloonPercentSuperFast());
@@ -46,7 +46,7 @@ public class LevelTest extends ActivityTestCase{
 
         assertNotNull("Test Failure: Should create a non-null Level", lvl);
 
-        assertEquals("Test Failure: Level 7 Value has changed", "Lvl 7", lvl.getName());
+        assertEquals("Test Failure: Level 7 Value has changed", "Level 7", lvl.getName());
         assertEquals("Test Failure: Level 7 Value has changed", 2000, lvl.getPointsToNextLevel());
         assertEquals("Test Failure: Level 7 Value has changed", 7, lvl.getPercentChanceOfCreation());
         assertEquals("Test Failure: Level 7 Value has changed", 45, lvl.getBalloonPercentCreated());
@@ -61,8 +61,8 @@ public class LevelTest extends ActivityTestCase{
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getDropletPercentSuperFast());
         assertEquals("Test Failure: Level 7 Value has changed", 25, lvl.getBallPercentCreated());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getBallPercentSlow());
-        assertEquals("Test Failure: Level 7 Value has changed", 0, lvl.getBallPercentMedium());
-        assertEquals("Test Failure: Level 7 Value has changed", 100, lvl.getBallPercentFast());
+        assertEquals("Test Failure: Level 7 Value has changed", 50, lvl.getBallPercentMedium());
+        assertEquals("Test Failure: Level 7 Value has changed", 50, lvl.getBallPercentFast());
         assertEquals("Test Failure: No value was specified, but one was found", 0, lvl.getBallPercentSuperFast());
         assertEquals("Test Failure: Level 7 Value has changed", 10, lvl.getRandomBotPercentCreated());
         assertEquals("Test Failure: No value was specified, but one was found", 25, lvl.getRandomBotPercentSlow());

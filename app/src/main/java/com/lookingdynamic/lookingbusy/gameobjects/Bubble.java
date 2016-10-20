@@ -21,6 +21,7 @@ public class Bubble extends PoppableObject {
     protected boolean temporarilyPopped;
     protected int poppedCountsRemaining;
     protected final int timeToStayPopped;
+    private Paint thisPainter;
 
     public Bubble(int xCoordinate, int yCoordinate, int objectsOnScreen) {
         this.xCoordinate = xCoordinate;
@@ -31,6 +32,8 @@ public class Bubble extends PoppableObject {
         temporarilyPopped = false;
         poppedCountsRemaining = 0;
         timeToStayPopped = 3 * objectsOnScreen; // Scales for large and small screens
+        thisPainter = new Paint();
+        thisPainter.setAlpha(200);
 
         Log.v(LOGGER, "Bubble Object created at (" + xCoordinate + ", " + yCoordinate + ")");
     }
@@ -67,7 +70,7 @@ public class Bubble extends PoppableObject {
     @Override
     public void draw(ThemeManager theme, Canvas canvas, Paint painter) {
         if (!temporarilyPopped) {
-            canvas.drawBitmap(getImage(theme), xCoordinate, yCoordinate, painter);
+            canvas.drawBitmap(getImage(theme), xCoordinate, yCoordinate, thisPainter);
         }
     }
 
@@ -81,6 +84,7 @@ public class Bubble extends PoppableObject {
      */
     @Override
     public boolean handleTouch(ThemeManager theme, int eventX, int eventY) {
+
         boolean justPopped = false;
         if (!temporarilyPopped) {
             justPopped = super.handleTouch(theme, eventX, eventY);
@@ -96,5 +100,9 @@ public class Bubble extends PoppableObject {
         }
 
         return justPopped;
+
+
+
     }
+
 }

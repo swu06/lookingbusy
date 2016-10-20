@@ -60,4 +60,8 @@ public class LevelObjectSettings {
     public void setPercentSuperFast(int percentSuperFast) {
         this.percentSuperFast = percentSuperFast;
     }
+
+    public static void main(String[] args) {
+        LevelObjectSettings los = new LevelObjectSettings();
+    }
 }

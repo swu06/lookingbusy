@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Paint;
 import android.util.Log;
 
+import com.android.vending.billing.util.Inventory;
 import com.lookingdynamic.lookingbusy.R;
 
 /**
@@ -35,7 +36,7 @@ public class ThemeManager {
 
         for (int i = 0; i < availableThemesArray.length(); i++) {
             themes[i] = new GameTheme(myResources,
-                    myResources.getXml(availableThemesArray.getResourceId(i,-1)));
+                    myResources.getXml(availableThemesArray.getResourceId(i,-1)), settings);
         }
         availableThemesArray.recycle();
 
@@ -88,6 +89,12 @@ public class ThemeManager {
         return icons;
     }
 
+    public void importPurchases(Inventory inv) {
+        for (int i = 0; i < themes.length; i++) {
+            themes[i].verifyPurchase(inv);
+        }
+    }
+
     public int getCurrentThemeID() {
         return currentTheme;
     }
@@ -100,6 +107,9 @@ public class ThemeManager {
         return getCurrentTheme().getIconImageId();
     }
 
+    public boolean isAvailable(int theme) {
+        return themes[theme].isPurchased();
+    }
     /*
      * This method switches between themes.  Whenever a new theme is selected, the old theme
      * should be cleaned up to save memory.  As the images from the new theme are used, they will
@@ -123,7 +133,9 @@ public class ThemeManager {
 
     public void clearRandomBotImage() {
         randomBot = defaultRandomBotImage;
-        settings.setRandomBotLocation(null);
+        if(settings != null) {
+            settings.setRandomBotLocation(null);
+        }
         Log.v(LOGGER, "RandomBotImage has been reset to the default.");
     }
 
@@ -169,5 +181,22 @@ public class ThemeManager {
 
     public Paint getPainter() {
         return getCurrentTheme().getPainter();
+    }
+
+    public String getSkuForTheme(int theme) {
+        return themes[theme].getSku();
+    }
+
+    public boolean purchaseTheme(String sku) {
+        boolean purchaseMade = false;
+        for (int i = 0; i < themes.length; i++) {
+            if(sku != null && sku.equalsIgnoreCase(themes[i].getSku())){
+                purchaseMade = true;
+                themes[i].setThemePurchased(true);
+                break;
+            }
+        }
+
+        return purchaseMade;
     }
 }

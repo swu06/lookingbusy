@@ -121,7 +121,7 @@ public class GameplayManagerTest extends ActivityTestCase{
         GameplayManager gameplay = new GameplayManager(settings,
                 getInstrumentation().getTargetContext().getResources());
 
-        assertEquals("Test Failure: Level Name should be prepended to score", "Lvl 1: 0", gameplay.getScoreDisplayString());
+        assertEquals("Test Failure: Level Name should be prepended to score", "Level 1: 0", gameplay.getScoreDisplayString());
     }
 
     public void testGetDisplayStringWithoutLevelName() {

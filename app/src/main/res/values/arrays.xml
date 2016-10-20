@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <array name="available_game_themes">
-        <item>@xml/crayon_theme</item>
-        <item>@xml/bright_theme</item>
+        <item>@xml/theme_bright</item>
+        <item>@xml/theme_subtle</item>
+        <item>@xml/theme_sweet</item>
     </array>
 
     <array name="gameplay_modes">

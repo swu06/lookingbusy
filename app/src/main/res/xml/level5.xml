@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level>
-    <name>Lvl 5</name>
+    <name>Level 5</name>
     <pointsToNextLevel>1000</pointsToNextLevel>
     <chanceToCreate>5</chanceToCreate>
     <balloonDefinition>
@@ -15,7 +15,7 @@
     </dropletDefinition>
     <ballDefinition>
         <percentCreated>15</percentCreated>
-        <percentFast>100</percentFast>
+        <percentSlow>100</percentSlow>
     </ballDefinition>
     <randomBotDefinition>
         <percentCreated>15</percentCreated>

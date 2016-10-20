@@ -5,6 +5,9 @@ import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
+import android.util.Log;
+
+import com.android.vending.billing.util.Inventory;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -31,8 +34,10 @@ public class GameTheme {
     private static final String POPPED_BALLOONS_TAG = "popped_balloons";
     private static final String POPPED_DROPLET_TAG = "popped_droplet";
     private static final String PAUSE_SIGN_TAG = "pause";
+    private static final String SKU_TAG = "sku";
 
     protected String name = "";
+    protected String price = "";
     protected int iconImage = -1;
     protected int ballImage = -1;
     protected int[] balloonImages;
@@ -44,7 +49,9 @@ public class GameTheme {
     protected int pauseSignImage = -1;
 
     private Resources myResources;
+    private SettingsStorageManager settings;
     private Paint painter;
+    protected boolean purchased;
     protected Bitmap ball = null;
     protected Bitmap[] balloons;
     protected Bitmap droplet = null;
@@ -53,10 +60,15 @@ public class GameTheme {
     protected Bitmap[] popped_balloons = null;
     protected Bitmap popped_droplet = null;
     protected Bitmap pause_sign = null;
+    protected String sku = null;
 
-    public GameTheme(Resources otherResources, XmlResourceParser themeXml) {
+
+    public GameTheme(Resources otherResources, XmlResourceParser themeXml,
+                        SettingsStorageManager otherSettings) {
         this.myResources = otherResources;
+        this.settings = otherSettings;
         painter = new Paint();
+        purchased = false;
 
         int eventType = -1;
         try {
@@ -91,12 +103,18 @@ public class GameTheme {
                     } else if (themeXml.getName().equalsIgnoreCase(PAUSE_SIGN_TAG)) {
                         pauseSignImage = myResources.getIdentifier(themeXml.nextText(),
                                                             DRAWABLE_DEF_TYPE, DEF_PACKAGE);
+                    } else if (themeXml.getName().equalsIgnoreCase(SKU_TAG)) {
+                        sku = themeXml.nextText();
                     }
                 }
                 eventType = themeXml.next();
             }
         } catch (XmlPullParserException|IOException e) {
             e.printStackTrace();
+        }
+
+        if(sku == null || settings.getPurchased(sku)) {
+            purchased = true;
         }
     }
 
@@ -118,8 +136,44 @@ public class GameTheme {
         }
     }
 
+    public void verifyPurchase(Inventory inv) {
+        if (sku != null) {
+            boolean purchasedResult = inv.hasPurchase(sku);
+
+            if (purchasedResult) {
+                if(!purchased){
+                    Log.d(LOGGER, "Theme purchased: " + sku);
+                    setThemePurchased(true);
+                }
+            } else {
+                if (inv.getSkuDetails(sku) != null) {
+                    price = inv.getSkuDetails(sku).getPrice();
+                } else {
+                    price = "Purchase Required";
+                }
+                if (purchased) {
+                    Log.d(LOGGER, "Theme refunded: " + sku);
+                    setThemePurchased(false);
+                }
+            }
+        }
+    }
+
+    public void setThemePurchased(boolean value){
+        purchased = value;
+        settings.setPurchased(sku, value);
+    }
+
     public String getName() {
-        return name;
+        String toReturn = name;
+        if(sku != null) {
+            if(purchased) {
+                toReturn = toReturn + " (Purchased)";
+            } else {
+                toReturn = toReturn + " (" +price + ")";
+            }
+        }
+        return toReturn;
     }
 
     public Paint getPainter() {
@@ -128,6 +182,10 @@ public class GameTheme {
 
     public int getIconImageId() {
         return iconImage;
+    }
+
+    public boolean isPurchased() {
+        return purchased;
     }
 
     /*
@@ -216,6 +274,10 @@ public class GameTheme {
         return pause_sign;
     }
 
+    public String getSku() {
+        return sku;
+    }
+
     /*
      * This method removes pointers to the bitmaps so the memory can be reclaimed
      * Note that the Name and icon image files stay loaded as they are used as
@@ -237,4 +299,6 @@ public class GameTheme {
         popped_droplet = null;
         pause_sign = null;
     }
+
+
 }

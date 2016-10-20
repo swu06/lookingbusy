@@ -42,18 +42,22 @@ public class PopAllTheThingsGame extends SurfaceView implements
 
     private boolean gameStopped = false;
     private boolean firstRun = false;
+    private boolean randomBotPurchased = false;
+    private boolean mute = false;
+    private boolean blackBackground = false;
 
     /*
      * Creating the game is all about creating variables
      * and giving them things to hold.  It's the boss!
      */
-    public PopAllTheThingsGame(LookingBusyActivity activity, boolean firstRun) {
+    public PopAllTheThingsGame(LookingBusyActivity activity, boolean firstRun, boolean randomBotPurchased) {
         super((Context) activity);
         this.activity = activity;
         this.firstRun = firstRun;
+        this.randomBotPurchased = randomBotPurchased;
 
         setUpGame();
-        startNewGame();
+        startNewGame(true);
 
         if (firstRun) {
             activity.showIntroMenu();
@@ -67,6 +71,14 @@ public class PopAllTheThingsGame extends SurfaceView implements
         themes = new ThemeManager(settings, getResources());
         mp = MediaPlayer.create(activity, R.raw.pop);
 
+        if(settings.getMute()) {
+            mute = true;
+        }
+
+        if(settings.getBlackBackground()) {
+            blackBackground = true;
+        }
+
         // create the game loop thread
         thread = new GameThread(this);
 
@@ -76,16 +88,42 @@ public class PopAllTheThingsGame extends SurfaceView implements
         setZOrderOnTop(true);
     }
 
-    public void startNewGame() {
+    public void startNewGame(boolean startUnPaused) {
+
         gameplay.storeHighScore();
+
         thread.onPause();
 
         // create/clear holder for balloons
         clearObjects();
         gameplay.clearCurrentStats();
 
-        thread.onResume();
+        if (startUnPaused) {
+            thread.onResume();
+        }
         setFocusable(true);
+    }
+
+    public void purchaseRandomBot() {
+        randomBotPurchased = true;
+    }
+
+    public boolean isMute() {
+        return mute;
+    }
+
+    public void swapMute() {
+        mute = !mute;
+        settings.setMute(mute);
+    }
+
+    public boolean isBlackBackground() {
+        return blackBackground;
+    }
+
+    public void swapBlackBackground() {
+        blackBackground = !blackBackground;
+        settings.setBlackBackground(blackBackground);
     }
 
     public void clearObjects() {
@@ -195,8 +233,12 @@ public class PopAllTheThingsGame extends SurfaceView implements
     @Override
     protected void onDraw(Canvas canvas) {
 
-        // fills the canvas with black
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        // fills the canvas with blackBackground
+        if(blackBackground) {
+            canvas.drawColor(Color.BLACK);
+        } else {
+            canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        }
         gameInfo.draw(canvas);
 
         if (!gameplay.isGameOver()) {
@@ -249,7 +291,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
                                 activePoppableObjects.size(),
                                 getWidth(),
                                 getHeight(),
-                                themes.getRandomBot() != null);
+                                randomBotPurchased);
 
                 if (toAdd != null && !firstRun) {
                     activePoppableObjects.addAll(toAdd);
@@ -293,7 +335,7 @@ public class PopAllTheThingsGame extends SurfaceView implements
                     }
                 }
             }
-            if (objectPopped) {
+            if (objectPopped && !mute) {
                 try {
                     if (mp.isPlaying()) {
                         mp.stop();
