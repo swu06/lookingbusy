@@ -20,7 +20,7 @@ public class BalloonTest extends ActivityTestCase {
     }
 
     public void testCreateBalloon(){
-        Balloon testBalloon = new Balloon(0, 0, 0, 0);
+        Balloon testBalloon = new Balloon(1, 1, 0, 0);
 
         assertNotNull("Test Failure: Balloon object is null", testBalloon);
         assertNotNull("Test Failure: whichBalloon incorrect on initialization", testBalloon.whichBalloon);
